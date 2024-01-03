@@ -1,0 +1,7 @@
+{
+  "name": "nmdc-field-notes",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
