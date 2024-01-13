@@ -34,7 +34,7 @@ npm install
 > That tells npm you want it to install all the packages listed in the `package-lock.json` file,
 > which was programmatically generated from the manually-maintained `package.json` file.
 
-### Setup Capacitor environment
+### Set up Capacitor environment
 
 [Capacitor](https://capacitorjs.com/) is a library that gives the web application access to the device's native functionality (e.g. location, camera, and storage). Review the Capacitor [environment setup](https://capacitorjs.com/docs/getting-started/environment-setup) documentation and make sure you have the necessary dependencies installed.
 
