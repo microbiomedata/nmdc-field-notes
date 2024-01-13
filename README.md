@@ -60,27 +60,29 @@ You can visit the development server at:
 
 By default, Ionic will use the web browser's user agent to determine whether to style the web app like an iOS app or an Android app. For most web browser user agents, it will style it like an Android app. You can force a particular style by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to the URL.
 
-For example, to force Ionic to style the web app like an iOS app:
+For example, to force Ionic to style the web app like an _iOS_ app, you can modify the URL like this:
 
 ```diff
 - http://localhost:5173/
 + http://localhost:5173/?ionic:mode=ios
 ```
 
-### View on an iOS simulator 
+### (Optional) Run iOS simulator 
 
-To run on an iOS simulator, first download and install [Xcode](https://developer.apple.com/xcode/) if you haven't already. 
+Assuming you're using a Mac, here's how you can simulate the iOS version of the mobile app.
 
-If this is your first time running the simulator _or_ you have added a Capacitor plugin since the last time you ran the simulator run:
+Download and install [Xcode](https://developer.apple.com/xcode/) (if you haven't already). 
+
+If either (a) this is your first time running the simulator, or (b) you have added a Capacitor plugin since the last time you ran the simulator; run:
 
 ```shell
 ionic capacitor sync ios
 ```
 
-Start the simulator with live reloading enabled by running:
+Start the simulator with live reloading enabled.
 
 ```shell
 ionic cap run ios --livereload --external
 ```
 
-This may take a minute or so to start initially. You should see the message `Deploying App.app to <uuid>` written to the console and then the simulator window should open.
+The simulator may take a few minutes to start. Eventually, the console will say "`Deploying App.app to <uuid>`" and the simulator will appear.
