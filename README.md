@@ -1,6 +1,8 @@
 # NMDC Field Notes
 
-The NMDC metadata collection app designed for use in the field.
+NMDC Field Notes is a mobile app researchers can use to collect metadata in the field.
+
+The app is currently in development.
 
 ## Development
 
