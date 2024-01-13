@@ -34,7 +34,7 @@ npm install
 
 ### Environment setup for Capacitor
 
-[Capacitor](https://capacitorjs.com/) is a library which provides access to native device functionality (location, camera, storage, etc) to the web application. Review their [Environment Setup](https://capacitorjs.com/docs/getting-started/environment-setup) documentation and make sure you have the necessary dependencies installed.
+[Capacitor](https://capacitorjs.com/) is a library which gives the web application access to the device's native functionality (e.g. location, camera, and storage). Review the Capacitor [Environment Setup](https://capacitorjs.com/docs/getting-started/environment-setup) documentation and make sure you have the necessary dependencies installed.
 
 ### Run the development server
 
