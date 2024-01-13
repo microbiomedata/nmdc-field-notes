@@ -51,3 +51,28 @@ ionic cap run ios --livereload --external
 ```
 
 This may take a minute or so to start initially. You should see the message `Deploying App.app to <uuid>` written to the console and then the simulator window should open.
+
+### Format code
+
+We use [Prettier](https://prettier.io/) to ensure the files in this repository are formatted the way we want.
+
+You can use it like this:
+
+```shell
+# Check whether any files are not formatted.
+npx run format:check
+
+# Format all files.
+npx run format
+```
+
+The `.prettierignore` file tells Prettier which files we want it to 
+[ignore](https://prettier.io/docs/en/ignore#ignoring-files-prettierignore) (i.e. to _not_ format).
+
+> The `.prettierignore` file automatically inherits from the `.gitignore` file.
+
+The `prettier.config.js` file can be used to override Prettier's
+default [configuration](https://prettier.io/docs/en/configuration).
+
+> Also, the presence of the file signifies to [code editors](https://prettier.io/docs/en/editors)
+that this project uses Prettier; which may influence some features of the editor.

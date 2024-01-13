@@ -1,0 +1,6 @@
+# This is a `.prettierignore` file.
+# It inherits from `.gitignore` automatically.
+# Reference: https://prettier.io/docs/en/ignore
+
+# Git does not ignore the following file, but we do want Prettier to ignore it:
+/.vscode/extensions.json
