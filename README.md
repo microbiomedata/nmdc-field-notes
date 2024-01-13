@@ -6,17 +6,31 @@ The NMDC metadata collection app designed for use in the field.
 
 ### Install dependencies 
 
-You need to have the [Ionic CLI](https://ionicframework.com/docs/cli) installed. It is recommended to install this globally:
+#### Node.js and npm
+
+Install [Node.js v20](https://nodejs.org/en/download/), which includes npm.
+
+> Once you've done that, you'll be able to run Node.js via `$ node` and npm via `$ npm`.
+
+#### Ionic CLI
+
+Install the [Ionic CLI](https://ionicframework.com/docs/cli) globally.
 
 ```shell
 npm install -g @ionic/cli
 ```
+> The `-g` option tells npm you want it to install that package globally, which the Ionic CLI's authors recommend.
+> Once you've done that, you'll be able to run the Ionic CLI via `$ ionic`.
 
-Install the project dependencies:
+#### npm packages
+
+Install the npm packages upon which this project depends.
 
 ```shell
 npm install
 ```
+> That tells npm to install all the packages listed in the `package-lock.json` file,
+> which was programmatically generated from the manually-maintained `package.json` file.
 
 ### Environment setup for Capacitor
 
