@@ -23,7 +23,7 @@ jobs:
     # - https://github.com/actions/checkout
     # - https://github.com/actions/setup-node
     steps:
-      - run: echo "Test commit ${{ github.sha }} on a ${{ runner.os }} server..."
+      - run: echo "Testing commit ${{ github.sha }} on a ${{ runner.os }} server..."
       - name: Check out a commit
         uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
