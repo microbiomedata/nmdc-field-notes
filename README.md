@@ -29,7 +29,7 @@ Install the npm packages upon which this project depends.
 ```shell
 npm install
 ```
-> That tells npm to install all the packages listed in the `package-lock.json` file,
+> That tells npm you want it to install all the packages listed in the `package-lock.json` file,
 > which was programmatically generated from the manually-maintained `package.json` file.
 
 ### Environment setup for Capacitor
