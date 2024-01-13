@@ -69,6 +69,16 @@ For example, to force Ionic to style the web app like an _iOS_ app, you can modi
 + http://localhost:5173/?ionic:mode=ios
 ```
 
+### Run linter
+
+Run the linter.
+
+```shell
+npm run lint
+```
+> That tells npm you want it to run the script named `lint`, defined in the `package.json` file.
+> At the time of this writing, that script runs `eslint src`.
+
 ### Run automated tests
 
 #### Unit tests
