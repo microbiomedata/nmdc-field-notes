@@ -36,17 +36,17 @@ npm install
 
 [Capacitor](https://capacitorjs.com/) is a library that gives the web application access to the device's native functionality (e.g. location, camera, and storage). Review the Capacitor [environment setup](https://capacitorjs.com/docs/getting-started/environment-setup) documentation and make sure you have the necessary dependencies installed.
 
-### Run the development server
+### Start development server
 
-Run
+Run the `dev` script defined in `package.json`.
 
 ```shell
 npm run dev
 ```
 
-This will start a development server on `localhost:5173`. It is recommended that you use your browser's developer tools to [view it in a mobile-sized viewport](https://ionicframework.com/docs/developing/previewing#simulating-a-mobile-viewport). 
+This will start a development server on `localhost:5173`. We recommend you use your web browser's developer tools to visit the development server [using a mobile-sized viewport](https://ionicframework.com/docs/developing/previewing#simulating-a-mobile-viewport). 
 
-Ionic includes logic to automatically switch between iOS and Material styles based on the browsers user agent. For most browsers you will see Material by default. This can be manually overridden by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to any URL, for example `http://localhost:5173/?ionic:mode=ios`
+Ionic includes logic to automatically switch between iOS and Android styles based upon the browser's user agent. For most browsers you will see Android styles by default. This can be manually overridden by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to any URL; for example, `http://localhost:5173/?ionic:mode=ios`.
 
 ### View on an iOS simulator 
 
