@@ -44,9 +44,28 @@ Run the `dev` script defined in `package.json`.
 npm run dev
 ```
 
-This will start a development server on `localhost:5173`. We recommend you use your web browser's developer tools to visit the development server [using a mobile-sized viewport](https://ionicframework.com/docs/developing/previewing#simulating-a-mobile-viewport). 
+That will start a development server, serving the web version of the mobile app.
 
-Ionic includes logic to automatically switch between iOS and Android styles based upon the browser's user agent. For most browsers you will see Android styles by default. This can be manually overridden by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to any URL; for example, `http://localhost:5173/?ionic:mode=ios`.
+> The development server is powered by [Vite](https://vitejs.dev/guide/cli.html#dev-server).
+
+### Visit development server
+
+We recommend you use your web browser's developer tools to [decrease the size of your web browser's viewport]((https://ionicframework.com/docs/developing/previewing#simulating-a-mobile-viewport)) so that it resembles the screen of a mobile device, then visit the development server. 
+
+You can visit the development server at: 
+
+- http://localhost:5173
+
+#### Switching styles between iOS and Android
+
+By default, Ionic will use the web browser's user agent to determine whether to style the web app like an iOS app or an Android app. For most web browser user agents, it will style it like an Android app. You can force a particular style by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to the URL.
+
+For example, to force Ionic to style the web app like an iOS app:
+
+```diff
+- http://localhost:5173/
++ http://localhost:5173/?ionic:mode=ios
+```
 
 ### View on an iOS simulator 
 
