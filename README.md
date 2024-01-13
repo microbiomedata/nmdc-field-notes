@@ -69,6 +69,28 @@ For example, to force Ionic to style the web app like an _iOS_ app, you can modi
 + http://localhost:5173/?ionic:mode=ios
 ```
 
+### Run automated tests
+
+#### Unit tests
+
+Run the unit tests.
+
+```shell
+npm run test.unit
+```
+> That tells npm you want it to run the script named `test.unit`, defined in the `package.json` file.
+> At the time of this writing, that script runs `vitest`.
+
+#### End-to-end tests
+
+Assuming the development server is running, you can run the end-to-end tests with:
+
+```shell
+npm run test.e2e
+```
+> That tells npm you want it to run the script named `test.e2e`, defined in the `package.json` file.
+> At the time of this writing, that script runs `cypress run`.
+
 ### (Optional) Run iOS simulator 
 
 Assuming you're using a Mac, here's how you can simulate the iOS version of the mobile app.
