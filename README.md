@@ -68,6 +68,6 @@ You can start the Storybook web server by running:
 npm run storybook
 ```
 
-Once the Storybook web server is running, you can access it at: 
+Once the Storybook web server is running, you will be able to access it at: 
 
 - http://localhost:6006
