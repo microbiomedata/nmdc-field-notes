@@ -51,3 +51,23 @@ ionic cap run ios --livereload --external
 ```
 
 This may take a minute or so to start initially. You should see the message `Deploying App.app to <uuid>` written to the console and then the simulator window should open.
+
+### Preview UI components
+
+We use [Storybook](https://storybook.js.org/) to preview UI components in isolation.
+
+> Storybook is an interactive directory of your UI components and their stories. 
+> In the past, you'd have to spin up the app, navigate to a page, and contort the UI into the right state. (...)
+> With Storybook, you can skip all those steps and jump straight to working on a UI component in a specific state.
+>
+> Source: [Why Storybook?](https://storybook.js.org/docs/get-started/why-storybook#storybook-keeps-track-of-every-story)
+
+You can start the Storybook web server by running:
+
+```shell
+npm run storybook
+```
+
+Once the Storybook web server is running, you can access it at: 
+
+- http://localhost:6006
