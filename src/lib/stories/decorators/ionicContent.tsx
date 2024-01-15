@@ -1,3 +1,4 @@
+import React from "react";
 import { StoryFn } from "@storybook/react";
 import { IonApp, IonContent, IonPage, setupIonicReact } from "@ionic/react";
 
@@ -17,6 +18,9 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
+/* Theme variables */
+import "../../../theme/variables.css";
+
 setupIonicReact();
 
 /**
@@ -24,7 +28,7 @@ setupIonicReact();
  *
  * @param Story Storybook story you want to wrap
  */
-const wrapInIonicElements = (Story: StoryFn) => {
+const ionicContent = (Story: StoryFn) => {
   return (
     <IonApp>
       <IonPage>
@@ -36,4 +40,4 @@ const wrapInIonicElements = (Story: StoryFn) => {
   );
 };
 
-export default wrapInIonicElements;
+export default ionicContent;

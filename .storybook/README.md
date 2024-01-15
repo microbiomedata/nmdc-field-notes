@@ -1,15 +1,21 @@
 # Storybook
 
 This directory contains files related to this project's use of 
-[Storybook](https://storybook.js.org/tutorials/intro-to-storybook/react/en/get-started/).
-
-## `decorators/`
-
-This directory contains global decorators, which will be applied to all Stories.
+[Storybook](https://storybook.js.org/docs/get-started/why-storybook).
 
 ## `example-stories/`
 
 This directory contains example Storybook stories.
-The stories were generated automatically (albeit, in a different location) during Storybook initialization.
+The stories were generated automatically during Storybook initialization.
 
-> Note: Once contributors are comfortable writing stories, we may remove this directory from the repository.
+> When those example stories were generated, they were generated in a different directory.
+> We moved them to this directory in an attempt to simplify the file tree. 
+> Once developers become comfortable writing stories, we may delete them altogether.
+
+## `main.ts`
+
+Here's a link to the [documentation](https://storybook.js.org/docs/api/main-config#mainjs-or-maints) about this configuration file.
+
+## `preview.ts`
+
+Here's a link to the [documentation](https://storybook.js.org/docs/configure#configure-story-rendering) about this configuration file.
