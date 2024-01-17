@@ -1,56 +1,125 @@
 # NMDC Field Notes
 
-The NMDC metadata collection app designed for use in the field.
+NMDC Field Notes is a mobile app researchers can use to collect metadata in the field.
+
+The app is currently in development.
 
 ## Development
 
 ### Install dependencies 
 
-You need to have the [Ionic CLI](https://ionicframework.com/docs/cli) installed. It is recommended to install this globally:
+#### Node.js and npm
+
+Install [Node.js v20](https://nodejs.org/en/download/), which includes npm.
+
+> Once you've done that, you'll be able to run Node.js via `$ node` and npm via `$ npm`.
+
+#### Ionic CLI
+
+Install the [Ionic CLI](https://ionicframework.com/docs/cli) globally.
 
 ```shell
 npm install -g @ionic/cli
 ```
+> The `-g` option tells npm you want it to install that package globally, which the Ionic CLI's authors recommend.
+> Once you've done that, you'll be able to run the Ionic CLI via `$ ionic`.
 
-Install the project dependencies:
+#### npm packages
+
+Install the npm packages upon which this project depends.
 
 ```shell
 npm install
 ```
+> That tells npm you want it to install all the packages listed in the `package-lock.json` file,
+> which was programmatically generated from the manually-maintained `package.json` file.
 
-### Environment setup for Capacitor
+### Set up Capacitor environment
 
-[Capacitor](https://capacitorjs.com/) is a library which provides access to native device functionality (location, camera, storage, etc) to the web application. Review their [Environment Setup](https://capacitorjs.com/docs/getting-started/environment-setup) documentation and make sure you have the necessary dependencies installed.
+[Capacitor](https://capacitorjs.com/) is a library that gives the web application access to the device's native functionality (e.g. location, camera, and storage). Review the Capacitor [environment setup](https://capacitorjs.com/docs/getting-started/environment-setup) documentation and make sure you have the necessary dependencies installed.
 
-### Run the development server
+### Start development server
 
-Run
+Run the `dev` script defined in `package.json`.
 
 ```shell
 npm run dev
 ```
 
-This will start a development server on `localhost:5173`. It is recommended that you use your browser's developer tools to [view it in a mobile-sized viewport](https://ionicframework.com/docs/developing/previewing#simulating-a-mobile-viewport). 
+That will start a development server, serving the web version of the mobile app.
 
-Ionic includes logic to automatically switch between iOS and Material styles based on the browsers user agent. For most browsers you will see Material by default. This can be manually overridden by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to any URL, for example `http://localhost:5173/?ionic:mode=ios`
+> The development server is powered by [Vite](https://vitejs.dev/guide/cli.html#dev-server).
 
-### View on an iOS simulator 
+### Visit development server
 
-To run on an iOS simulator, first download and install [Xcode](https://developer.apple.com/xcode/) if you haven't already. 
+We recommend you use your web browser's developer tools to [decrease the size of your web browser's viewport]((https://ionicframework.com/docs/developing/previewing#simulating-a-mobile-viewport)) so that it resembles the screen of a mobile device, then visit the development server. 
 
-If this is your first time running the simulator _or_ you have added a Capacitor plugin since the last time you ran the simulator run:
+You can visit the development server at: 
+
+- http://localhost:5173
+
+#### Switching styles between iOS and Android
+
+By default, Ionic will use the web browser's user agent to determine whether to style the web app like an iOS app or an Android app. For most web browser user agents, it will style it like an Android app. You can force a particular style by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to the URL.
+
+For example, to force Ionic to style the web app like an _iOS_ app, you can modify the URL like this:
+
+```diff
+- http://localhost:5173/
++ http://localhost:5173/?ionic:mode=ios
+```
+
+### Run linter
+
+Run the linter.
+
+```shell
+npm run lint
+```
+> That tells npm you want it to run the script named `lint`, defined in the `package.json` file.
+> At the time of this writing, that script runs `eslint src`.
+
+### Run automated tests
+
+#### Unit tests
+
+Run the unit tests.
+
+```shell
+npm run test.unit
+```
+> That tells npm you want it to run the script named `test.unit`, defined in the `package.json` file.
+> At the time of this writing, that script runs `vitest`.
+
+#### End-to-end tests
+
+Assuming the development server is running, you can run the end-to-end tests with:
+
+```shell
+npm run test.e2e
+```
+> That tells npm you want it to run the script named `test.e2e`, defined in the `package.json` file.
+> At the time of this writing, that script runs `cypress run`.
+
+### (Optional) Run iOS simulator 
+
+Assuming you're using a Mac, here's how you can simulate the iOS version of the mobile app.
+
+Download and install [Xcode](https://developer.apple.com/xcode/) (if you haven't already). 
+
+If either (a) this is your first time running the simulator, or (b) you have added a Capacitor plugin since the last time you ran the simulator; run:
 
 ```shell
 ionic capacitor sync ios
 ```
 
-Start the simulator with live reloading enabled by running:
+Start the simulator with live reloading enabled.
 
 ```shell
 ionic cap run ios --livereload --external
 ```
 
-This may take a minute or so to start initially. You should see the message `Deploying App.app to <uuid>` written to the console and then the simulator window should open.
+The simulator may take a few minutes to start. Eventually, the console will say "`Deploying App.app to <uuid>`" and the simulator will appear.
 
 ### Format code
 
