@@ -1,0 +1,10 @@
+# This is a `.prettierignore` file.
+# It inherits from `.gitignore` automatically.
+# Reference: https://prettier.io/docs/en/ignore
+
+# Ignore Android code (e.g. Java) and iOS code (e.g. Swift).
+/android
+/ios
+
+# Ignore VS Code extensions file.
+/.vscode/extensions.json
