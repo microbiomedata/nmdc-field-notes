@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
@@ -56,6 +58,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-storybook": "^0.6.15",
     "jsdom": "^22.1.0",
+    "prettier": "3.2.1",
     "storybook": "^7.6.8",
     "terser": "^5.4.0",
     "typescript": "^5.1.6",

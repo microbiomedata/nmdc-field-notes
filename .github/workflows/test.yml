@@ -1,0 +1,35 @@
+# This file describes a GitHub Actions workflow.
+# Reference: https://github.com/actions/starter-workflows/blob/main/ci/node.js.yml
+
+name: Run unit tests
+
+# References:
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  Run-Unit-Tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 20.x ]
+
+    # References:
+    # - https://github.com/actions/checkout
+    # - https://github.com/actions/setup-node
+    steps:
+      - run: echo "Testing commit ${{ github.sha }} on a ${{ runner.os }} server..."
+      - name: Check out a commit
+        uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with: [ node-version: ${ { matrix.node-version } }, cache: "npm" ]
+      - name: Install npm packages
+        run: npm ci
+      - name: Run unit tests
+        run: npm run test.unit
