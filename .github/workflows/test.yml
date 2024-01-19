@@ -4,9 +4,11 @@
 name: Run unit tests
 
 # References:
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
 # - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
 # - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
 on:
+  workflow_dispatch: {}
   push:
     branches: [ $default-branch ]
   pull_request:
