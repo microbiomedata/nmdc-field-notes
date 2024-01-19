@@ -4,9 +4,11 @@
 name: Run unit tests
 
 # References:
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
 # - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
 # - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
 on:
+  workflow_dispatch: {}
   push:
     branches: [ $default-branch ]
   pull_request:
@@ -24,11 +26,13 @@ jobs:
     # - https://github.com/actions/setup-node
     steps:
       - run: echo "Testing commit ${{ github.sha }} on a ${{ runner.os }} server..."
-      - name: Check out a commit
+      - name: Check out the commit
         uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
-        with: [ node-version: ${ { matrix.node-version } }, cache: "npm" ]
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
       - name: Install npm packages
         run: npm ci
       - name: Run unit tests
