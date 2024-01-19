@@ -145,3 +145,23 @@ default [configuration](https://prettier.io/docs/en/configuration).
 
 > Also, the presence of the file signifies to [code editors](https://prettier.io/docs/en/editors)
 that this project uses Prettier; which may influence some features of the editor.
+
+### Preview UI components
+
+We use [Storybook](https://storybook.js.org/) to preview UI components in isolation.
+
+> Storybook is an interactive directory of your UI components and their stories. 
+> In the past, you'd have to spin up the app, navigate to a page, and contort the UI into the right state. (...)
+> With Storybook, you can skip all those steps and jump straight to working on a UI component in a specific state.
+>
+> Source: [Why Storybook?](https://storybook.js.org/docs/get-started/why-storybook#storybook-keeps-track-of-every-story)
+
+You can start the Storybook web server by running:
+
+```shell
+npm run storybook
+```
+
+Once the Storybook web server is running, you will be able to access it at: 
+
+- http://localhost:6006
