@@ -3,6 +3,11 @@
 
 name: Run unit tests
 
+# Configure GitHub Actions to run the jobs whenever any of these things happens:
+# 1. Someone clicks the "Run workflow" button on the "Actions" page on GitHub.
+# 2. Someone pushes commits onto the `main` branch.
+# 3. Someone opens a Pull Request based upon the `main` branch.
+#
 # References:
 # - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
 # - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
