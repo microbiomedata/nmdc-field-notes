@@ -15,7 +15,7 @@ import {
 } from "@ionic/react";
 import { logIn } from "ionicons/icons";
 import Logo from "../../components/Logo/Logo";
-
+import { PATHS } from "../../App";
 import "./WelcomePage.css";
 
 const WelcomePage: React.FC = () => {
@@ -40,11 +40,7 @@ const WelcomePage: React.FC = () => {
                       Welcome to NMDC Field Notes, an app designed to help you
                       collect environmental metadata on the go.
                     </IonCardContent>
-                    <IonButton
-                      fill={"clear"}
-                      // TODO: Navigate to the tutorial screen.
-                      onClick={() => console.log("Take the tutorial")}
-                    >
+                    <IonButton fill={"clear"} routerLink={PATHS.TUTORIAL_PAGE}>
                       Take the tutorial
                     </IonButton>
                   </IonCard>
