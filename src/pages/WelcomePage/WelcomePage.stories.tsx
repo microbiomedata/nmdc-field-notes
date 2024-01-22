@@ -5,7 +5,7 @@ import ionicApp from "../../lib/stories/decorators/ionicApp";
 
 // Export the component metadata as the default export.
 export default {
-  title: "WelcomePage",
+  title: "Pages/WelcomePage",
   component: WelcomePage,
   decorators: [ionicApp]
 } as Meta<typeof WelcomePage>;

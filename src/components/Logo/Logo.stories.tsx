@@ -5,7 +5,7 @@ import ionicContent from "../../lib/stories/decorators/ionicContent";
 
 // Export the component metadata as the default export.
 export default {
-  title: "Logo",
+  title: "Images/Logo",
   component: Logo,
   decorators: [ionicContent]
 } as Meta<typeof Logo>;
