@@ -22,6 +22,14 @@ npm install
 
 [Capacitor](https://capacitorjs.com/) is a library which provides access to native device functionality (location, camera, storage, etc) to the web application. Review their [Environment Setup](https://capacitorjs.com/docs/getting-started/environment-setup) documentation and make sure you have the necessary dependencies installed.
 
+### Local environment setup
+
+The application loads a few values from environment variables defined in a `.env.local` file. This file is not checked into source control. You can copy the `.env.local.example` file to `.env.local` to get started.
+
+```shell
+cp .env.local.example .env.local
+```
+
 ### Run the development server
 
 Run
