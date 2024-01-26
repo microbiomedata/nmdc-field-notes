@@ -2,12 +2,12 @@ import React from "react";
 import logoMarkSvg from "./img/logo-mark.svg";
 import logoTextSvg from "./img/logo-text.svg";
 import { IonText } from "@ionic/react";
-import { IonicReactProps } from "@ionic/react/dist/types/components/IonicReactProps";
 
 import "./Logo.css";
 
-// TODO: Is this a correct type annotation for this component?
-const Logo: React.FC<IonicReactProps> = ({ style, ...rest }) => {
+interface Props extends React.ComponentProps<typeof IonText> {}
+
+const Logo: React.FC<Props> = ({ style, ...rest }) => {
   return (
     <IonText
       style={{
