@@ -7,6 +7,7 @@ module.exports = {
     'plugin:react/recommended',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:@tanstack/eslint-plugin-query/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {

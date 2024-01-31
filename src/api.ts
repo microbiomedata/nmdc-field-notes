@@ -57,10 +57,11 @@ export interface PaginationOptions {
 
 function restFetchClient(baseUrl: string, defaultOptions: RequestInit = {}) {
   async function _fetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const response = await fetch(baseUrl + endpoint, {
+    const init = {
       ...defaultOptions,
       ...options,
-    });
+    }
+    const response = await fetch(baseUrl + endpoint, init);
     if (!response.ok) {
       throw new Error(`Fetch error: ${response.statusText}`);
     }

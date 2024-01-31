@@ -1,4 +1,4 @@
-import {http, HttpResponse} from "msw";
+import {delay, http, HttpResponse} from "msw";
 import {Paginated, SubmissionMetadata} from "../api";
 import {submissions} from "./fixtures";
 import {setupServer} from "msw/node";
@@ -47,4 +47,17 @@ export const handlers = [
   ),
 ]
 
+export const patchMetadataSubmissionError = http.patch<
+    { id: string }
+  >(
+    `${VITE_NMDC_SERVER_API_URL}/metadata_submission/:id`,
+  async () => {
+      // This delay helps tests validate optimistic updates before the request fails
+      await delay(300)
+      return new HttpResponse(null, { status: 500 })
+  }
+)
+
 export const server = setupServer(...handlers);
+
+export { delay }
