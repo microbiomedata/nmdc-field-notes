@@ -3,4 +3,4 @@
  *
  * Reference: https://prettier.io/docs/en/configuration
  */
-export default {}
+export default {};

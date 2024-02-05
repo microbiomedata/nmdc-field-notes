@@ -56,11 +56,14 @@ export interface PaginationOptions {
 }
 
 function restFetchClient(baseUrl: string, defaultOptions: RequestInit = {}) {
-  async function _fetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  async function _fetch<T>(
+    endpoint: string,
+    options: RequestInit = {},
+  ): Promise<T> {
     const init = {
       ...defaultOptions,
       ...options,
-    }
+    };
     const response = await fetch(baseUrl + endpoint, init);
     if (!response.ok) {
       throw new Error(`Fetch error: ${response.statusText}`);
@@ -70,25 +73,27 @@ function restFetchClient(baseUrl: string, defaultOptions: RequestInit = {}) {
 
   return {
     fetch: _fetch,
-  }
+  };
 }
 
 const nmdcServerClient = restFetchClient(
   import.meta.env.VITE_NMDC_SERVER_API_URL,
   {
-    credentials: 'include',
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-  }
+  },
 );
 
-export async function getSubmissionList(options: PaginationOptions = {}): Promise<Paginated<SubmissionMetadata>> {
+export async function getSubmissionList(
+  options: PaginationOptions = {},
+): Promise<Paginated<SubmissionMetadata>> {
   options = {
     limit: 10,
     offset: 0,
     ...options,
-  }
+  };
   const query = new URLSearchParams(options as Record<string, string>);
   return nmdcServerClient.fetch(`/metadata_submission?${query}`);
 }
@@ -97,9 +102,12 @@ export async function getSubmission(id: string): Promise<SubmissionMetadata> {
   return nmdcServerClient.fetch(`/metadata_submission/${id}`);
 }
 
-export async function updateSubmission(id: string, data: Partial<SubmissionMetadata>): Promise<SubmissionMetadata> {
+export async function updateSubmission(
+  id: string,
+  data: Partial<SubmissionMetadata>,
+): Promise<SubmissionMetadata> {
   return nmdcServerClient.fetch(`/metadata_submission/${id}`, {
-    method: 'PATCH',
+    method: "PATCH",
     body: JSON.stringify(data),
   });
 }

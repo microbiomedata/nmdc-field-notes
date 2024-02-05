@@ -7,7 +7,7 @@ import ionicApp from "../../lib/stories/decorators/ionicApp";
 export default {
   title: "Pages/WelcomePage",
   component: WelcomePage,
-  decorators: [ionicApp]
+  decorators: [ionicApp],
 } as Meta<typeof WelcomePage>;
 
 // Export each story.
