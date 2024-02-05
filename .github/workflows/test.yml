@@ -44,5 +44,7 @@ jobs:
         run: npm run format:check
       - name: Lint code
         run: npm run lint
+      - name: Run build
+        run: npm run build
       - name: Run unit tests
         run: npm run test.unit

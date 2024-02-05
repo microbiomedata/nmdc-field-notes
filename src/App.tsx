@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
 import { Storage } from "@ionic/storage";
 import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
@@ -8,7 +8,10 @@ import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import {
+  Persister,
+  PersistQueryClientProvider,
+} from "@tanstack/react-query-persist-client";
 
 import Home from "./pages/Home";
 import { addDefaultMutationFns } from "./queries";
@@ -55,47 +58,64 @@ const queryClient = new QueryClient({
 });
 addDefaultMutationFns(queryClient);
 
-const store = new Storage();
-await store.create();
+const App: React.FC = () => {
+  const [persister, setPersister] = useState<Persister | null>(null);
 
-const persister = createAsyncStoragePersister({
-  storage: {
-    getItem: async (key) => store.get(key),
-    setItem: async (key, value) => store.set(key, value),
-    removeItem: async (key) => store.remove(key),
-  },
-});
+  useEffect(() => {
+    async function initPersister() {
+      const store = new Storage();
+      await store.create();
+      setPersister(
+        createAsyncStoragePersister({
+          storage: {
+            getItem: async (key) => store.get(key),
+            setItem: async (key, value) => store.set(key, value),
+            removeItem: async (key) => store.remove(key),
+          },
+        }),
+      );
+    }
 
-const App: React.FC = () => (
-  <PersistQueryClientProvider
-    client={queryClient}
-    persistOptions={{ persister: persister, maxAge: Infinity }}
-    onSuccess={() => {
-      queryClient.resumePausedMutations().then(() => {
-        queryClient.invalidateQueries();
-      });
-    }}
-  >
-    <IonApp>
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <Route exact path={PATHS.WELCOME_PAGE}>
-            <WelcomePage />
-          </Route>
-          <Route exact path={PATHS.TUTORIAL_PAGE}>
-            <TutorialPage />
-          </Route>
-          <Route exact path={PATHS.HOME_PAGE}>
-            <Home />
-          </Route>
-          <Route exact path="/">
-            <Redirect to={PATHS.WELCOME_PAGE} />
-          </Route>
-        </IonRouterOutlet>
-      </IonReactRouter>
-    </IonApp>
-    <ReactQueryDevtools initialIsOpen={false} />
-  </PersistQueryClientProvider>
-);
+    if (persister == null) {
+      initPersister();
+    }
+  }, []);
+
+  if (persister == null) {
+    return null;
+  }
+
+  return (
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: persister, maxAge: Infinity }}
+      onSuccess={() => {
+        queryClient.resumePausedMutations().then(() => {
+          queryClient.invalidateQueries();
+        });
+      }}
+    >
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route exact path={PATHS.WELCOME_PAGE}>
+              <WelcomePage />
+            </Route>
+            <Route exact path={PATHS.TUTORIAL_PAGE}>
+              <TutorialPage />
+            </Route>
+            <Route exact path={PATHS.HOME_PAGE}>
+              <Home />
+            </Route>
+            <Route exact path="/">
+              <Redirect to={PATHS.WELCOME_PAGE} />
+            </Route>
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </PersistQueryClientProvider>
+  );
+};
 
 export default App;
