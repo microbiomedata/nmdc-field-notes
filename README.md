@@ -38,6 +38,14 @@ npm install
 
 [Capacitor](https://capacitorjs.com/) is a library that gives the web application access to the device's native functionality (e.g. location, camera, and storage). Review the Capacitor [environment setup](https://capacitorjs.com/docs/getting-started/environment-setup) documentation and make sure you have the necessary dependencies installed.
 
+### Setup local environment
+
+The application loads values from environment variables defined in a `.env.local` file. This file is not checked into source control. It is [loaded automatically by Vite](https://vitejs.dev/guide/env-and-mode), and the values are exposed on the `import.meta.env` object. You can copy the `.env.local.example` file to `.env.local` to get started.
+
+```shell
+cp .env.local.example .env.local
+```
+
 ### Start development server
 
 Run the `dev` script defined in `package.json`.

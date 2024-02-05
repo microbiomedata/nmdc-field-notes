@@ -15,9 +15,9 @@ name: Run unit tests
 on:
   workflow_dispatch: {}
   push:
-    branches: [ $default-branch ]
+    branches: [ main ]
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ main ]
 
 jobs:
   Run-Unit-Tests:

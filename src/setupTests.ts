@@ -3,6 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
+import {server} from "./mocks/server";
 
 // Mock matchmedia
 window.matchMedia = window.matchMedia || function() {
@@ -12,3 +13,9 @@ window.matchMedia = window.matchMedia || function() {
       removeListener: function() {}
   };
 };
+
+beforeAll(() => server.listen({
+  onUnhandledRequest: 'error'
+}));
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
