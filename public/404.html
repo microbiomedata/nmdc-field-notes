@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NMDC Field Notes</title>
+  </head>
+  <body>
+    <script>
+      /**
+       * Navigate the client to the domain root, discarding any path or query string
+       * present in the originally-requested URL.
+       *
+       * Note: This script was designed to work around the issue of GitHub Pages
+       *       showing an HTTP 404 error page when the user visits a non-root path
+       *       via a means other than client-side routing; for example, when the
+       *       user reloads the web page when viewing a non-root page of the site.
+       *
+       * Note: This script only works when the site is deployed at the _root_ of a
+       *       domain (e.g. "https://site.example.com") as opposed to a deeper
+       *       location (e.g. "https://site.example.com/path/to/site). The latter
+       *       situation can be handled by something more sophisticated, such as:
+       *       https://github.com/rafgraph/spa-github-pages/tree/gh-pages
+       *
+       * References:
+       * - https://developer.mozilla.org/en-US/docs/Web/API/Location#instance_properties
+       * - https://developer.mozilla.org/en-US/docs/Web/API/Location/replace
+       * - https://developer.mozilla.org/en-US/docs/Web/API/URL
+       */
+      (function navigateToRoot() {
+        // Extract parts of the originally-requested URL.
+        const { protocol, host } = window.location;
+
+        // Build the new URL to which we will navigate the client.
+        const newUrl = new URL(`${protocol}//${host}`);
+
+        // Navigate the client to the new URL in a way that does not
+        // push the originally-requested URL onto the history stack.
+        window.location.assign(newUrl);
+      })();
+    </script>
+  </body>
+</html>
