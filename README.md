@@ -6,7 +6,7 @@ The app is currently in development.
 
 ## Development
 
-### Install dependencies 
+### Install dependencies
 
 #### Node.js and npm
 
@@ -21,6 +21,7 @@ Install the [Ionic CLI](https://ionicframework.com/docs/cli) globally.
 ```shell
 npm install -g @ionic/cli
 ```
+
 > The `-g` option tells npm you want it to install that package globally, which the Ionic CLI's authors recommend.
 > Once you've done that, you'll be able to run the Ionic CLI via `$ ionic`.
 
@@ -31,6 +32,7 @@ Install the npm packages upon which this project depends.
 ```shell
 npm install
 ```
+
 > That tells npm you want it to install all the packages listed in the `package-lock.json` file,
 > which was programmatically generated from the manually-maintained `package.json` file.
 
@@ -60,9 +62,9 @@ That will start a development server, serving the web version of the mobile app.
 
 ### Visit development server
 
-We recommend you use your web browser's developer tools to [decrease the size of your web browser's viewport]((https://ionicframework.com/docs/developing/previewing#simulating-a-mobile-viewport)) so that it resembles the screen of a mobile device, then visit the development server. 
+We recommend you use your web browser's developer tools to [decrease the size of your web browser's viewport](<(https://ionicframework.com/docs/developing/previewing#simulating-a-mobile-viewport)>) so that it resembles the screen of a mobile device, then visit the development server.
 
-You can visit the development server at: 
+You can visit the development server at:
 
 - http://localhost:5173
 
@@ -84,6 +86,7 @@ Run the linter.
 ```shell
 npm run lint
 ```
+
 > That tells npm you want it to run the script named `lint`, defined in the `package.json` file.
 > At the time of this writing, that script runs `eslint src`.
 
@@ -96,6 +99,7 @@ Run the unit tests.
 ```shell
 npm run test.unit
 ```
+
 > That tells npm you want it to run the script named `test.unit`, defined in the `package.json` file.
 > At the time of this writing, that script runs `vitest`.
 
@@ -106,14 +110,15 @@ Assuming the development server is running, you can run the end-to-end tests wit
 ```shell
 npm run test.e2e
 ```
+
 > That tells npm you want it to run the script named `test.e2e`, defined in the `package.json` file.
 > At the time of this writing, that script runs `cypress run`.
 
-### (Optional) Run iOS simulator 
+### (Optional) Run iOS simulator
 
 Assuming you're using a Mac, here's how you can simulate the iOS version of the mobile app.
 
-Download and install [Xcode](https://developer.apple.com/xcode/) (if you haven't already). 
+Download and install [Xcode](https://developer.apple.com/xcode/) (if you haven't already).
 
 If either (a) this is your first time running the simulator, or (b) you have added a Capacitor plugin since the last time you ran the simulator; run:
 
@@ -143,7 +148,7 @@ npx run format:check
 npx run format
 ```
 
-The `.prettierignore` file tells Prettier which files we want it to 
+The `.prettierignore` file tells Prettier which files we want it to
 [ignore](https://prettier.io/docs/en/ignore#ignoring-files-prettierignore) (i.e. to _not_ format).
 
 > The `.prettierignore` file automatically inherits from the `.gitignore` file.
@@ -152,13 +157,13 @@ The `prettier.config.js` file can be used to override Prettier's
 default [configuration](https://prettier.io/docs/en/configuration).
 
 > Also, the presence of the file signifies to [code editors](https://prettier.io/docs/en/editors)
-that this project uses Prettier; which may influence some features of the editor.
+> that this project uses Prettier; which may influence some features of the editor.
 
 ### Preview UI components
 
 We use [Storybook](https://storybook.js.org/) to preview UI components in isolation.
 
-> Storybook is an interactive directory of your UI components and their stories. 
+> Storybook is an interactive directory of your UI components and their stories.
 > In the past, you'd have to spin up the app, navigate to a page, and contort the UI into the right state. (...)
 > With Storybook, you can skip all those steps and jump straight to working on a UI component in a specific state.
 >
@@ -170,6 +175,6 @@ You can start the Storybook web server by running:
 npm run storybook
 ```
 
-Once the Storybook web server is running, you will be able to access it at: 
+Once the Storybook web server is running, you will be able to access it at:
 
 - http://localhost:6006

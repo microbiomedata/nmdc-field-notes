@@ -1,6 +1,6 @@
 # Storybook
 
-This directory contains files related to this project's use of 
+This directory contains files related to this project's use of
 [Storybook](https://storybook.js.org/docs/get-started/why-storybook).
 
 ## `main.ts`
