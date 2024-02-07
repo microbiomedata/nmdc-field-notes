@@ -15,10 +15,18 @@ import {
 } from "@ionic/react";
 import { logIn } from "ionicons/icons";
 import Logo from "../../components/Logo/Logo";
-import { PATHS } from "../../App";
+import { PATHS } from "../../Routes";
 import "./WelcomePage.css";
+import { Browser } from "@capacitor/browser";
 
 const WelcomePage: React.FC = () => {
+  const handleLogin = async () => {
+    await Browser.open({
+      url: `${import.meta.env.VITE_NMDC_SERVER_LOGIN_URL}?behavior=app`,
+      windowName: "_self", // web only
+    });
+  };
+
   return (
     <IonPage>
       <IonContent fullscreen className={"ion-padding"}>
@@ -72,7 +80,7 @@ const WelcomePage: React.FC = () => {
                     expand={"block"}
                     style={{ marginInline: 16 }}
                     // TODO: Initiate the ORCiD Login flow.
-                    onClick={() => console.log("Login with ORCiD")}
+                    onClick={handleLogin}
                   >
                     <IonIcon
                       icon={logIn}
