@@ -7,6 +7,7 @@ import {
 import { act, renderHook, waitFor } from "@testing-library/react";
 import {
   addDefaultMutationFns,
+  useCurrentUser,
   useSubmission,
   useSubmissionList,
 } from "./queries";
@@ -35,6 +36,13 @@ const createWrapper = () => {
 };
 
 const TEST_ID_1 = "00000000-0000-0000-0000-000000000001";
+
+test("useCurrentUser should return data from the query", async () => {
+  const wrapper = createWrapper();
+  const { result } = renderHook(() => useCurrentUser(), { wrapper });
+  await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  expect(result.current.data).toBe("Test Testerson");
+});
 
 test("useSubmissionList should return data from the query", async () => {
   const wrapper = createWrapper();
