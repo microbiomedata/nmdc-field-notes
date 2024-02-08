@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
 import { useStore } from "../../Store";
-import { PATHS } from "../../Routes";
+import { PATHS } from "../../Router";
 
 const AuthRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
   const { apiToken } = useStore();

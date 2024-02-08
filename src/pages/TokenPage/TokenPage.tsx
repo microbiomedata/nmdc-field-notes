@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useStore } from "../../Store";
-import { PATHS } from "../../Routes";
+import { PATHS } from "../../Router";
 
 const TokenPage: React.FC = () => {
   const { setApiToken } = useStore();

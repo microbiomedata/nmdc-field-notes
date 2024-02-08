@@ -1,8 +1,8 @@
 import React from "react";
-import { setupIonicReact } from "@ionic/react";
+import { IonApp, setupIonicReact } from "@ionic/react";
 
 import QueryClientProvider from "./QueryClientProvider";
-import Routes from "./Routes";
+import Router from "./Router";
 import StoreProvider from "./Store";
 
 /* Core CSS required for Ionic components to work properly */
@@ -30,7 +30,9 @@ const App: React.FC = () => {
   return (
     <StoreProvider>
       <QueryClientProvider>
-        <Routes />
+        <IonApp>
+          <Router />
+        </IonApp>
       </QueryClientProvider>
     </StoreProvider>
   );

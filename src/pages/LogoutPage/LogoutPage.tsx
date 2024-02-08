@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useStore } from "../../Store";
 import { useHistory } from "react-router-dom";
-import { PATHS } from "../../Routes";
+import { PATHS } from "../../Router";
 
 const LogoutPage: React.FC = () => {
   const { setApiToken } = useStore();
