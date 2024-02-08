@@ -74,7 +74,6 @@ class FetchClient {
   protected async fetch<T>(
     endpoint: string,
     options: RequestInit = {},
-    responseType: "json" | "text" = "json",
   ): Promise<T> {
     const init = {
       ...this.defaultOptions,
@@ -84,7 +83,7 @@ class FetchClient {
     if (!response.ok) {
       throw new Error(`Fetch error: ${response.statusText}`);
     }
-    return response[responseType]();
+    return response.json();
   }
 }
 
@@ -121,7 +120,7 @@ class NmdcServerClient extends FetchClient {
   }
 
   async getCurrentUser() {
-    return this.fetch<string>("/me", {}, "text");
+    return this.fetch<string>("/me");
   }
 }
 
