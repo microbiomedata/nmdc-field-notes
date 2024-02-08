@@ -39,7 +39,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         nmdcServerClient.setBearerToken(token);
       }
 
-      // This should be done last so that we can block rendering until in-memory state is full
+      // This should be done last so that we can block rendering until in-memory state is fully
       // hydrated from the store
       setStore(storage);
     }
