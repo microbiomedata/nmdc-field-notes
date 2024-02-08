@@ -12,6 +12,7 @@ import { useStore } from "./Store";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
 
 export const PATHS = {
+  ROOT: "/",
   HOME_PAGE: "/home",
   TUTORIAL_PAGE: "/tutorial",
   WELCOME_PAGE: "/welcome",
@@ -44,7 +45,7 @@ const Routes: React.FC = () => {
           <AuthRoute exact path={PATHS.HOME_PAGE}>
             <Home />
           </AuthRoute>
-          <Route exact path="/">
+          <Route exact path={PATHS.ROOT}>
             <Redirect to={apiToken ? PATHS.HOME_PAGE : PATHS.WELCOME_PAGE} />
           </Route>
         </IonRouterOutlet>
