@@ -35,7 +35,7 @@ export const handlers = [
     },
   ),
   http.get(`${VITE_NMDC_SERVER_API_URL}/me`, async () => {
-    return HttpResponse.text("Test Testerson");
+    return HttpResponse.json("Test Testerson");
   }),
 ];
 
