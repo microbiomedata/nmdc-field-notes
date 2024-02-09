@@ -7,14 +7,16 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import {
-  getSubmission,
-  getSubmissionList,
   Paginated,
   PaginationOptions,
   SubmissionMetadata,
-  updateSubmission,
+  nmdcServerClient,
 } from "./api";
 import { produce } from "immer";
+
+export const userKeys = {
+  user: () => ["user"],
+};
 
 export const submissionKeys = {
   all: () => ["submissions"],
@@ -30,15 +32,22 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
       await queryClient.cancelQueries({
         queryKey: submissionKeys.detail(updated.id),
       });
-      return updateSubmission(updated.id, updated);
+      return nmdcServerClient.updateSubmission(updated.id, updated);
     },
+  });
+}
+
+export function useCurrentUser() {
+  return useQuery({
+    queryKey: userKeys.user(),
+    queryFn: () => nmdcServerClient.getCurrentUser(),
   });
 }
 
 export function useSubmissionList(options: PaginationOptions) {
   return useQuery({
     queryKey: submissionKeys.list(options),
-    queryFn: () => getSubmissionList(options),
+    queryFn: () => nmdcServerClient.getSubmissionList(options),
   });
 }
 
@@ -68,7 +77,7 @@ export function useSubmission(id: string) {
 
   const query = useQuery({
     queryKey: submissionKeys.detail(id),
-    queryFn: () => getSubmission(id),
+    queryFn: () => nmdcServerClient.getSubmission(id),
     initialData: () => {
       const options: PaginationOptions = { limit: 10, offset: 0 }; // TODO: can't hardcode this, should come from some state
       const allSubmissions = queryClient.getQueryData<

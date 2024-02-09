@@ -55,59 +55,75 @@ export interface PaginationOptions {
   offset?: number;
 }
 
-function restFetchClient(baseUrl: string, defaultOptions: RequestInit = {}) {
-  async function _fetch<T>(
+class FetchClient {
+  private readonly baseUrl: string;
+  private readonly defaultOptions: RequestInit;
+
+  constructor(baseUrl: string, defaultOptions: RequestInit = {}) {
+    this.baseUrl = baseUrl;
+    this.defaultOptions = defaultOptions;
+  }
+
+  setBearerToken(token: string) {
+    this.defaultOptions.headers = {
+      ...this.defaultOptions.headers,
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
+  protected async fetch<T>(
     endpoint: string,
     options: RequestInit = {},
   ): Promise<T> {
     const init = {
-      ...defaultOptions,
+      ...this.defaultOptions,
       ...options,
     };
-    const response = await fetch(baseUrl + endpoint, init);
+    const response = await fetch(this.baseUrl + endpoint, init);
     if (!response.ok) {
       throw new Error(`Fetch error: ${response.statusText}`);
     }
     return response.json();
   }
-
-  return {
-    fetch: _fetch,
-  };
 }
 
-const nmdcServerClient = restFetchClient(
-  import.meta.env.VITE_NMDC_SERVER_API_URL,
-  {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  },
-);
+class NmdcServerClient extends FetchClient {
+  constructor() {
+    super(import.meta.env.VITE_NMDC_SERVER_API_URL, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
 
-export async function getSubmissionList(
-  options: PaginationOptions = {},
-): Promise<Paginated<SubmissionMetadata>> {
-  options = {
-    limit: 10,
-    offset: 0,
-    ...options,
-  };
-  const query = new URLSearchParams(options as Record<string, string>);
-  return nmdcServerClient.fetch(`/metadata_submission?${query}`);
+  async getSubmissionList(pagination: PaginationOptions = {}) {
+    pagination = {
+      limit: 10,
+      offset: 0,
+      ...pagination,
+    };
+    const query = new URLSearchParams(pagination as Record<string, string>);
+    return this.fetch<Paginated<SubmissionMetadata>>(
+      `/metadata_submission?${query}`,
+    );
+  }
+
+  async getSubmission(id: string) {
+    return this.fetch<SubmissionMetadata>(`/metadata_submission/${id}`);
+  }
+
+  async updateSubmission(id: string, data: Partial<SubmissionMetadata>) {
+    return this.fetch<SubmissionMetadata>(`/metadata_submission/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getCurrentUser() {
+    return this.fetch<string>("/me");
+  }
 }
 
-export async function getSubmission(id: string): Promise<SubmissionMetadata> {
-  return nmdcServerClient.fetch(`/metadata_submission/${id}`);
-}
+const nmdcServerClient = new NmdcServerClient();
 
-export async function updateSubmission(
-  id: string,
-  data: Partial<SubmissionMetadata>,
-): Promise<SubmissionMetadata> {
-  return nmdcServerClient.fetch(`/metadata_submission/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  });
-}
+export { nmdcServerClient };
