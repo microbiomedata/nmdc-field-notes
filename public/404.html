@@ -3,40 +3,30 @@
   <head>
     <meta charset="utf-8" />
     <title>NMDC Field Notes</title>
-  </head>
-  <body>
     <script>
       /**
-       * Navigate the client to the domain root, discarding any path or query string
-       * present in the originally-requested URL.
+       * Stores the originally-requested URL in `sessionStorage` so it can be retrieved from a different web page.
        *
-       * Note: This script was designed to work around the issue of GitHub Pages
-       *       showing an HTTP 404 error page when the user visits a non-root path
-       *       via a means other than client-side routing; for example, when the
-       *       user reloads the web page when viewing a non-root page of the site.
-       *
-       * Note: This script only works when the site is deployed at the _root_ of a
-       *       domain (e.g. "https://site.example.com") as opposed to a deeper
-       *       location (e.g. "https://site.example.com/path/to/site). The latter
-       *       situation can be handled by something more sophisticated, such as:
-       *       https://github.com/rafgraph/spa-github-pages/tree/gh-pages
+       * Note: This script—together with the "refresh" meta tag that follows it—were designed to work around the issue
+       *       of GitHub Pages showing an HTTP 404 error page when the user visits a non-root path via a means other
+       *       than client-side routing; for example, when the user is redirected to a non-root path after logging in
+       *       via ORCiD, or when the user reloads the web page after having client-side-navigated to a non-root path.
        *
        * References:
+       * - https://www.smashingmagazine.com/2016/08/sghpa-single-page-app-hack-github-pages/ (RE: the overall technique)
        * - https://developer.mozilla.org/en-US/docs/Web/API/Location#instance_properties
-       * - https://developer.mozilla.org/en-US/docs/Web/API/Location/replace
-       * - https://developer.mozilla.org/en-US/docs/Web/API/URL
+       * - https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
+       * - `index.html`
        */
-      (function navigateToRoot() {
-        // Extract parts of the originally-requested URL.
-        const { protocol, host } = window.location;
-
-        // Build the new URL to which we will navigate the client.
-        const newUrl = new URL(`${protocol}//${host}`);
-
-        // Navigate the client to the new URL in a way that does not
-        // push the originally-requested URL onto the history stack.
-        window.location.assign(newUrl);
-      })();
+      (function storeOriginallyRequestedURL(sessionStorage, location) {
+        const originallyRequestedURLStr = location.href;
+        const SESSION_STORAGE_KEY = "_originallyRequestedURLStr";
+        sessionStorage.setItem(SESSION_STORAGE_KEY, originallyRequestedURLStr);
+      })(window.sessionStorage, window.location);
     </script>
-  </body>
+    <!-- Tell the web browser to navigate to the specified path immediately (i.e. in 0 seconds). -->
+    <!-- Reference: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#http-equiv -->
+    <meta http-equiv="refresh" content="0;url='/'" />
+  </head>
+  <body></body>
 </html>

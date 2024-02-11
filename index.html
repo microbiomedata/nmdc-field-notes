@@ -25,6 +25,41 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      /**
+       * Retrieves the originally-requested URL, if any, from `sessionStorage` and navigates to it on the client side.
+       *
+       * Details: If `sessionStorage` contains an originally-requested URL that both (a) has the same origin as the
+       * current URL; and (b) differs from the current URL; remove that item from `sessionStorage` and
+       * do "client-side navigation" to that originally-requested URL.
+       *
+       * References:
+       * - https://www.smashingmagazine.com/2016/08/sghpa-single-page-app-hack-github-pages/ (RE: the overall technique)
+       * - https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy#definition_of_an_origin
+       * - https://developer.mozilla.org/en-US/docs/Web/API/Location#instance_properties
+       * - https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
+       * - `404.html`
+       */
+      (function checkForOriginallyRequestedURL(
+        sessionStorage,
+        location,
+        history,
+      ) {
+        const SESSION_STORAGE_KEY = "_originallyRequestedURLStr";
+        const originallyRequestedURLStr =
+          sessionStorage.getItem(SESSION_STORAGE_KEY);
+        if (originallyRequestedURLStr !== null) {
+          const originallyRequestedURL = new URL(originallyRequestedURLStr);
+          if (
+            originallyRequestedURL.origin === location.origin &&
+            originallyRequestedURL.href !== location.href
+          ) {
+            sessionStorage.removeItem(SESSION_STORAGE_KEY); // we do this as late as possible to help with debugging
+            history.replaceState(null, null, originallyRequestedURL);
+          }
+        }
+      })(window.sessionStorage, window.location, window.history);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
