@@ -47,7 +47,7 @@ const Router: React.FC = () => {
         <Route exact path={PATHS.ROOT}>
           <Redirect to={apiToken ? PATHS.HOME_PAGE : PATHS.WELCOME_PAGE} />
         </Route>
-        {/* Fallback route for when the requested path doesn't match any of the above ones. */}
+        {/* Fallback route for when the requested path doesn't match any of the above paths. */}
         <Redirect to={PATHS.ROOT} />
       </IonRouterOutlet>
     </IonReactRouter>
