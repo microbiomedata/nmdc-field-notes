@@ -29,15 +29,15 @@
       /**
        * Retrieves the originally-requested URL, if any, from `sessionStorage` and navigates to it on the client side.
        *
-       * Details: If `sessionStorage` contains an originally-requested URL that both (a) has the same origin as the
-       * current URL; and (b) differs from the current URL; remove that item from `sessionStorage` and
-       * do "client-side navigation" to that originally-requested URL.
+       * Note: If `sessionStorage` contains an originally-requested URL that both (a) has the same origin as the
+       *       current URL; and (b) differs from the current URL; this function removes that `sessionStorage` item
+       *       and performs "client-side navigation" to that originally-requested URL.
+       *
+       * Note: We do this before the React app runs. The React app will only be aware of the "final" URL.
        *
        * References:
        * - https://www.smashingmagazine.com/2016/08/sghpa-single-page-app-hack-github-pages/ (RE: the overall technique)
        * - https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy#definition_of_an_origin
-       * - https://developer.mozilla.org/en-US/docs/Web/API/Location#instance_properties
-       * - https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
        * - `404.html`
        */
       (function checkForOriginallyRequestedURL(
