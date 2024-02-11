@@ -27,8 +27,8 @@
     <div id="root"></div>
     <script>
       /**
-       * Retrieves the originally-requested URL, if any, from `sessionStorage` and—if it is "valid and useful"—deletes
-       * that `sessionStorage` item and navigates to that URL (i.e. path) on the client side.
+       * Retrieves the originally-requested URL, if any, from `sessionStorage` and—if that URL is both "valid and
+       * useful"—deletes that `sessionStorage` item and navigates to that URL on the client side.
        *
        * Note: In the context of this function, an originally-requested URL...
        *       - is "valid" if it has the same origin as the current URL
@@ -55,7 +55,7 @@
             originallyRequestedURL.origin === location.origin &&
             originallyRequestedURL.href !== location.href
           ) {
-            sessionStorage.removeItem(SESSION_STORAGE_KEY); // we do this as late as possible to help with debugging
+            sessionStorage.removeItem(SESSION_STORAGE_KEY); // we do this as late as possible to facilitate debugging
             history.replaceState(null, null, originallyRequestedURL);
           }
         }
