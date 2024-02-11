@@ -27,11 +27,12 @@
     <div id="root"></div>
     <script>
       /**
-       * Retrieves the originally-requested URL, if any, from `sessionStorage` and navigates to it on the client side.
+       * Retrieves the originally-requested URL, if any, from `sessionStorage` and—if it is "valid and useful"—deletes
+       * that `sessionStorage` item and navigates to that URL (i.e. path) on the client side.
        *
-       * Note: If `sessionStorage` contains an originally-requested URL that both (a) has the same origin as the
-       *       current URL; and (b) differs from the current URL; this function removes that `sessionStorage` item
-       *       and performs "client-side navigation" to that originally-requested URL.
+       * Note: In the context of this function, an originally-requested URL...
+       *       - is "valid" if it has the same origin as the current URL
+       *       - is "useful" if it differs from the current URL
        *
        * Note: We do this before the React app runs. The React app will only be aware of the "final" URL.
        *
