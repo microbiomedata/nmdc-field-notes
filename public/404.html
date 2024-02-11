@@ -14,7 +14,7 @@
        *
        * References:
        * - https://www.smashingmagazine.com/2016/08/sghpa-single-page-app-hack-github-pages/ (RE: the overall technique)
-       * - `index.html`
+       * - `index.html` (contains the script that reads the originally-requested URL from `sessionStorage`)
        */
       (function storeOriginallyRequestedURL(sessionStorage, location) {
         const originallyRequestedURLStr = location.href;
