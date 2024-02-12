@@ -25,6 +25,42 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      /**
+       * Retrieves the originally-requested URL, if any, from `sessionStorage` and—if that URL is both "valid and
+       * useful"—deletes that `sessionStorage` item and navigates to that URL on the client side.
+       *
+       * Note: In the context of this function, an originally-requested URL...
+       *       - is "valid" if it has the same origin as the current URL
+       *       - is "useful" if it differs from the current URL
+       *
+       * Note: We do this before the React app runs. The React app will only be aware of the "final" URL.
+       *
+       * References:
+       * - https://www.smashingmagazine.com/2016/08/sghpa-single-page-app-hack-github-pages/ (RE: the overall technique)
+       * - https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy#definition_of_an_origin
+       * - `404.html` (contains the script that stores the originally-requested URL in `sessionStorage`)
+       */
+      (function navigateToOriginallyRequestedURL(
+        sessionStorage,
+        location,
+        history,
+      ) {
+        const SESSION_STORAGE_KEY = "_originallyRequestedURLStr";
+        const originallyRequestedURLStr =
+          sessionStorage.getItem(SESSION_STORAGE_KEY);
+        if (originallyRequestedURLStr !== null) {
+          const originallyRequestedURL = new URL(originallyRequestedURLStr);
+          if (
+            originallyRequestedURL.origin === location.origin &&
+            originallyRequestedURL.href !== location.href
+          ) {
+            sessionStorage.removeItem(SESSION_STORAGE_KEY); // we do this as late as possible to facilitate debugging
+            history.replaceState(null, null, originallyRequestedURL);
+          }
+        }
+      })(window.sessionStorage, window.location, window.history);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
