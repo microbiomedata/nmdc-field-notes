@@ -1,6 +1,8 @@
 import React from "react";
 import { StoryFn } from "@storybook/react";
 import { IonApp, IonContent, IonPage, setupIonicReact } from "@ionic/react";
+import QueryClientProvider from "../../../QueryClientProvider";
+import StoreProvider from "../../../Store";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -30,13 +32,17 @@ setupIonicReact();
  */
 const ionicContent = (Story: StoryFn) => {
   return (
-    <IonApp>
-      <IonPage>
-        <IonContent>
-          <Story />
-        </IonContent>
-      </IonPage>
-    </IonApp>
+    <StoreProvider>
+      <QueryClientProvider>
+        <IonApp>
+          <IonPage>
+            <IonContent>
+              <Story />
+            </IonContent>
+          </IonPage>
+        </IonApp>
+      </QueryClientProvider>
+    </StoreProvider>
   );
 };
 
