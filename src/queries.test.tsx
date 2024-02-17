@@ -46,9 +46,9 @@ test("useCurrentUser should return data from the query", async () => {
 
 test("useSubmissionList should return data from the query", async () => {
   const wrapper = createWrapper();
-  const { result } = renderHook(() => useSubmissionList({}), { wrapper });
+  const { result } = renderHook(() => useSubmissionList(), { wrapper });
   await waitFor(() => expect(result.current.isSuccess).toBe(true));
-  expect(result.current.data?.results.length).toBeGreaterThan(0);
+  expect(result.current.data?.pages[0].results.length).toBeGreaterThan(0);
 });
 
 test("useSubmission should return data from the query", async () => {
@@ -62,11 +62,9 @@ test("useSubmission should return initial data from the list query", async () =>
   const wrapper = createWrapper();
 
   // First fetch data from the submission list query
-  // TODO: fix hardcoded pagination options
-  const { result: listResult } = renderHook(
-    () => useSubmissionList({ limit: 10, offset: 0 }),
-    { wrapper },
-  );
+  const { result: listResult } = renderHook(() => useSubmissionList(), {
+    wrapper,
+  });
   await waitFor(() => expect(listResult.current.isSuccess).toBe(true));
 
   // Second fetch data from the individual submission query. Data should be provided before waiting
@@ -87,9 +85,8 @@ test("useSubmission should mutate data", async () => {
   const wrapper = createWrapper();
 
   // First fetch data from the submission list query
-  // TODO: fix hardcoded pagination options
   const { result: listResult, rerender: listRerender } = renderHook(
-    () => useSubmissionList({ limit: 10, offset: 0 }),
+    () => useSubmissionList(),
     { wrapper },
   );
   await waitFor(() => expect(listResult.current.isSuccess).toBe(true));
@@ -131,7 +128,7 @@ test("useSubmission should mutate data", async () => {
 
   // When the list rerenders it should also have the updated data
   listRerender();
-  const submissionFromList = listResult.current.data?.results.find(
+  const submissionFromList = listResult.current.data?.pages[0].results.find(
     (submission) => submission.id === TEST_ID_1,
   );
   expect(submissionFromList?.metadata_submission.studyForm.studyName).toBe(
@@ -194,11 +191,9 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
   const wrapper = createWrapper();
 
   // First fetch data from the submission list query
-  // TODO: fix hardcoded pagination options
-  const { result: listResult } = renderHook(
-    () => useSubmissionList({ limit: 10, offset: 0 }),
-    { wrapper },
-  );
+  const { result: listResult } = renderHook(() => useSubmissionList(), {
+    wrapper,
+  });
   await waitFor(() => expect(listResult.current.isSuccess).toBe(true));
 
   // Second fetch data from the individual submission query. Wait for the background fetch to
@@ -230,7 +225,7 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
   ).toBe("TEST 1");
 
   // The list should also have the rolled-back data
-  const submissionFromList = listResult.current.data?.results.find(
+  const submissionFromList = listResult.current.data?.pages[0].results.find(
     (submission) => submission.id === TEST_ID_1,
   );
   expect(submissionFromList?.metadata_submission.studyForm.studyName).toBe(
