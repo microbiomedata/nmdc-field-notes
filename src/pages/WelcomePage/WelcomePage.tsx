@@ -30,21 +30,21 @@ const WelcomePage: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen className={"ion-padding"}>
-        <IonGrid style={{ height: "100%" }}>
-          <IonRow class={"ion-align-items-center"} style={{ height: "100%" }}>
+        <IonGrid className={"nmdc__full-height"}>
+          <IonRow className={"nmdc__full-height ion-align-items-center"}>
             <IonCol>
               <IonRow>
-                <IonCol class={"ion-text-center"}>
-                  <Logo style={{ margin: "auto" }} />
+                <IonCol className={"ion-text-center"}>
+                  <Logo className={"nmdc__margin-auto"} />
                 </IonCol>
               </IonRow>
               <IonRow>
-                <IonCol class={"ion-text-center"}>
-                  <IonCard style={{ marginBottom: 0 }}>
+                <IonCol className={"ion-text-center"}>
+                  <IonCard className={"nmdc__margin-bottom-0"}>
                     <IonCardHeader>
                       <IonCardTitle>Welcome</IonCardTitle>
                     </IonCardHeader>
-                    <IonCardContent style={{ paddingBottom: 0 }}>
+                    <IonCardContent className={"nmdc__padding-bottom-0"}>
                       Welcome to NMDC Field Notes, an app designed to help you
                       collect environmental metadata on the go.
                     </IonCardContent>
@@ -55,12 +55,12 @@ const WelcomePage: React.FC = () => {
                 </IonCol>
               </IonRow>
               <IonRow>
-                <IonCol class={"ion-text-center"}>
+                <IonCol className={"ion-text-center"}>
                   <IonCard>
                     <IonCardHeader>
                       <IonCardTitle>Checklist</IonCardTitle>
                     </IonCardHeader>
-                    <IonCardContent style={{ paddingBottom: 0 }}>
+                    <IonCardContent className={"nmdc__padding-bottom-0"}>
                       Before you go out into the field, do you have everything
                       you need to collect your metadata?
                     </IonCardContent>
@@ -75,10 +75,10 @@ const WelcomePage: React.FC = () => {
                 </IonCol>
               </IonRow>
               <IonRow>
-                <IonCol class={"ion-text-center"}>
+                <IonCol className={"ion-text-center"}>
                   <IonButton
                     expand={"block"}
-                    style={{ marginInline: 16 }}
+                    className={"ion-margin-horizontal"}
                     // TODO: Initiate the ORCiD Login flow.
                     onClick={handleLogin}
                   >
@@ -92,12 +92,12 @@ const WelcomePage: React.FC = () => {
                 </IonCol>
               </IonRow>
               <IonRow>
-                <IonCol class={"ion-text-center"}>
+                <IonCol className={"ion-text-center"}>
                   <IonButton
                     fill={"clear"}
                     id={"show-alert-for-continue-without-login"}
                     expand={"block"}
-                    style={{ marginInline: 16 }}
+                    className={"ion-margin-horizontal"}
                   >
                     Continue without Login
                   </IonButton>
