@@ -7,9 +7,12 @@ import TokenPage from "./pages/TokenPage/TokenPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import TutorialPage from "./pages/TutorialPage/TutorialPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
-import Home from "./pages/Home";
 import { useStore } from "./Store";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
+import TabNavigator from "./components/TabNavigator/TabNavigator";
+import HomeLayout from "./components/HomeLayout/HomeLayout";
+import StudiesView from "./components/StudiesView/StudiesView";
+import SettingsView from "./components/SettingsView/SettingsView";
 
 // TODO: Consider converting this object into an Enum (e.g. one named `Path`).
 export const PATHS = {
@@ -20,6 +23,8 @@ export const PATHS = {
   LOGIN_PAGE: "/login",
   TOKEN_PAGE: "/token",
   LOGOUT_PAGE: "/logout",
+  STUDIES_VIEW: "/home/studies",
+  SETTINGS_VIEW: "/home/settings",
 };
 
 const Router: React.FC = () => {
@@ -42,9 +47,20 @@ const Router: React.FC = () => {
         <Route exact path={PATHS.TUTORIAL_PAGE}>
           <TutorialPage />
         </Route>
-        {/* Note: This matches non-exact paths, too, since the `Home` component has its own router. */}
         <AuthRoute path={PATHS.HOME_PAGE}>
-          <Home basePath={PATHS.HOME_PAGE} />
+          <TabNavigator>
+            <Route exact path={PATHS.STUDIES_VIEW}>
+              <HomeLayout title={"Studies"}>
+                <StudiesView />
+              </HomeLayout>
+            </Route>
+            <Route exact path={PATHS.SETTINGS_VIEW}>
+              <HomeLayout title={"Settings"}>
+                <SettingsView />
+              </HomeLayout>
+            </Route>
+            <Redirect to={PATHS.SETTINGS_VIEW} />
+          </TabNavigator>
         </AuthRoute>
         <Route exact path={PATHS.ROOT}>
           <Redirect to={apiToken ? PATHS.HOME_PAGE : PATHS.WELCOME_PAGE} />
