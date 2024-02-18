@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import { useStore } from "./Store";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
 
+// TODO: Consider converting this object into an Enum (e.g. one named `Path`).
 export const PATHS = {
   ROOT: "/",
   HOME_PAGE: "/home",
@@ -41,8 +42,9 @@ const Router: React.FC = () => {
         <Route exact path={PATHS.TUTORIAL_PAGE}>
           <TutorialPage />
         </Route>
-        <AuthRoute exact path={PATHS.HOME_PAGE}>
-          <Home />
+        {/* Note: This matches non-exact paths, too, since the `Home` component has its own router. */}
+        <AuthRoute path={PATHS.HOME_PAGE}>
+          <Home basePath={PATHS.HOME_PAGE} />
         </AuthRoute>
         <Route exact path={PATHS.ROOT}>
           <Redirect to={apiToken ? PATHS.HOME_PAGE : PATHS.WELCOME_PAGE} />

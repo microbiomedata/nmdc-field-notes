@@ -1,35 +1,69 @@
 import React from "react";
 import {
-  IonContent,
-  IonHeader,
+  IonIcon,
+  IonLabel,
   IonPage,
-  IonTitle,
-  IonToolbar,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
 } from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
+import {
+  create as studiesIcon,
+  settings as settingsIcon,
+} from "ionicons/icons";
+import { Redirect, Route } from "react-router-dom";
+import SettingsView from "../components/SettingsView/SettingsView";
+import HomeLayout from "../components/HomeLayout/HomeLayout";
+import StudiesView from "../components/StudiesView/StudiesView";
 import "./Home.css";
-import { useCurrentUser } from "../queries";
 
-const Home: React.FC = () => {
-  const currentUser = useCurrentUser();
+interface Props {
+  /* Base path of this page. */
+  basePath?: string;
+}
+
+export enum Path {
+  STUDIES_VIEW = "/studies",
+  SETTINGS_VIEW = "/settings",
+}
+
+const Home: React.FC<Props> = ({ basePath = "" }) => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>NMDC Field Notes</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">NMDC Field Notes</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        {currentUser.isLoading && <p>Loading...</p>}
-        {currentUser.isError && <p>Error: {currentUser.error.message}</p>}
-        {currentUser.isSuccess && <p>Welcome: {currentUser.data}</p>}
-        <ExploreContainer />
-      </IonContent>
+      {/* Note: The `IonTabs` element wraps two things: (a) an `IonRouterOutlet`, which wraps `Route`s
+                to screens on which the associated `IonTabBar` will be visible; and (b) the `IonTabBar`,
+                itself. This way of nesting the elements is shown in the Ionic docs.
+                Reference: https://ionicframework.com/docs/react/navigation#working-with-tabs */}
+      <IonTabs>
+        <IonRouterOutlet>
+          <Route exact path={basePath + Path.STUDIES_VIEW}>
+            <HomeLayout title={"Studies"}>
+              <StudiesView />
+            </HomeLayout>
+          </Route>
+          <Route exact path={basePath + Path.SETTINGS_VIEW}>
+            <HomeLayout title={"Settings"}>
+              <SettingsView />
+            </HomeLayout>
+          </Route>
+
+          {/* Fallback route. */}
+          <Redirect to={basePath + Path.SETTINGS_VIEW} />
+        </IonRouterOutlet>
+
+        {/* Tab bar at the bottom of the viewport. */}
+        <IonTabBar slot={"bottom"}>
+          <IonTabButton tab={"studies"} href={basePath + Path.STUDIES_VIEW}>
+            <IonIcon icon={studiesIcon} />
+            <IonLabel>Studies</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab={"settings"} href={basePath + Path.SETTINGS_VIEW}>
+            <IonIcon icon={settingsIcon} />
+            <IonLabel>Settings</IonLabel>
+          </IonTabButton>
+        </IonTabBar>
+      </IonTabs>
     </IonPage>
   );
 };

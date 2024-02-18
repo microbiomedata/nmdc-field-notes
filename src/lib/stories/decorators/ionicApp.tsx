@@ -1,6 +1,7 @@
 import React from "react";
 import { StoryFn } from "@storybook/react";
 import { IonApp, setupIonicReact } from "@ionic/react";
+import { IonReactRouter } from "@ionic/react-router";
 import QueryClientProvider from "../../../QueryClientProvider";
 import StoreProvider from "../../../Store";
 
@@ -35,7 +36,9 @@ const ionicApp = (Story: StoryFn) => {
     <StoreProvider>
       <QueryClientProvider>
         <IonApp>
-          <Story />
+          <IonReactRouter>
+            <Story />
+          </IonReactRouter>
         </IonApp>
       </QueryClientProvider>
     </StoreProvider>
