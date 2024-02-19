@@ -13,8 +13,8 @@ import TabNavigator from "./components/TabNavigator/TabNavigator";
 import HomeLayout from "./components/HomeLayout/HomeLayout";
 import StudiesView from "./components/StudiesView/StudiesView";
 import SettingsView from "./components/SettingsView/SettingsView";
+import StudyView from "./components/StudyView/StudyView";
 
-// TODO: Consider converting this object into an Enum (e.g. one named `Path`).
 export const PATHS = {
   ROOT: "/",
   HOME_PAGE: "/home",
@@ -25,6 +25,10 @@ export const PATHS = {
   LOGOUT_PAGE: "/logout",
   STUDIES_VIEW: "/home/studies",
   SETTINGS_VIEW: "/home/settings",
+  STUDY_VIEW: {
+    pattern: "/home/studies/:id",
+    makePath: (id: string) => `/home/studies/${encodeURIComponent(id)}`,
+  },
 };
 
 const Router: React.FC = () => {
@@ -49,6 +53,11 @@ const Router: React.FC = () => {
         </Route>
         <AuthRoute path={PATHS.HOME_PAGE}>
           <TabNavigator>
+            <Route exact path={PATHS.STUDY_VIEW.pattern}>
+              <HomeLayout title={"Study"}>
+                <StudyView />
+              </HomeLayout>
+            </Route>
             <Route exact path={PATHS.STUDIES_VIEW}>
               <HomeLayout title={"Studies"}>
                 <StudiesView />
