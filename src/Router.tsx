@@ -7,7 +7,7 @@ import TokenPage from "./pages/TokenPage/TokenPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import TutorialPage from "./pages/TutorialPage/TutorialPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
-import Home from "./pages/Home";
+import HomePage from "./pages/HomePage/HomePage";
 import { useStore } from "./Store";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
 import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
@@ -53,7 +53,7 @@ const Router: React.FC = () => {
           <StudyCreatePage />
         </AuthRoute>
         <AuthRoute exact path={PATHS.HOME_PAGE}>
-          <Home />
+          <HomePage />
         </AuthRoute>
         <Route exact path={PATHS.ROOT}>
           <Redirect to={apiToken ? PATHS.HOME_PAGE : PATHS.WELCOME_PAGE} />

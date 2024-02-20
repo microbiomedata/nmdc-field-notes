@@ -6,12 +6,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import "./Home.css";
-import StudyList from "../components/StudyList/StudyList";
+import "./HomePage.css";
+import StudyList from "../../components/StudyList/StudyList";
 
 const HEADER_TEXT = "NMDC Field Notes";
 
-const Home: React.FC = () => {
+const HomePage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader translucent={true}>
@@ -31,4 +31,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default HomePage;
