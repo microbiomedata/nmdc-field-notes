@@ -6,29 +6,26 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
 import "./Home.css";
-import { useCurrentUser } from "../queries";
+import StudyList from "../components/StudyList/StudyList";
+
+const HEADER_TEXT = "NMDC Field Notes";
 
 const Home: React.FC = () => {
-  const currentUser = useCurrentUser();
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent={true}>
         <IonToolbar>
-          <IonTitle>NMDC Field Notes</IonTitle>
+          <IonTitle>{HEADER_TEXT}</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">NMDC Field Notes</IonTitle>
+            <IonTitle size="large">{HEADER_TEXT}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        {currentUser.isLoading && <p>Loading...</p>}
-        {currentUser.isError && <p>Error: {currentUser.error.message}</p>}
-        {currentUser.isSuccess && <p>Welcome: {currentUser.data}</p>}
-        <ExploreContainer />
+        <StudyList />
       </IonContent>
     </IonPage>
   );
