@@ -1,0 +1,23 @@
+/**
+  Note: These are "utility" classes for which I failed to find an equivalent `ion-*` class.
+        While they are currently defined in this CSS file whose name implies they are specific
+        to the `WelcomePage` component, Ionic does not seem to scope them to the component.
+        If we find ourselves using similar classes on other components, we might move these
+        definitions to a location that does not imply that they are specific to a component.
+ */
+
+.nmdc__full-height {
+  height: 100%;
+}
+
+.nmdc__margin-auto {
+  margin: auto;
+}
+
+.nmdc__margin-bottom-0 {
+  margin-bottom: 0;
+}
+
+.nmdc__padding-bottom-0 {
+  padding-bottom: 0;
+}
