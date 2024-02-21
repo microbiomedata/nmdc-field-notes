@@ -13,10 +13,12 @@ const Pluralize: React.FC<PluralizeProps> = ({
   plural,
   showCount,
 }) => {
+  const pluralDisplay = plural || `${singular}s`;
   return (
     <>
+      {/* Extra space is intentional to separate the count from the word */}
       {showCount && <>{count} </>}
-      {count === 1 ? singular : plural || `${singular}s`}
+      {count === 1 ? singular : pluralDisplay}
     </>
   );
 };
