@@ -51,13 +51,15 @@ export function useSubmissionList() {
         offset: pageParam * PAGE_SIZE,
       }),
     initialPageParam: 0,
+    // In this context "last" means the last page fetched, not the last possible page
+    // See: https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries#example
     getNextPageParam: (lastPage, _, lastPageParam) => {
       if ((lastPageParam + 1) * PAGE_SIZE > lastPage.count) {
         return undefined;
       }
       return lastPageParam + 1;
     },
-    getPreviousPageParam: (firstPage, _, firstPageParam) => {
+    getPreviousPageParam: (_, __, firstPageParam) => {
       if (firstPageParam <= 1) {
         return undefined;
       }
