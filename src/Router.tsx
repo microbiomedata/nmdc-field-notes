@@ -7,9 +7,11 @@ import TokenPage from "./pages/TokenPage/TokenPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import TutorialPage from "./pages/TutorialPage/TutorialPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
-import Home from "./pages/Home";
+import HomePage from "./pages/HomePage/HomePage";
 import { useStore } from "./Store";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
+import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
+import StudyCreatePage from "./pages/StudyCreatePage/StudyCreatePage";
 
 export const PATHS = {
   ROOT: "/",
@@ -19,6 +21,8 @@ export const PATHS = {
   LOGIN_PAGE: "/login",
   TOKEN_PAGE: "/token",
   LOGOUT_PAGE: "/logout",
+  STUDY_CREATE_PAGE: "/study/create",
+  STUDY_VIEW_PAGE: "/study/:id",
 };
 
 const Router: React.FC = () => {
@@ -26,13 +30,13 @@ const Router: React.FC = () => {
   return (
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route path={PATHS.LOGIN_PAGE}>
+        <Route exact path={PATHS.LOGIN_PAGE}>
           <LoginPage />
         </Route>
-        <Route path={PATHS.LOGOUT_PAGE}>
+        <Route exact path={PATHS.LOGOUT_PAGE}>
           <LogoutPage />
         </Route>
-        <Route path={PATHS.TOKEN_PAGE}>
+        <Route exact path={PATHS.TOKEN_PAGE}>
           <TokenPage />
         </Route>
         <Route exact path={PATHS.WELCOME_PAGE}>
@@ -41,8 +45,15 @@ const Router: React.FC = () => {
         <Route exact path={PATHS.TUTORIAL_PAGE}>
           <TutorialPage />
         </Route>
+        <AuthRoute path={PATHS.STUDY_VIEW_PAGE}>
+          <StudyViewPage />
+        </AuthRoute>
+        {/* Not sure why this needs to come after the view route, but it only works that way */}
+        <AuthRoute exact path={PATHS.STUDY_CREATE_PAGE}>
+          <StudyCreatePage />
+        </AuthRoute>
         <AuthRoute exact path={PATHS.HOME_PAGE}>
-          <Home />
+          <HomePage />
         </AuthRoute>
         <Route exact path={PATHS.ROOT}>
           <Redirect to={apiToken ? PATHS.HOME_PAGE : PATHS.WELCOME_PAGE} />

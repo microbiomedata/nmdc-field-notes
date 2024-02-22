@@ -1,17 +1,14 @@
 import {
   DefaultError,
   hashKey,
+  InfiniteData,
   QueryClient,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  Paginated,
-  PaginationOptions,
-  SubmissionMetadata,
-  nmdcServerClient,
-} from "./api";
+import { Paginated, SubmissionMetadata, nmdcServerClient } from "./api";
 import { produce } from "immer";
 
 export const userKeys = {
@@ -20,8 +17,7 @@ export const userKeys = {
 
 export const submissionKeys = {
   all: () => ["submissions"],
-  lists: () => [...submissionKeys.all(), "list"],
-  list: (options: PaginationOptions) => [...submissionKeys.lists(), options],
+  list: () => [...submissionKeys.all(), "list"],
   details: () => [...submissionKeys.all(), "detail"],
   detail: (id: string) => [...submissionKeys.details(), id],
 };
@@ -44,10 +40,31 @@ export function useCurrentUser() {
   });
 }
 
-export function useSubmissionList(options: PaginationOptions) {
-  return useQuery({
-    queryKey: submissionKeys.list(options),
-    queryFn: () => nmdcServerClient.getSubmissionList(options),
+const PAGE_SIZE = 10;
+
+export function useSubmissionList() {
+  return useInfiniteQuery({
+    queryKey: submissionKeys.list(),
+    queryFn: ({ pageParam }) =>
+      nmdcServerClient.getSubmissionList({
+        limit: PAGE_SIZE,
+        offset: pageParam * PAGE_SIZE,
+      }),
+    initialPageParam: 0,
+    // In this context "last" means the last page fetched, not the last possible page
+    // See: https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries#example
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      if ((lastPageParam + 1) * PAGE_SIZE > lastPage.count) {
+        return undefined;
+      }
+      return lastPageParam + 1;
+    },
+    getPreviousPageParam: (_, __, firstPageParam) => {
+      if (firstPageParam <= 1) {
+        return undefined;
+      }
+      return firstPageParam - 1;
+    },
   });
 }
 
@@ -59,18 +76,19 @@ export function useSubmission(id: string) {
     queryClient.setQueryData(submissionKeys.detail(data.id), data);
 
     // Update the individual submission in the list of submissions
-    const options: PaginationOptions = { limit: 10, offset: 0 }; // TODO: can't hardcode this, should come from some state
     queryClient.setQueryData(
-      submissionKeys.list(options),
-      produce((draft: Paginated<SubmissionMetadata>) => {
+      submissionKeys.list(),
+      produce((draft: InfiniteData<Paginated<SubmissionMetadata>>) => {
         if (!draft) {
           return;
         }
-        const index = draft.results.findIndex((s) => s.id === data.id);
-        if (index === -1) {
-          return;
+        for (const page of draft.pages) {
+          const index = page.results.findIndex((s) => s.id === data.id);
+          if (index === -1) {
+            continue;
+          }
+          page.results[index] = data;
         }
-        draft.results[index] = data;
       }),
     );
   };
@@ -79,11 +97,16 @@ export function useSubmission(id: string) {
     queryKey: submissionKeys.detail(id),
     queryFn: () => nmdcServerClient.getSubmission(id),
     initialData: () => {
-      const options: PaginationOptions = { limit: 10, offset: 0 }; // TODO: can't hardcode this, should come from some state
       const allSubmissions = queryClient.getQueryData<
-        Paginated<SubmissionMetadata>
-      >(["submissions", "list", options]);
-      return allSubmissions?.results.find((s) => s.id === id);
+        InfiniteData<Paginated<SubmissionMetadata>>
+      >(submissionKeys.list());
+      for (const page of allSubmissions?.pages || []) {
+        const submission = page.results.find((s) => s.id === id);
+        if (submission) {
+          return submission;
+        }
+      }
+      return undefined;
     },
   });
 

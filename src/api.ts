@@ -29,7 +29,7 @@ export interface MetadataSubmission {
   templates: string[];
   studyForm: StudyForm;
   multiOmicsForm: object;
-  sampleData: object;
+  sampleData: Record<string, Record<string, string>[]>;
 }
 
 export interface User {
