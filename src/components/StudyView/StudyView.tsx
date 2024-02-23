@@ -6,6 +6,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonListHeader,
   IonProgressBar,
 } from "@ionic/react";
 import SectionHeader from "../SectionHeader/SectionHeader";
@@ -82,9 +83,12 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
             </IonItem>
           </IonList>
 
-          <SectionHeader>
-            Samples {samples && <>({samples.length})</>}
-          </SectionHeader>
+          <IonListHeader>
+            <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
+            <IonButton routerLink={paths.sampleCreate(submissionId)}>
+              New
+            </IonButton>
+          </IonListHeader>
           <IonChip className="ion-margin-horizontal">
             Template: {submission.data.metadata_submission.templates[0]}
           </IonChip>
