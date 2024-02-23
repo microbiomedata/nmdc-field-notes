@@ -21,7 +21,7 @@ const StudyEditPage: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/"></IonBackButton>
+            <IonBackButton defaultHref={`/study/${id}`}></IonBackButton>
           </IonButtons>
           <IonTitle>Edit Study</IonTitle>
         </IonToolbar>

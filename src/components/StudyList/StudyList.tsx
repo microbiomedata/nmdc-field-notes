@@ -12,13 +12,7 @@ import {
 } from "@ionic/react";
 import { SubmissionMetadata } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
-
-const getSubmissionSamples = (submission: SubmissionMetadata) => {
-  const environmentalPackageName =
-    submission.metadata_submission.templates[0].replaceAll("-", "_");
-  const sampleDataField = `${environmentalPackageName}_data`;
-  return submission.metadata_submission.sampleData[sampleDataField] || [];
-};
+import { getSubmissionSamples } from "../../utils";
 
 const StudyList: React.FC = () => {
   const submissionList = useSubmissionList();
@@ -55,7 +49,7 @@ const StudyList: React.FC = () => {
         </IonText>
       ) : (
         <>
-          <IonList lines="full">
+          <IonList>
             {concatenatedSubmissions.map((submission) => (
               <IonItem
                 key={submission.id}

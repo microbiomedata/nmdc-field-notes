@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router";
 import {
   IonBackButton,
+  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -9,6 +10,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import StudyView from "../../components/StudyView/StudyView";
 
 interface StudyViewPageParams {
   id: string;
@@ -24,10 +26,13 @@ const StudyViewPage: React.FC = () => {
             <IonBackButton defaultHref="/"></IonBackButton>
           </IonButtons>
           <IonTitle>Study</IonTitle>
+          <IonButtons slot="end">
+            <IonButton routerLink={`/study/${id}/edit`}>Edit</IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <h2>{id}</h2>
+        <StudyView submissionId={id} />
       </IonContent>
     </IonPage>
   );
