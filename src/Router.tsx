@@ -12,6 +12,7 @@ import { useStore } from "./Store";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
 import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
 import StudyCreatePage from "./pages/StudyCreatePage/StudyCreatePage";
+import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
 
 export const PATHS = {
   ROOT: "/",
@@ -23,6 +24,7 @@ export const PATHS = {
   LOGOUT_PAGE: "/logout",
   STUDY_CREATE_PAGE: "/study/create",
   STUDY_VIEW_PAGE: "/study/:id",
+  STUDY_EDIT_PAGE: "/study/:id/edit",
 };
 
 const Router: React.FC = () => {
@@ -45,8 +47,11 @@ const Router: React.FC = () => {
         <Route exact path={PATHS.TUTORIAL_PAGE}>
           <TutorialPage />
         </Route>
-        <AuthRoute path={PATHS.STUDY_VIEW_PAGE}>
+        <AuthRoute exact path={PATHS.STUDY_VIEW_PAGE}>
           <StudyViewPage />
+        </AuthRoute>
+        <AuthRoute exact path={PATHS.STUDY_EDIT_PAGE}>
+          <StudyEditPage />
         </AuthRoute>
         {/* Not sure why this needs to come after the view route, but it only works that way */}
         <AuthRoute exact path={PATHS.STUDY_CREATE_PAGE}>
