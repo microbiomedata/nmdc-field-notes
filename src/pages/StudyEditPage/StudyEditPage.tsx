@@ -9,25 +9,28 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useParams } from "react-router";
+import { paths } from "../../Router";
 
 interface StudyEditPageParams {
-  id: string;
+  submissionId: string;
 }
 
 const StudyEditPage: React.FC = () => {
-  const { id } = useParams<StudyEditPageParams>();
+  const { submissionId } = useParams<StudyEditPageParams>();
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref={`/study/${id}`}></IonBackButton>
+            <IonBackButton
+              defaultHref={paths.studyView(submissionId)}
+            ></IonBackButton>
           </IonButtons>
           <IonTitle>Edit Study</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <h2>{id}</h2>
+        <h2>{submissionId}</h2>
       </IonContent>
     </IonPage>
   );

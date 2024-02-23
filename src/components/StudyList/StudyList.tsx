@@ -13,6 +13,7 @@ import {
 import { SubmissionMetadata } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
 import { getSubmissionSamples } from "../../utils";
+import { paths } from "../../Router";
 
 const StudyList: React.FC = () => {
   const submissionList = useSubmissionList();
@@ -30,7 +31,7 @@ const StudyList: React.FC = () => {
     <>
       <IonListHeader>
         <IonLabel>Studies</IonLabel>
-        <IonButton routerLink={`/study/create`}>New</IonButton>
+        <IonButton routerLink={paths.studyCreate}>New</IonButton>
       </IonListHeader>
 
       <IonProgressBar
@@ -53,7 +54,7 @@ const StudyList: React.FC = () => {
             {concatenatedSubmissions.map((submission) => (
               <IonItem
                 key={submission.id}
-                routerLink={`/study/${submission.id}`}
+                routerLink={paths.studyView(submission.id)}
               >
                 <IonLabel>
                   <h3>

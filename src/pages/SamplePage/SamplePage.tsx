@@ -9,6 +9,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useParams } from "react-router";
+import { paths } from "../../Router";
 
 interface SamplePageParams {
   submissionId: string;
@@ -23,7 +24,7 @@ const SamplePage: React.FC = () => {
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton
-              defaultHref={`/study/${submissionId}`}
+              defaultHref={paths.studyView(submissionId)}
             ></IonBackButton>
           </IonButtons>
           <IonTitle>Sample</IonTitle>

@@ -10,6 +10,7 @@ import {
 } from "@ionic/react";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import { getSubmissionSamples } from "../../utils";
+import { paths } from "../../Router";
 
 const COLLAPSED_SAMPLE_COUNT = 5;
 
@@ -94,7 +95,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
                 .map((sample, index) => (
                   <IonItem
                     key={index}
-                    routerLink={`/study/${submissionId}/sample/${index}`}
+                    routerLink={paths.sample(submissionId, index)}
                   >
                     <IonLabel>
                       <h3>{sample.samp_name}</h3>

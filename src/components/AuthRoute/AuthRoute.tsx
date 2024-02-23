@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
 import { useStore } from "../../Store";
-import { PATHS } from "../../Router";
+import { paths } from "../../Router";
 
 const AuthRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
   const { apiToken } = useStore();
@@ -15,7 +15,7 @@ const AuthRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
           return (
             <Redirect
               to={{
-                pathname: PATHS.LOGIN_PAGE,
+                pathname: paths.login,
                 state: { from: location },
               }}
             />

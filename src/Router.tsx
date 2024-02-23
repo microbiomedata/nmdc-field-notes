@@ -15,18 +15,20 @@ import StudyCreatePage from "./pages/StudyCreatePage/StudyCreatePage";
 import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
 import SamplePage from "./pages/SamplePage/SamplePage";
 
-export const PATHS = {
-  ROOT: "/",
-  HOME_PAGE: "/home",
-  TUTORIAL_PAGE: "/tutorial",
-  WELCOME_PAGE: "/welcome",
-  LOGIN_PAGE: "/login",
-  TOKEN_PAGE: "/token",
-  LOGOUT_PAGE: "/logout",
-  STUDY_CREATE_PAGE: "/study/create",
-  STUDY_VIEW_PAGE: "/study/:id",
-  STUDY_EDIT_PAGE: "/study/:id/edit",
-  SAMPLE_PAGE: "/study/:submissionId/sample/:sampleIndex",
+const STUDY = "/study";
+export const paths = {
+  root: "/",
+  home: "/home",
+  tutorial: "/tutorial",
+  welcome: "/welcome",
+  login: "/login",
+  token: "/token",
+  logout: "/logout",
+  studyCreate: `${STUDY}/create`,
+  studyView: (submissionId: string) => `${STUDY}/${submissionId}`,
+  studyEdit: (submissionId: string) => `${STUDY}/${submissionId}/edit`,
+  sample: (submissionId: string, sampleIndex: string | number) =>
+    `${STUDY}/${submissionId}/sample/${sampleIndex}`,
 };
 
 const Router: React.FC = () => {
@@ -34,42 +36,42 @@ const Router: React.FC = () => {
   return (
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route exact path={PATHS.LOGIN_PAGE}>
+        <Route exact path={paths.login}>
           <LoginPage />
         </Route>
-        <Route exact path={PATHS.LOGOUT_PAGE}>
+        <Route exact path={paths.logout}>
           <LogoutPage />
         </Route>
-        <Route exact path={PATHS.TOKEN_PAGE}>
+        <Route exact path={paths.token}>
           <TokenPage />
         </Route>
-        <Route exact path={PATHS.WELCOME_PAGE}>
+        <Route exact path={paths.welcome}>
           <WelcomePage />
         </Route>
-        <Route exact path={PATHS.TUTORIAL_PAGE}>
+        <Route exact path={paths.tutorial}>
           <TutorialPage />
         </Route>
-        <AuthRoute exact path={PATHS.STUDY_VIEW_PAGE}>
+        <AuthRoute exact path={paths.studyView(":submissionId")}>
           <StudyViewPage />
         </AuthRoute>
-        <AuthRoute exact path={PATHS.STUDY_EDIT_PAGE}>
+        <AuthRoute exact path={paths.studyEdit(":submissionId")}>
           <StudyEditPage />
         </AuthRoute>
-        <AuthRoute exact path={PATHS.SAMPLE_PAGE}>
+        <AuthRoute exact path={paths.sample(":submissionId", ":sampleIndex")}>
           <SamplePage />
         </AuthRoute>
         {/* Not sure why this needs to come after the view route, but it only works that way */}
-        <AuthRoute exact path={PATHS.STUDY_CREATE_PAGE}>
+        <AuthRoute exact path={paths.studyCreate}>
           <StudyCreatePage />
         </AuthRoute>
-        <AuthRoute exact path={PATHS.HOME_PAGE}>
+        <AuthRoute exact path={paths.home}>
           <HomePage />
         </AuthRoute>
-        <Route exact path={PATHS.ROOT}>
-          <Redirect to={apiToken ? PATHS.HOME_PAGE : PATHS.WELCOME_PAGE} />
+        <Route exact path={paths.root}>
+          <Redirect to={apiToken ? paths.home : paths.welcome} />
         </Route>
         {/* Fallback route for when the requested path doesn't match any of the above paths. */}
-        <Redirect to={PATHS.ROOT} />
+        <Redirect to={paths.root} />
       </IonRouterOutlet>
     </IonReactRouter>
   );
