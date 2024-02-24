@@ -12,6 +12,7 @@ import {
 import SectionHeader from "../SectionHeader/SectionHeader";
 import { getSubmissionSamples } from "../../utils";
 import { paths } from "../../Router";
+import NoneOr from "../NoneOr/NoneOr";
 
 const COLLAPSED_SAMPLE_COUNT = 5;
 
@@ -42,21 +43,31 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
             <IonItem>
               <IonLabel>
                 <h3>Name</h3>
-                <p>{submission.data.metadata_submission.studyForm.studyName}</p>
+                <p>
+                  <NoneOr>
+                    {submission.data.metadata_submission.studyForm.studyName}
+                  </NoneOr>
+                </p>
               </IonLabel>
             </IonItem>
             <IonItem>
               <IonLabel>
                 <h3>Description</h3>
                 <p>
-                  {submission.data.metadata_submission.studyForm.description}
+                  <NoneOr>
+                    {submission.data.metadata_submission.studyForm.description}
+                  </NoneOr>
                 </p>
               </IonLabel>
             </IonItem>
             <IonItem>
               <IonLabel>
                 <h3>Notes</h3>
-                <p>{submission.data.metadata_submission.studyForm.notes}</p>
+                <p>
+                  <NoneOr>
+                    {submission.data.metadata_submission.studyForm.notes}
+                  </NoneOr>
+                </p>
               </IonLabel>
             </IonItem>
           </IonList>
@@ -66,19 +77,31 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
             <IonItem>
               <IonLabel>
                 <h3>Name</h3>
-                <p>{submission.data.metadata_submission.studyForm.piName}</p>
+                <p>
+                  <NoneOr>
+                    {submission.data.metadata_submission.studyForm.piName}
+                  </NoneOr>
+                </p>
               </IonLabel>
             </IonItem>
             <IonItem>
               <IonLabel>
                 <h3>Email</h3>
-                <p>{submission.data.metadata_submission.studyForm.piEmail}</p>
+                <p>
+                  <NoneOr>
+                    {submission.data.metadata_submission.studyForm.piEmail}
+                  </NoneOr>
+                </p>
               </IonLabel>
             </IonItem>
             <IonItem>
               <IonLabel>
                 <h3>ORCID iD</h3>
-                <p>{submission.data.metadata_submission.studyForm.piOrcid}</p>
+                <p>
+                  <NoneOr>
+                    {submission.data.metadata_submission.studyForm.piOrcid}
+                  </NoneOr>
+                </p>
               </IonLabel>
             </IonItem>
           </IonList>
@@ -89,7 +112,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
               New
             </IonButton>
           </IonListHeader>
-          <IonChip className="ion-margin-horizontal">
+          <IonChip className="ion-margin-horizontal" outline>
             Template: {submission.data.metadata_submission.templates[0]}
           </IonChip>
           <div className="ion-padding-bottom">
@@ -102,7 +125,11 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
                     routerLink={paths.sample(submissionId, index)}
                   >
                     <IonLabel>
-                      <h3>{sample.samp_name}</h3>
+                      <h3>
+                        <NoneOr placeholder="No sample name">
+                          {sample.samp_name}
+                        </NoneOr>
+                      </h3>
                     </IonLabel>
                   </IonItem>
                 ))}

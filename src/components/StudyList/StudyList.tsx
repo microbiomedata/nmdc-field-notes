@@ -14,6 +14,7 @@ import { SubmissionMetadata } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
 import { getSubmissionSamples } from "../../utils";
 import { paths } from "../../Router";
+import NoneOr from "../NoneOr/NoneOr";
 
 const StudyList: React.FC = () => {
   const submissionList = useSubmissionList();
@@ -58,13 +59,14 @@ const StudyList: React.FC = () => {
               >
                 <IonLabel>
                   <h3>
-                    {submission.metadata_submission.studyForm.studyName || (
-                      <IonText color="medium">(No study name)</IonText>
-                    )}
+                    <NoneOr placeholder="No study name">
+                      {submission.metadata_submission.studyForm.studyName}
+                    </NoneOr>
                   </h3>
                   <p>
-                    {submission.metadata_submission.templates[0] ||
-                      "No template selected"}
+                    <NoneOr placeholder="No template selected">
+                      {submission.metadata_submission.templates[0]}
+                    </NoneOr>
                     {" • "}
                     <Pluralize
                       count={getSubmissionSamples(submission).length}
