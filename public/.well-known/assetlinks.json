@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "org.microbiomedata.fieldnotes",
+      "sha256_cert_fingerprints": [
+        "61:52:55:19:5C:6E:AF:E2:C4:20:49:37:9F:F6:01:74:7E:00:E6:51:E4:96:F4:0A:DE:1B:09:65:A8:D3:0F:B3"
+      ]
+    }
+  }
+]

@@ -23,9 +23,9 @@ taps on a link that begins with `https://fieldnotes.microbiomedata.org`;
 the operating system on their device (i.e. iOS) will first check for the presence of this file on this web server.
 This file essentially tells iOS that this web server trusts the mobile app to handle the link.
 
-## `assetlinks.json` (coming soon)
+## `assetlinks.json`
 
-This file—once we create it—will be used for
+This file is used for
 [Android universal links](https://capacitorjs.com/docs/guides/deep-links#create-site-association-file-1).
 
-Coming soon...
+It was generated using https://developers.google.com/digital-asset-links/tools/generator.
