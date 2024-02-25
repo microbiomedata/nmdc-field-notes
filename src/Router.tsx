@@ -53,12 +53,11 @@ const Router: React.FC = () => {
 
         <Route path={PATHS.TABBED_AREA}>
           <TabNavigator>
-            <AuthRoute path={PATHS.STUDY_VIEW_PAGE}>
-              <StudyViewPage />
-            </AuthRoute>
-            {/* Not sure why this needs to come after the view route, but it only works that way */}
             <AuthRoute exact path={PATHS.STUDY_CREATE_PAGE}>
               <StudyCreatePage />
+            </AuthRoute>
+            <AuthRoute path={PATHS.STUDY_VIEW_PAGE}>
+              <StudyViewPage />
             </AuthRoute>
             <AuthRoute exact path={PATHS.HOME_PAGE}>
               <HomePage />
