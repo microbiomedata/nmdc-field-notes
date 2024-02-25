@@ -9,6 +9,7 @@ be included in the build (and, as a result, deployed to the web server) verbatim
 > like [this one](https://github.com/vitejs/vite/discussions/7374#discussioncomment-8557938) to delete it from the
 > build; but use a Node.js script instead of `rm` to delete the file,
 > since we know `node` will be present on the system (I think Windows offers `del` instead of `rm`).
+>
 > ```shell
 > node -e "const fs = require('fs'); fs.unlinkSync('path/to/file');"
 > ```
