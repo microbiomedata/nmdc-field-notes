@@ -17,7 +17,7 @@ import PlaceholderPage from "./pages/PlaceholderPage";
 
 export const PATHS = {
   ROOT: "/",
-  HOME_PAGE: "/in/home",
+  HOME_PAGE: "/in/study",
   TUTORIAL_PAGE: "/tutorial",
   WELCOME_PAGE: "/welcome",
   LOGIN_PAGE: "/login",
