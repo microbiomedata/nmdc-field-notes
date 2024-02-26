@@ -12,6 +12,7 @@ import {
 } from "@ionic/react";
 import { SubmissionMetadata } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
+import { PATHS } from "../../Router";
 
 const getSubmissionSamples = (submission: SubmissionMetadata) => {
   const environmentalPackageName =
@@ -36,7 +37,7 @@ const StudyList: React.FC = () => {
     <>
       <IonListHeader>
         <IonLabel>Studies</IonLabel>
-        <IonButton routerLink={`/study/create`}>New</IonButton>
+        <IonButton routerLink={PATHS.STUDY_CREATE_PAGE}>New</IonButton>
       </IonListHeader>
 
       <IonProgressBar
@@ -59,7 +60,7 @@ const StudyList: React.FC = () => {
             {concatenatedSubmissions.map((submission) => (
               <IonItem
                 key={submission.id}
-                routerLink={`/study/${submission.id}`}
+                routerLink={PATHS.STUDY_VIEW_PAGE.replace(":id", submission.id)}
               >
                 <IonLabel>
                   <h3>
