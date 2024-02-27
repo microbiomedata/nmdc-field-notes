@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "4L4Y2A43SA.org.microbiomedata.fieldnotes",
+        "paths": ["*"]
+      }
+    ]
+  }
+}

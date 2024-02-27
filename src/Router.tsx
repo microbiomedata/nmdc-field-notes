@@ -12,26 +12,31 @@ import { useStore } from "./Store";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
 import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
 import StudyCreatePage from "./pages/StudyCreatePage/StudyCreatePage";
+import TabNavigator from "./components/TabNavigator/TabNavigator";
+import PlaceholderPage from "./pages/PlaceholderPage";
 import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
 import SamplePage from "./pages/SamplePage/SamplePage";
 import SampleCreatePage from "./pages/SampleCreatePage/SampleCreatePage";
 
+const IN = "/in";
 const STUDY = "/study";
 export const paths = {
   root: "/",
-  home: "/home",
+  home: `${IN}${STUDY}`,
   tutorial: "/tutorial",
   welcome: "/welcome",
   login: "/login",
   token: "/token",
   logout: "/logout",
-  studyCreate: `${STUDY}/create`,
-  studyView: (submissionId: string) => `${STUDY}/${submissionId}`,
-  studyEdit: (submissionId: string) => `${STUDY}/${submissionId}/edit`,
+  studyCreate: `${IN}${STUDY}/create`,
+  studyView: (submissionId: string) => `${IN}${STUDY}/${submissionId}`,
+  studyEdit: (submissionId: string) => `${IN}${STUDY}/${submissionId}/edit`,
   sample: (submissionId: string, sampleIndex: string | number) =>
-    `${STUDY}/${submissionId}/sample/${sampleIndex}`,
+    `${IN}${STUDY}/${submissionId}/sample/${sampleIndex}`,
   sampleCreate: (submissionId: string) =>
-    `${STUDY}/${submissionId}/sample/create`,
+    `${IN}${STUDY}/${submissionId}/sample/create`,
+  guide: `${IN}/guide`,
+  settings: `${IN}/settings`,
 };
 
 const Router: React.FC = () => {
@@ -54,25 +59,55 @@ const Router: React.FC = () => {
         <Route exact path={paths.tutorial}>
           <TutorialPage />
         </Route>
-        <AuthRoute exact path={paths.studyView(":submissionId")}>
-          <StudyViewPage />
-        </AuthRoute>
-        <AuthRoute exact path={paths.studyEdit(":submissionId")}>
-          <StudyEditPage />
-        </AuthRoute>
-        <AuthRoute exact path={paths.sample(":submissionId", ":sampleIndex")}>
-          <SamplePage />
-        </AuthRoute>
-        {/* Not sure why this needs to come after the view route, but it only works that way */}
-        <AuthRoute exact path={paths.studyCreate}>
-          <StudyCreatePage />
-        </AuthRoute>
-        <AuthRoute exact path={paths.sampleCreate(":submissionId")}>
-          <SampleCreatePage />
-        </AuthRoute>
-        <AuthRoute exact path={paths.home}>
-          <HomePage />
-        </AuthRoute>
+
+        <Route path={IN}>
+          <TabNavigator>
+            {/* STUDIES TAB ROUTES */}
+            {/* It's unclear why the /create routes need to be listed after the /:id routes. It
+                seems backwards from what the react-router docs suggest, but it's what works. */}
+            <AuthRoute exact path={paths.studyView(":submissionId")}>
+              <StudyViewPage />
+            </AuthRoute>
+            <AuthRoute exact path={paths.studyCreate}>
+              <StudyCreatePage />
+            </AuthRoute>
+            <AuthRoute exact path={paths.studyEdit(":submissionId")}>
+              <StudyEditPage />
+            </AuthRoute>
+            <AuthRoute
+              exact
+              path={paths.sample(":submissionId", ":sampleIndex")}
+            >
+              <SamplePage />
+            </AuthRoute>
+            <AuthRoute exact path={paths.sampleCreate(":submissionId")}>
+              <SampleCreatePage />
+            </AuthRoute>
+            <AuthRoute exact path={paths.home}>
+              <HomePage />
+            </AuthRoute>
+
+            {/* GUIDE TAB ROUTES */}
+            <AuthRoute exact path={paths.guide}>
+              <PlaceholderPage
+                title={"Guide"}
+                body={"Base route on Guide tab"}
+              />
+            </AuthRoute>
+
+            {/* SETTINGS TAB ROUTES */}
+            <AuthRoute exact path={paths.settings}>
+              <PlaceholderPage
+                title={"Settings"}
+                body={"Base route on Settings tab"}
+              />
+            </AuthRoute>
+
+            {/* Fallback route for when the requested path doesn't match any of the above paths. */}
+            <Redirect to={paths.home} />
+          </TabNavigator>
+        </Route>
+
         <Route exact path={paths.root}>
           <Redirect to={apiToken ? paths.home : paths.welcome} />
         </Route>
