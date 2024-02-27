@@ -19,22 +19,22 @@ import SamplePage from "./pages/SamplePage/SamplePage";
 import SampleCreatePage from "./pages/SampleCreatePage/SampleCreatePage";
 
 const IN = "/in";
-const STUDY = "/study";
+const STUDY = `${IN}/study`;
 export const paths = {
   root: "/",
-  home: `${IN}${STUDY}`,
+  home: STUDY,
   tutorial: "/tutorial",
   welcome: "/welcome",
   login: "/login",
   token: "/token",
   logout: "/logout",
-  studyCreate: `${IN}${STUDY}/create`,
-  studyView: (submissionId: string) => `${IN}${STUDY}/${submissionId}`,
-  studyEdit: (submissionId: string) => `${IN}${STUDY}/${submissionId}/edit`,
+  studyCreate: `${STUDY}/create`,
+  studyView: (submissionId: string) => `${STUDY}/${submissionId}`,
+  studyEdit: (submissionId: string) => `${STUDY}/${submissionId}/edit`,
   sample: (submissionId: string, sampleIndex: string | number) =>
-    `${IN}${STUDY}/${submissionId}/sample/${sampleIndex}`,
+    `${STUDY}/${submissionId}/sample/${sampleIndex}`,
   sampleCreate: (submissionId: string) =>
-    `${IN}${STUDY}/${submissionId}/sample/create`,
+    `${STUDY}/${submissionId}/sample/create`,
   guide: `${IN}/guide`,
   settings: `${IN}/settings`,
 };
