@@ -73,6 +73,34 @@ test("SampleList can be filtered by search", async () => {
   expect(queryByText("Show All")).not.toBeInTheDocument();
 });
 
+test("SampleList shows all samples when search is cancelled", async () => {
+  const user = userEvent.setup();
+  const { getAllByRole, getByTitle, getByLabelText, queryByText } = render(
+    <SampleList submission={generateSubmission(30)} />,
+  );
+
+  // Click the search button and wait for the search in put to be present and focused
+  await user.click(getByTitle("show sample search"));
+  await waitFor(() =>
+    expect(getByTitle("sample search").querySelector("input")).toHaveFocus(),
+  );
+
+  // Type the test search
+  await user.keyboard("clay 20");
+
+  // Wait for search input to debounce and verify the result
+  await waitFor(() => {
+    expect(getAllByRole("heading")).toHaveLength(1);
+  });
+
+  // Cancel the search
+  await user.click(getByLabelText("Cancel"));
+
+  // Verify that all samples are shown
+  expect(getAllByRole("heading")).toHaveLength(5);
+  expect(queryByText("Show All")).toBeInTheDocument();
+});
+
 test("SampleList shows a message when no samples match search", async () => {
   const user = userEvent.setup();
   const { getByTitle, getByText } = render(
