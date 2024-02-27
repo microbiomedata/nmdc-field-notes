@@ -1,29 +1,16 @@
 import React from "react";
 import { useSubmission } from "../../queries";
-import {
-  IonButton,
-  IonChip,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonProgressBar,
-} from "@ionic/react";
+import { IonItem, IonLabel, IonList, IonProgressBar } from "@ionic/react";
 import SectionHeader from "../SectionHeader/SectionHeader";
-import { getSubmissionSamples } from "../../utils";
-import { paths } from "../../Router";
 import NoneOr from "../NoneOr/NoneOr";
-
-const COLLAPSED_SAMPLE_COUNT = 5;
+import SampleList from "../SampleList/SampleList";
 
 interface StudyViewProps {
   submissionId: string;
 }
 
 const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
-  const [showAllSamples, setShowAllSamples] = React.useState(false);
   const { query: submission } = useSubmission(submissionId);
-  const samples = getSubmissionSamples(submission.data);
 
   return (
     <>
@@ -106,44 +93,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
             </IonItem>
           </IonList>
 
-          <IonListHeader>
-            <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
-            <IonButton routerLink={paths.sampleCreate(submissionId)}>
-              New
-            </IonButton>
-          </IonListHeader>
-          <IonChip className="ion-margin-horizontal" outline>
-            Template: {submission.data.metadata_submission.templates[0]}
-          </IonChip>
-          <div className="ion-padding-bottom">
-            <IonList>
-              {samples
-                .slice(0, showAllSamples ? undefined : COLLAPSED_SAMPLE_COUNT)
-                .map((sample, index) => (
-                  <IonItem
-                    key={index}
-                    routerLink={paths.sample(submissionId, index)}
-                  >
-                    <IonLabel>
-                      <h3>
-                        <NoneOr placeholder="No sample name">
-                          {sample.samp_name}
-                        </NoneOr>
-                      </h3>
-                    </IonLabel>
-                  </IonItem>
-                ))}
-            </IonList>
-            {samples.length > COLLAPSED_SAMPLE_COUNT && (
-              <IonButton
-                expand="block"
-                fill="clear"
-                onClick={() => setShowAllSamples(!showAllSamples)}
-              >
-                {showAllSamples ? "Show Less" : "Show All"}
-              </IonButton>
-            )}
-          </div>
+          <SampleList submission={submission.data} />
         </>
       )}
     </>

@@ -21,6 +21,11 @@ export interface StudyForm {
   contributors: Contributor[];
 }
 
+export interface SampleData {
+  _index: number;
+  [key: string]: string | number;
+}
+
 // TODO: replace the `object` types with the actual types
 export interface MetadataSubmission {
   packageName: string;
@@ -29,7 +34,7 @@ export interface MetadataSubmission {
   templates: string[];
   studyForm: StudyForm;
   multiOmicsForm: object;
-  sampleData: Record<string, Record<string, string>[]>;
+  sampleData: Record<string, SampleData[]>;
 }
 
 export interface User {
@@ -96,6 +101,23 @@ class NmdcServerClient extends FetchClient {
     });
   }
 
+  /**
+   * Injects the "_index" property into each sample in the submission's sampleData.
+   *
+   * Because the submission portal backend needs to be tolerant of storing "invalid" data, some
+   * samples could essentially be empty. Therefore, there are no existing fields we can treat as a
+   * key (or persistent identifier). The samples are essentially identified by their position in the
+   * array. However, because the SampleList component allows the user to filter samples, we need to
+   * keep track of the original index of each sample.
+   */
+  private static injectStableSampleIndexes(submission: SubmissionMetadata) {
+    Object.values(submission.metadata_submission.sampleData).map((samples) => {
+      samples.forEach((sample, index) => {
+        sample["_index"] = index;
+      });
+    });
+  }
+
   async getSubmissionList(pagination: PaginationOptions = {}) {
     pagination = {
       limit: 10,
@@ -103,13 +125,21 @@ class NmdcServerClient extends FetchClient {
       ...pagination,
     };
     const query = new URLSearchParams(pagination as Record<string, string>);
-    return this.fetch<Paginated<SubmissionMetadata>>(
+    const submissions = await this.fetch<Paginated<SubmissionMetadata>>(
       `/metadata_submission?${query}`,
     );
+    submissions.results.forEach((submission) => {
+      NmdcServerClient.injectStableSampleIndexes(submission);
+    });
+    return submissions;
   }
 
   async getSubmission(id: string) {
-    return this.fetch<SubmissionMetadata>(`/metadata_submission/${id}`);
+    const submission = await this.fetch<SubmissionMetadata>(
+      `/metadata_submission/${id}`,
+    );
+    NmdcServerClient.injectStableSampleIndexes(submission);
+    return submission;
   }
 
   async updateSubmission(id: string, data: Partial<SubmissionMetadata>) {
