@@ -89,9 +89,11 @@ const SampleList: React.FC<SampleListProps> = ({
       <IonGrid className={isSearchVisible ? "ion-hide" : ""}>
         <IonRow class="ion-justify-content-between">
           <IonCol size="auto">
-            <IonChip outline>
-              Template: {submission.metadata_submission.templates[0]}
-            </IonChip>
+            {submission.metadata_submission.templates.length > 0 && (
+              <IonChip outline>
+                Template: {submission.metadata_submission.templates[0]}
+              </IonChip>
+            )}
           </IonCol>
           <IonCol size="auto">
             <IonButton
