@@ -9,7 +9,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@tanstack/eslint-plugin-query/recommended",
     "plugin:storybook/recommended",
-    "plugin:testing-library/react"
+    "plugin:testing-library/react",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
