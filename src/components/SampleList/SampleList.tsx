@@ -33,9 +33,9 @@ const SampleList: React.FC<SampleListProps> = ({
 }) => {
   const searchElement = React.useRef<HTMLIonSearchbarElement>(null);
 
-  const [collapsed, setCollapsed] = React.useState(true);
+  const [isCollapsed, setIsCollapsed] = React.useState(true);
 
-  const [showSearch, setShowSearch] = React.useState(false);
+  const [isSearchVisible, setIsSearchVisible] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState<string | null>();
 
   const samples = useMemo(
@@ -64,7 +64,7 @@ const SampleList: React.FC<SampleListProps> = ({
 
   const handleSearchCancel = () => {
     setSearchTerm(null);
-    setShowSearch(false);
+    setIsSearchVisible(false);
   };
 
   const displaySamples = searchTerm ? searchResults || [] : samples;
@@ -78,7 +78,7 @@ const SampleList: React.FC<SampleListProps> = ({
         </IonButton>
       </IonListHeader>
 
-      <IonGrid className={showSearch ? "ion-hide" : ""}>
+      <IonGrid className={isSearchVisible ? "ion-hide" : ""}>
         <IonRow class="ion-justify-content-between">
           <IonCol size="auto">
             <IonChip outline>
@@ -91,7 +91,7 @@ const SampleList: React.FC<SampleListProps> = ({
               size="small"
               fill="clear"
               onClick={() => {
-                setShowSearch(true);
+                setIsSearchVisible(true);
                 // Wait for the search bar to be rendered before focusing
                 setTimeout(() => searchElement.current?.setFocus(), 10);
               }}
@@ -106,7 +106,7 @@ const SampleList: React.FC<SampleListProps> = ({
         title="sample search"
         showCancelButton="always"
         debounce={200}
-        className={showSearch ? "" : "ion-hide"}
+        className={isSearchVisible ? "" : "ion-hide"}
         onIonInput={handleSearchInput}
         onIonCancel={handleSearchCancel}
         ref={searchElement}
@@ -116,7 +116,7 @@ const SampleList: React.FC<SampleListProps> = ({
         {displaySamples.length > 0 && (
           <IonList>
             {displaySamples
-              .slice(0, collapsed ? collapsedSize : undefined)
+              .slice(0, isCollapsed ? collapsedSize : undefined)
               .map((result) => (
                 <IonItem
                   key={result._index}
@@ -138,9 +138,9 @@ const SampleList: React.FC<SampleListProps> = ({
           <IonButton
             expand="block"
             fill="clear"
-            onClick={() => setCollapsed((previous) => !previous)}
+            onClick={() => setIsCollapsed((previous) => !previous)}
           >
-            {collapsed ? "Show All" : "Show Less"}
+            {isCollapsed ? "Show All" : "Show Less"}
           </IonButton>
         )}
 
