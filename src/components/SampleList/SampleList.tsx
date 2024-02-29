@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   IonButton,
   IonChip,
@@ -43,6 +43,14 @@ const SampleList: React.FC<SampleListProps> = ({
     () => getSubmissionSamples(submission).toReversed(),
     [submission],
   );
+
+  // Whenever the search field changes from hidden to visible, focus on it.
+  // This is done in a useEffect so that it happens after the searchbox is rendered.
+  useEffect(() => {
+    if (isSearchVisible) {
+      searchElement.current?.setFocus();
+    }
+  }, [isSearchVisible]);
 
   const { search, searchResults } = useMiniSearch(samples, {
     fields: ["samp_name"],
@@ -90,11 +98,7 @@ const SampleList: React.FC<SampleListProps> = ({
               title="show sample search"
               size="small"
               fill="clear"
-              onClick={() => {
-                setIsSearchVisible(true);
-                // Wait for the search bar to be rendered before focusing
-                setTimeout(() => searchElement.current?.setFocus(), 10);
-              }}
+              onClick={() => setIsSearchVisible(true)}
             >
               <IonIcon icon={searchIcon} slot="icon-only"></IonIcon>
             </IonButton>
