@@ -14,20 +14,29 @@ import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
 import StudyCreatePage from "./pages/StudyCreatePage/StudyCreatePage";
 import TabNavigator from "./components/TabNavigator/TabNavigator";
 import PlaceholderPage from "./pages/PlaceholderPage";
+import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
+import SamplePage from "./pages/SamplePage/SamplePage";
+import SampleCreatePage from "./pages/SampleCreatePage/SampleCreatePage";
 
-export const PATHS = {
-  ROOT: "/",
-  HOME_PAGE: "/in/study",
-  TUTORIAL_PAGE: "/tutorial",
-  WELCOME_PAGE: "/welcome",
-  LOGIN_PAGE: "/login",
-  TOKEN_PAGE: "/token",
-  LOGOUT_PAGE: "/logout",
-  STUDY_CREATE_PAGE: "/in/study/create",
-  STUDY_VIEW_PAGE: "/in/study/:id",
-  TABBED_AREA: "/in",
-  GUIDE_PAGE: "/in/guide",
-  SETTINGS_PAGE: "/in/settings",
+const IN = "/in";
+const STUDY = `${IN}/study`;
+export const paths = {
+  root: "/",
+  home: STUDY,
+  tutorial: "/tutorial",
+  welcome: "/welcome",
+  login: "/login",
+  token: "/token",
+  logout: "/logout",
+  studyCreate: `${STUDY}/create`,
+  studyView: (submissionId: string) => `${STUDY}/${submissionId}`,
+  studyEdit: (submissionId: string) => `${STUDY}/${submissionId}/edit`,
+  sample: (submissionId: string, sampleIndex: string | number) =>
+    `${STUDY}/${submissionId}/sample/${sampleIndex}`,
+  sampleCreate: (submissionId: string) =>
+    `${STUDY}/${submissionId}/sample/create`,
+  guide: `${IN}/guide`,
+  settings: `${IN}/settings`,
 };
 
 const Router: React.FC = () => {
@@ -35,55 +44,75 @@ const Router: React.FC = () => {
   return (
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route exact path={PATHS.LOGIN_PAGE}>
+        <Route exact path={paths.login}>
           <LoginPage />
         </Route>
-        <Route exact path={PATHS.LOGOUT_PAGE}>
+        <Route exact path={paths.logout}>
           <LogoutPage />
         </Route>
-        <Route exact path={PATHS.TOKEN_PAGE}>
+        <Route exact path={paths.token}>
           <TokenPage />
         </Route>
-        <Route exact path={PATHS.WELCOME_PAGE}>
+        <Route exact path={paths.welcome}>
           <WelcomePage />
         </Route>
-        <Route exact path={PATHS.TUTORIAL_PAGE}>
+        <Route exact path={paths.tutorial}>
           <TutorialPage />
         </Route>
 
-        <Route path={PATHS.TABBED_AREA}>
+        <Route path={IN}>
           <TabNavigator>
-            <AuthRoute exact path={PATHS.STUDY_CREATE_PAGE}>
-              <StudyCreatePage />
-            </AuthRoute>
-            <AuthRoute path={PATHS.STUDY_VIEW_PAGE}>
+            {/* STUDIES TAB ROUTES */}
+            {/* It's unclear why the /create routes need to be listed after the /:id routes. It
+                seems backwards from what the react-router docs suggest, but it's what works. */}
+            <AuthRoute exact path={paths.studyView(":submissionId")}>
               <StudyViewPage />
             </AuthRoute>
-            <AuthRoute exact path={PATHS.HOME_PAGE}>
+            <AuthRoute exact path={paths.studyCreate}>
+              <StudyCreatePage />
+            </AuthRoute>
+            <AuthRoute exact path={paths.studyEdit(":submissionId")}>
+              <StudyEditPage />
+            </AuthRoute>
+            <AuthRoute
+              exact
+              path={paths.sample(":submissionId", ":sampleIndex")}
+            >
+              <SamplePage />
+            </AuthRoute>
+            <AuthRoute exact path={paths.sampleCreate(":submissionId")}>
+              <SampleCreatePage />
+            </AuthRoute>
+            <AuthRoute exact path={paths.home}>
               <HomePage />
             </AuthRoute>
-            <AuthRoute exact path={PATHS.GUIDE_PAGE}>
+
+            {/* GUIDE TAB ROUTES */}
+            <AuthRoute exact path={paths.guide}>
               <PlaceholderPage
                 title={"Guide"}
                 body={"Base route on Guide tab"}
               />
             </AuthRoute>
-            <AuthRoute exact path={PATHS.SETTINGS_PAGE}>
+
+            {/* SETTINGS TAB ROUTES */}
+            <AuthRoute exact path={paths.settings}>
               <PlaceholderPage
                 title={"Settings"}
                 body={"Base route on Settings tab"}
               />
             </AuthRoute>
+
             {/* Fallback route for when the requested path doesn't match any of the above paths. */}
-            <Redirect to={PATHS.HOME_PAGE} />
+            <Redirect to={paths.home} />
           </TabNavigator>
         </Route>
 
-        <Route exact path={PATHS.ROOT}>
-          <Redirect to={apiToken ? PATHS.HOME_PAGE : PATHS.WELCOME_PAGE} />
+        <Route exact path={paths.root}>
+          <Redirect to={apiToken ? paths.home : paths.welcome} />
         </Route>
         {/* Fallback route for when the requested path doesn't match any of the above paths. */}
-        <Redirect to={PATHS.ROOT} />
+        <Redirect to={paths.root} />
       </IonRouterOutlet>
     </IonReactRouter>
   );

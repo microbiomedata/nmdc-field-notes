@@ -12,14 +12,9 @@ import {
 } from "@ionic/react";
 import { SubmissionMetadata } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
-import { PATHS } from "../../Router";
-
-const getSubmissionSamples = (submission: SubmissionMetadata) => {
-  const environmentalPackageName =
-    submission.metadata_submission.templates[0].replaceAll("-", "_");
-  const sampleDataField = `${environmentalPackageName}_data`;
-  return submission.metadata_submission.sampleData[sampleDataField] || [];
-};
+import { getSubmissionSamples } from "../../utils";
+import { paths } from "../../Router";
+import NoneOr from "../NoneOr/NoneOr";
 
 const StudyList: React.FC = () => {
   const submissionList = useSubmissionList();
@@ -37,7 +32,7 @@ const StudyList: React.FC = () => {
     <>
       <IonListHeader>
         <IonLabel>Studies</IonLabel>
-        <IonButton routerLink={PATHS.STUDY_CREATE_PAGE}>New</IonButton>
+        <IonButton routerLink={paths.studyCreate}>New</IonButton>
       </IonListHeader>
 
       <IonProgressBar
@@ -56,21 +51,22 @@ const StudyList: React.FC = () => {
         </IonText>
       ) : (
         <>
-          <IonList lines="full">
+          <IonList>
             {concatenatedSubmissions.map((submission) => (
               <IonItem
                 key={submission.id}
-                routerLink={PATHS.STUDY_VIEW_PAGE.replace(":id", submission.id)}
+                routerLink={paths.studyView(submission.id)}
               >
                 <IonLabel>
                   <h3>
-                    {submission.metadata_submission.studyForm.studyName || (
-                      <IonText color="medium">(No study name)</IonText>
-                    )}
+                    <NoneOr placeholder="No study name">
+                      {submission.metadata_submission.studyForm.studyName}
+                    </NoneOr>
                   </h3>
                   <p>
-                    {submission.metadata_submission.templates[0] ||
-                      "No template selected"}
+                    <NoneOr placeholder="No template selected">
+                      {submission.metadata_submission.templates[0]}
+                    </NoneOr>
                     {" • "}
                     <Pluralize
                       count={getSubmissionSamples(submission).length}

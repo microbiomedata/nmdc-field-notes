@@ -1,5 +1,45 @@
 import { SubmissionMetadata } from "../api";
 
+export function generateSubmission(numberOfSamples: number) {
+  return {
+    id: "1",
+    author: {
+      id: "1",
+      is_admin: false,
+      name: "",
+      orcid: "",
+    },
+    status: "in-progress",
+    created: "2021-01-01T00:00:00Z",
+    author_orcid: "0000-0000-0000-0000",
+    metadata_submission: {
+      packageName: "soil",
+      multiOmicsForm: {},
+      contextForm: {},
+      addressForm: {},
+      templates: ["soil"],
+      studyForm: {
+        studyName: "",
+        piName: "",
+        piEmail: "",
+        piOrcid: "",
+        linkOutWebpage: [],
+        studyDate: undefined,
+        description: "",
+        contributors: [],
+      },
+      sampleData: {
+        soil_data: Array.from({ length: numberOfSamples }, (_, i) => ({
+          _index: i,
+          samp_name:
+            (i % 3 === 0 ? "Silt" : i % 5 === 0 ? "Clay" : "Loam") + " " + i,
+        })),
+      },
+    },
+    locked_by: null,
+  };
+}
+
 export const submissions: SubmissionMetadata[] = [
   {
     metadata_submission: {

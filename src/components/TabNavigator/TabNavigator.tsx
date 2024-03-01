@@ -12,7 +12,7 @@ import {
   map as guideIcon,
   settings as settingsIcon,
 } from "ionicons/icons";
-import { PATHS } from "../../Router";
+import { paths } from "../../Router";
 
 interface Props extends PropsWithChildren {}
 
@@ -28,15 +28,15 @@ const TabNavigator: React.FC<Props> = ({ children }) => {
 
       {/* Tab navigation bar at the bottom of the viewport. */}
       <IonTabBar slot={"bottom"}>
-        <IonTabButton tab={"studies"} href={PATHS.HOME_PAGE}>
+        <IonTabButton tab={"studies"} href={paths.home}>
           <IonIcon icon={studiesIcon} />
           <IonLabel>Studies</IonLabel>
         </IonTabButton>
-        <IonTabButton tab={"guide"} href={PATHS.GUIDE_PAGE}>
+        <IonTabButton tab={"guide"} href={paths.guide}>
           <IonIcon icon={guideIcon} />
           <IonLabel>Guide</IonLabel>
         </IonTabButton>
-        <IonTabButton tab={"settings"} href={PATHS.SETTINGS_PAGE}>
+        <IonTabButton tab={"settings"} href={paths.settings}>
           <IonIcon icon={settingsIcon} />
           <IonLabel>Settings</IonLabel>
         </IonTabButton>

@@ -1,8 +1,9 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import StoreProvider, { useStore } from "./Store";
 import { nmdcServerClient } from "./api";
 import { vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 
 const TestStoreConsumer: React.FC = () => {
   const { apiToken, setApiToken, store } = useStore();
@@ -30,11 +31,25 @@ const TestStoreConsumer: React.FC = () => {
 };
 
 const renderTestStoreConsumer = () => {
-  return render(
+  const setBearerTokenSpy = vi.spyOn(nmdcServerClient, "setBearerToken");
+  const user = userEvent.setup();
+
+  render(
     <StoreProvider>
       <TestStoreConsumer />
     </StoreProvider>,
   );
+
+  return {
+    user,
+    setBearerTokenSpy,
+    elements: {
+      storeStatus: screen.getByTestId("store-status"),
+      apiToken: screen.getByTestId("api-token"),
+      setTokenButton: screen.getByTestId("set-api-token"),
+      callbackStatus: screen.getByTestId("callback-status"),
+    },
+  };
 };
 
 // This test directly accesses window.localStorage to verify that certain storage keys are saved to
@@ -45,39 +60,35 @@ const renderTestStoreConsumer = () => {
 describe("Store", () => {
   it("should provide a null apiToken by default", async () => {
     // Set up API client spy and render test component
-    const spy = vi.spyOn(nmdcServerClient, "setBearerToken");
-    const { getByTestId } = renderTestStoreConsumer();
+    const { elements, setBearerTokenSpy } = renderTestStoreConsumer();
 
     // Verify that the store gets initialized, the API token is not set, and the spy is not called
     await waitFor(() =>
-      expect(getByTestId("store-status").textContent).toBe("store created"),
+      expect(elements.storeStatus.textContent).toBe("store created"),
     );
-    expect(getByTestId("api-token").textContent).toBe("");
-    expect(spy).not.toHaveBeenCalled();
+    expect(elements.apiToken.textContent).toBe("");
+    expect(setBearerTokenSpy).not.toHaveBeenCalled();
   });
 
   it("should provide a function to update the apiToken", async () => {
     // Set up API client spy and render test component
-    const spy = vi.spyOn(nmdcServerClient, "setBearerToken");
-    const { getByTestId } = renderTestStoreConsumer();
+    const { elements, setBearerTokenSpy, user } = renderTestStoreConsumer();
 
     // Verify that the store gets initialized
     await waitFor(() =>
-      expect(getByTestId("store-status").textContent).toBe("store created"),
+      expect(elements.storeStatus.textContent).toBe("store created"),
     );
 
     // Click the button which sets the token
-    fireEvent.click(getByTestId("set-api-token"));
+    await user.click(elements.setTokenButton);
     await waitFor(() =>
-      expect(getByTestId("callback-status").textContent).toBe(
-        "callback complete",
-      ),
+      expect(elements.callbackStatus.textContent).toBe("callback complete"),
     );
 
     // Verify that the token was set, the spy to update the API client was called, and the token
     // was saved to storage
-    expect(getByTestId("api-token").textContent).toBe("test");
-    expect(spy).toHaveBeenCalledWith("test");
+    expect(elements.apiToken.textContent).toBe("test");
+    expect(setBearerTokenSpy).toHaveBeenCalledWith("test");
     expect(
       window.localStorage.getItem("nmdc_field_notes/app_store/apiToken"),
     ).toBe('"test"');
@@ -91,12 +102,12 @@ describe("Store", () => {
     );
 
     // Render the test component
-    const { getByTestId } = renderTestStoreConsumer();
+    const { elements } = renderTestStoreConsumer();
 
     // Verify that the store gets initialized with the pre-populated token
     await waitFor(() =>
-      expect(getByTestId("store-status").textContent).toBe("store created"),
+      expect(elements.storeStatus.textContent).toBe("store created"),
     );
-    expect(getByTestId("api-token").textContent).toBe("from-storage");
+    expect(elements.apiToken.textContent).toBe("from-storage");
   });
 });

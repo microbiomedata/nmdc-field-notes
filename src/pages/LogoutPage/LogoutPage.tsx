@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useStore } from "../../Store";
 import { useHistory } from "react-router-dom";
-import { PATHS } from "../../Router";
+import { paths } from "../../Router";
 
 const LogoutPage: React.FC = () => {
   const { setApiToken } = useStore();
@@ -10,7 +10,7 @@ const LogoutPage: React.FC = () => {
   useEffect(() => {
     async function logout() {
       await setApiToken(null);
-      history.replace(PATHS.ROOT);
+      history.replace(paths.root);
     }
     logout();
   }, []);
