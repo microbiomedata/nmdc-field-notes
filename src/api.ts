@@ -1,3 +1,5 @@
+import config from './config';
+
 export interface Paginated<Type> {
   count: number;
   readonly results: Type[];
@@ -94,7 +96,7 @@ class FetchClient {
 
 class NmdcServerClient extends FetchClient {
   constructor() {
-    super(import.meta.env.VITE_NMDC_SERVER_API_URL, {
+    super(config.NMDC_SERVER_API_URL, {
       headers: {
         "Content-Type": "application/json",
       },
