@@ -29,7 +29,8 @@ const config: Config = {
    * Default: The `/login` endpoint in the dev environment.
    */
   NMDC_SERVER_LOGIN_URL:
-    env.VITE_NMDC_SERVER_LOGIN_URL || "https://data-dev.microbiomedata.org/login",
+    env.VITE_NMDC_SERVER_LOGIN_URL ||
+    "https://data-dev.microbiomedata.org/login",
 };
 
 export default config;

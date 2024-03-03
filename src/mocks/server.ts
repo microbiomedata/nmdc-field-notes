@@ -2,7 +2,7 @@ import { delay, http, HttpResponse } from "msw";
 import { Paginated, SubmissionMetadata } from "../api";
 import { submissions } from "./fixtures";
 import { setupServer } from "msw/node";
-import config from '../config';
+import config from "../config";
 
 const { NMDC_SERVER_API_URL } = config;
 
