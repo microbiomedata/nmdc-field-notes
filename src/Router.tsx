@@ -17,6 +17,7 @@ import PlaceholderPage from "./pages/PlaceholderPage";
 import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
 import SamplePage from "./pages/SamplePage/SamplePage";
 import SampleCreatePage from "./pages/SampleCreatePage/SampleCreatePage";
+import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
 
 const IN = "/in";
 const STUDY = `${IN}/study`;
@@ -43,6 +44,7 @@ const Router: React.FC = () => {
   const { apiToken } = useStore();
   return (
     <IonReactRouter>
+      <AppUrlListener />
       <IonRouterOutlet>
         <Route exact path={paths.login}>
           <LoginPage />
