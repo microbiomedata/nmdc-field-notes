@@ -18,11 +18,12 @@ import Logo from "../../components/Logo/Logo";
 import { paths } from "../../Router";
 import "./WelcomePage.css";
 import { Browser } from "@capacitor/browser";
+import config from "../../config";
 
 const WelcomePage: React.FC = () => {
   const handleLogin = async () => {
     await Browser.open({
-      url: `${import.meta.env.VITE_NMDC_SERVER_LOGIN_URL}?behavior=app`,
+      url: `${config.NMDC_SERVER_LOGIN_URL}?behavior=app`,
       windowName: "_self", // web only
     });
   };

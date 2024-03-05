@@ -42,7 +42,11 @@ npm install
 
 ### Setup local environment
 
-The application loads values from environment variables defined in a `.env.local` file. This file is not checked into source control. It is [loaded automatically by Vite](https://vitejs.dev/guide/env-and-mode), and the values are exposed on the `import.meta.env` object. You can copy the `.env.local.example` file to `.env.local` to get started.
+The application loads values from environment variables defined in a `.env.local` file.
+
+> That file is intentionally not stored in the Git repository. That file is [loaded automatically by Vite](https://vitejs.dev/guide/env-and-mode), which exposes the environment variables via the `import.meta.env` object. The application's `config.ts` file then uses that object to make a `config` object—and the rest of the application uses that `config` object instead of directly accessing the `import.meta.env` object.
+
+You can copy the `.env.local.example` file to `.env.local` to get started.
 
 ```shell
 cp .env.local.example .env.local
