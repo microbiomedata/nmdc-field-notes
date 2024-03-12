@@ -164,8 +164,6 @@ class NmdcServerClient extends FetchClient {
   }
 
   async deleteSubmission(id: string) {
-    // Use fetch instead of JSON because this sends and empty response
-    // with a 204 status on success. 
     return this.fetch(`/metadata_submission/${id}`, {
       method: "DELETE",
     });
