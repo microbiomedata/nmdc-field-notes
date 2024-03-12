@@ -1,10 +1,15 @@
 import { delay, http, HttpResponse } from "msw";
 import { Paginated, SubmissionMetadata } from "../api";
-import { submissions } from "./fixtures";
+import {
+  generateEmptySubmission,
+  submissions as submissionsFixture,
+} from "./fixtures";
 import { setupServer } from "msw/node";
 import config from "../config";
 
 const { NMDC_SERVER_API_URL } = config;
+
+let submissions = submissionsFixture;
 
 export const handlers = [
   http.get<
@@ -33,6 +38,30 @@ export const handlers = [
         ...submissions.find((s) => s.id === id),
         ...body,
       });
+    },
+  ),
+  http.post<
+    Record<never, never>,
+    DeepPartial<SubmissionMetadata>,
+    SubmissionMetadata
+  >(`${NMDC_SERVER_API_URL}/metadata_submission`, async ({ request }) => {
+    const body = await request.json();
+    const submission = generateEmptySubmission();
+    // TODO: this should be a true deep merge between the empty submission and the incoming body,
+    // But for now this is good enough for the tests
+    submission.metadata_submission.studyForm.studyName =
+      body.metadata_submission?.studyForm?.studyName || "";
+    submission.metadata_submission.studyForm.piEmail =
+      body.metadata_submission?.studyForm?.piEmail || "";
+    submissions.push(submission);
+    return HttpResponse.json(submission);
+  }),
+  http.delete<{ id: string }>(
+    `${NMDC_SERVER_API_URL}/metadata_submission/:id`,
+    async ({ params }) => {
+      const { id } = params;
+      submissions = submissions.filter((s) => s.id !== id);
+      return new HttpResponse(null, { status: 204 });
     },
   ),
   http.get(`${NMDC_SERVER_API_URL}/me`, async () => {

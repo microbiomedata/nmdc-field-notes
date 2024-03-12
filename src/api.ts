@@ -78,10 +78,7 @@ class FetchClient {
     };
   }
 
-  protected async fetch<T>(
-    endpoint: string,
-    options: RequestInit = {},
-  ): Promise<T> {
+  protected async fetch(endpoint: string, options: RequestInit = {}) {
     const init = {
       ...this.defaultOptions,
       ...options,
@@ -90,6 +87,14 @@ class FetchClient {
     if (!response.ok) {
       throw new Error(`Fetch error: ${response.statusText}`);
     }
+    return response;
+  }
+
+  protected async json<T>(
+    endpoint: string,
+    options: RequestInit = {},
+  ): Promise<T> {
+    const response = await this.fetch(endpoint, options);
     return response.json();
   }
 }
@@ -127,7 +132,7 @@ class NmdcServerClient extends FetchClient {
       ...pagination,
     };
     const query = new URLSearchParams(pagination as Record<string, string>);
-    const submissions = await this.fetch<Paginated<SubmissionMetadata>>(
+    const submissions = await this.json<Paginated<SubmissionMetadata>>(
       `/metadata_submission?${query}`,
     );
     submissions.results.forEach((submission) => {
@@ -137,7 +142,7 @@ class NmdcServerClient extends FetchClient {
   }
 
   async getSubmission(id: string) {
-    const submission = await this.fetch<SubmissionMetadata>(
+    const submission = await this.json<SubmissionMetadata>(
       `/metadata_submission/${id}`,
     );
     NmdcServerClient.injectStableSampleIndexes(submission);
@@ -145,14 +150,29 @@ class NmdcServerClient extends FetchClient {
   }
 
   async updateSubmission(id: string, data: Partial<SubmissionMetadata>) {
-    return this.fetch<SubmissionMetadata>(`/metadata_submission/${id}`, {
+    return this.json<SubmissionMetadata>(`/metadata_submission/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
     });
   }
 
+  async createSubmission(data: DeepPartial<SubmissionMetadata>) {
+    return this.json<SubmissionMetadata>("/metadata_submission", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteSubmission(id: string) {
+    // Use fetch instead of JSON because this sends and empty response
+    // with a 204 status on success. 
+    return this.fetch(`/metadata_submission/${id}`, {
+      method: "DELETE",
+    });
+  }
+
   async getCurrentUser() {
-    return this.fetch<string>("/me");
+    return this.json<string>("/me");
   }
 }
 

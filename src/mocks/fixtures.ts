@@ -1,5 +1,39 @@
 import { SubmissionMetadata } from "../api";
 
+export function generateEmptySubmission(): SubmissionMetadata {
+  return {
+    author: {
+      id: "",
+      is_admin: false,
+      name: "",
+      orcid: "",
+    },
+    author_orcid: "",
+    created: "",
+    locked_by: undefined,
+    status: "",
+    id: "",
+    metadata_submission: {
+      packageName: "",
+      contextForm: {},
+      addressForm: {},
+      templates: [],
+      studyForm: {
+        studyName: "",
+        piName: "",
+        piEmail: "",
+        piOrcid: "",
+        linkOutWebpage: [],
+        studyDate: "",
+        description: "",
+        contributors: [],
+      },
+      multiOmicsForm: {},
+      sampleData: {},
+    },
+  };
+}
+
 export function generateSubmission(numberOfSamples: number) {
   return {
     id: "1",
