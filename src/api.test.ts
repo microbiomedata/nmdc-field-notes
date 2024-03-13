@@ -1,4 +1,5 @@
 import { nmdcServerClient } from "./api";
+import { defaultSubmission } from "./data";
 
 test("getSubmissionList", async () => {
   const submissions = await nmdcServerClient.getSubmissionList();
@@ -25,14 +26,10 @@ test("updateSubmission", async () => {
 });
 
 test("createSubmission", async () => {
-  const submission = await nmdcServerClient.createSubmission({
-    metadata_submission: {
-      studyForm: {
-        studyName: "New Study",
-        piEmail: "test@fake.edu",
-      },
-    },
-  });
+  const submissionCreate = defaultSubmission();
+  submissionCreate.metadata_submission.studyForm.studyName = "New Study";
+  submissionCreate.metadata_submission.studyForm.piEmail = "test@fake.edu";
+  const submission = await nmdcServerClient.createSubmission(submissionCreate);
   expect(submission.metadata_submission.studyForm.studyName).toEqual(
     "New Study",
   );

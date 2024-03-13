@@ -1,40 +1,13 @@
 import { SubmissionMetadata } from "../api";
+import {
+  defaultAddressForm,
+  defaultContextForm,
+  defaultMultiOmicsForm,
+} from "../data";
 
-export function generateEmptySubmission(): SubmissionMetadata {
-  return {
-    author: {
-      id: "",
-      is_admin: false,
-      name: "",
-      orcid: "",
-    },
-    author_orcid: "",
-    created: "",
-    locked_by: undefined,
-    status: "",
-    id: "",
-    metadata_submission: {
-      packageName: "",
-      contextForm: {},
-      addressForm: {},
-      templates: [],
-      studyForm: {
-        studyName: "",
-        piName: "",
-        piEmail: "",
-        piOrcid: "",
-        linkOutWebpage: [],
-        studyDate: "",
-        description: "",
-        contributors: [],
-      },
-      multiOmicsForm: {},
-      sampleData: {},
-    },
-  };
-}
-
-export function generateSubmission(numberOfSamples: number) {
+export function generateSubmission(
+  numberOfSamples: number,
+): SubmissionMetadata {
   return {
     id: "1",
     author: {
@@ -48,9 +21,9 @@ export function generateSubmission(numberOfSamples: number) {
     author_orcid: "0000-0000-0000-0000",
     metadata_submission: {
       packageName: "soil",
-      multiOmicsForm: {},
-      contextForm: {},
-      addressForm: {},
+      multiOmicsForm: defaultMultiOmicsForm(),
+      contextForm: defaultContextForm(),
+      addressForm: defaultAddressForm(),
       templates: ["soil"],
       studyForm: {
         studyName: "",
@@ -61,6 +34,7 @@ export function generateSubmission(numberOfSamples: number) {
         studyDate: undefined,
         description: "",
         contributors: [],
+        notes: "",
       },
       sampleData: {
         soil_data: Array.from({ length: numberOfSamples }, (_, i) => ({

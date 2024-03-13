@@ -8,7 +8,12 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { Paginated, SubmissionMetadata, nmdcServerClient } from "./api";
+import {
+  Paginated,
+  SubmissionMetadata,
+  nmdcServerClient,
+  SubmissionMetadataCreate,
+} from "./api";
 import { produce } from "immer";
 
 export const userKeys = {
@@ -35,7 +40,7 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
     },
   });
   queryClient.setMutationDefaults(submissionKeys.create(), {
-    mutationFn: async (newSubmission: DeepPartial<SubmissionMetadata>) => {
+    mutationFn: async (newSubmission: SubmissionMetadataCreate) => {
       await queryClient.cancelQueries({
         queryKey: submissionKeys.create(),
       });
@@ -194,7 +199,7 @@ export function useSubmissionCreate() {
   const mutation = useMutation<
     SubmissionMetadata,
     DefaultError,
-    DeepPartial<SubmissionMetadata>
+    SubmissionMetadataCreate
   >({
     mutationKey: submissionKeys.create(),
     onSuccess: () => {

@@ -14,6 +14,7 @@ import {
 } from "./queries";
 import { produce } from "immer";
 import { patchMetadataSubmissionError, server, delay } from "./mocks/server";
+import { defaultSubmission } from "./data";
 
 interface TestWrapperProps {
   children: ReactNode;
@@ -282,15 +283,11 @@ test("useSubmissionCreate should create submission", async () => {
   const { result } = renderHook(() => useSubmissionCreate(), { wrapper });
 
   // Create a new submission
+  const newSubmission = defaultSubmission();
+  newSubmission.metadata_submission.studyForm.studyName = "New Study";
+  newSubmission.metadata_submission.studyForm.piEmail = "test@fake.org";
   await act(() => {
-    return result.current.mutateAsync({
-      metadata_submission: {
-        studyForm: {
-          studyName: "New Study",
-          piEmail: "test@fake.org",
-        },
-      },
-    });
+    return result.current.mutateAsync(newSubmission);
   });
 
   // Ensure that the mutation completes successfully and that the submission is in the list
