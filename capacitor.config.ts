@@ -2,10 +2,18 @@ import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "io.ionic.starter",
-  appName: "nmdc-field-notes",
+  appName: "Field Notes",
   webDir: "dist",
   server: {
     androidScheme: "https",
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 1000,
+      launchAutoHide: true,
+      androidScaleType: "CENTER_CROP",
+      splashImmersive: true,
+    },
   },
 };
 
