@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   IonBackButton,
   IonButtons,
@@ -7,9 +7,34 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonRouter,
+  useIonToast,
 } from "@ionic/react";
+import StudyForm from "../../components/StudyForm/StudyForm";
+import { useSubmissionCreate } from "../../queries";
+import { SubmissionMetadataCreate } from "../../api";
+import { paths } from "../../Router";
+import { defaultSubmission } from "../../data";
 
 const StudyCreatePage: React.FC = () => {
+  const router = useIonRouter();
+  const [present] = useIonToast();
+  const submissionCreate = useSubmissionCreate();
+  const submission = useMemo(defaultSubmission, []);
+
+  const handleSave = async (submission: SubmissionMetadataCreate) => {
+    submissionCreate.mutate(submission, {
+      onSuccess: (created) => {
+        present({
+          message: "Study created",
+          duration: 3000,
+          color: "success",
+        });
+        router.push(paths.studyView(created.id), "forward", "replace");
+      },
+    });
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -21,7 +46,7 @@ const StudyCreatePage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <h2>New Study</h2>
+        <StudyForm submission={submission} onSave={handleSave} />
       </IonContent>
     </IonPage>
   );
