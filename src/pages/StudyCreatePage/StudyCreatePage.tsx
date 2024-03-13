@@ -15,6 +15,7 @@ import { useSubmissionCreate } from "../../queries";
 import { SubmissionMetadataCreate } from "../../api";
 import { paths } from "../../Router";
 import { defaultSubmission } from "../../data";
+import { checkmark } from "ionicons/icons";
 
 const StudyCreatePage: React.FC = () => {
   const router = useIonRouter();
@@ -28,7 +29,7 @@ const StudyCreatePage: React.FC = () => {
         present({
           message: "Study created",
           duration: 3000,
-          color: "success",
+          icon: checkmark,
         });
         router.push(paths.studyView(created.id), "forward", "replace");
       },

@@ -22,7 +22,11 @@ import { paths } from "../../Router";
 import StudyForm from "../../components/StudyForm/StudyForm";
 import { useSubmission } from "../../queries";
 import { SubmissionMetadata, SubmissionMetadataCreate } from "../../api";
-import { ellipsisHorizontal, ellipsisVertical } from "ionicons/icons";
+import {
+  checkmark,
+  ellipsisHorizontal,
+  ellipsisVertical,
+} from "ionicons/icons";
 
 interface StudyEditPageParams {
   submissionId: string;
@@ -45,7 +49,7 @@ const StudyEditPage: React.FC = () => {
         presentToast({
           message: "Study updated",
           duration: 3000,
-          color: "success",
+          icon: checkmark,
         });
       },
     });
