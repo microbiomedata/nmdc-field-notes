@@ -106,12 +106,12 @@ test("useSubmission should mutate data", async () => {
     draft.metadata_submission.studyForm.studyName = "UPDATED";
   });
   await act(() => {
-    result.current.update.mutate(updatedSubmission);
+    result.current.updateMutation.mutate(updatedSubmission);
     return delay(10);
   });
   // Verify that the mutation has optimistically updated the data
   expect(
-    result.current.update.data?.metadata_submission.studyForm.studyName,
+    result.current.updateMutation.data?.metadata_submission.studyForm.studyName,
   ).toBe("UPDATED");
   expect(
     result.current.query.data?.metadata_submission.studyForm.studyName,
@@ -119,10 +119,12 @@ test("useSubmission should mutate data", async () => {
 
   // Once the mutation completes, ensure that both the mutation, query, and list query still return
   // the updated data
-  await waitFor(() => expect(result.current.update.isSuccess).toBe(true));
-  expect(result.current.update.data).toBeDefined();
+  await waitFor(() =>
+    expect(result.current.updateMutation.isSuccess).toBe(true),
+  );
+  expect(result.current.updateMutation.data).toBeDefined();
   expect(
-    result.current.update.data?.metadata_submission.studyForm.studyName,
+    result.current.updateMutation.data?.metadata_submission.studyForm.studyName,
   ).toBe("UPDATED");
   expect(
     result.current.query.data?.metadata_submission.studyForm.studyName,
@@ -165,7 +167,7 @@ test("useSubmission should replace paused mutations when offline", async () => {
   // waits for the entire request to go through successfully which won't happen here because we're
   // offline. So instead just pause for a very short duration.
   await act(() => {
-    result.current.update.mutate(update1);
+    result.current.updateMutation.mutate(update1);
     return delay(10);
   });
 
@@ -173,14 +175,16 @@ test("useSubmission should replace paused mutations when offline", async () => {
     draft.metadata_submission.studyForm.studyName = "UPDATE 2";
   });
   await act(() => {
-    result.current.update.mutate(update2);
+    result.current.updateMutation.mutate(update2);
     return delay(10);
   });
 
   // Go back online, ensure that the mutation successfully completes, that only one PATCH
   // request was sent, and that the final data is correct.
   onlineManager.setOnline(true);
-  await waitFor(() => expect(result.current.update.isSuccess).toBe(true));
+  await waitFor(() =>
+    expect(result.current.updateMutation.isSuccess).toBe(true),
+  );
   expect(patchCount).toBe(1);
   expect(
     result.current.query.data?.metadata_submission.studyForm.studyName,
@@ -211,7 +215,7 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
     draft.metadata_submission.studyForm.studyName = "UPDATED";
   });
   await act(() => {
-    result.current.update.mutate(updatedSubmission);
+    result.current.updateMutation.mutate(updatedSubmission);
     return delay(10);
   });
   // Verify that the mutation has optimistically updated the data
@@ -221,7 +225,7 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
 
   // Once the mutation completes (as failed), ensure that both the mutation, query, and list query
   // now return the rolled back data
-  await waitFor(() => expect(result.current.update.isError).toBe(true));
+  await waitFor(() => expect(result.current.updateMutation.isError).toBe(true));
   expect(
     result.current.query.data?.metadata_submission.studyForm.studyName,
   ).toBe("TEST 1");
@@ -254,12 +258,14 @@ test("useSubmission should delete submission", async () => {
 
   // Delete the submission
   await act(() => {
-    return result.current.delete.mutateAsync(TEST_ID_1);
+    return result.current.deleteMutation.mutateAsync(TEST_ID_1);
   });
 
   // Ensure that the mutation completes successfully and that the submission is no longer in the
   // list
-  await waitFor(() => expect(result.current.delete.isSuccess).toBe(true));
+  await waitFor(() =>
+    expect(result.current.deleteMutation.isSuccess).toBe(true),
+  );
   listRerender();
   expect(
     listResult.current.data?.pages[0].results.find(

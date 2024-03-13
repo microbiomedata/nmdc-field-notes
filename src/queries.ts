@@ -182,15 +182,15 @@ export function useSubmission(id: string) {
   const deleteMutation = useMutation<void, DefaultError, string>({
     mutationKey: submissionKeys.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: submissionKeys.detail(id) });
+      queryClient.removeQueries({ queryKey: submissionKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
     },
   });
 
   return {
     query,
-    update: updateMutation,
-    delete: deleteMutation,
+    updateMutation,
+    deleteMutation,
   };
 }
 

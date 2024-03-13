@@ -1,13 +1,20 @@
 import React from "react";
 import {
   IonBackButton,
+  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
+  IonItem,
+  IonList,
   IonPage,
+  IonPopover,
   IonProgressBar,
   IonTitle,
   IonToolbar,
+  useIonAlert,
+  useIonRouter,
   useIonToast,
 } from "@ionic/react";
 import { useParams } from "react-router";
@@ -15,25 +22,51 @@ import { paths } from "../../Router";
 import StudyForm from "../../components/StudyForm/StudyForm";
 import { useSubmission } from "../../queries";
 import { SubmissionMetadata, SubmissionMetadataCreate } from "../../api";
+import { ellipsisHorizontal, ellipsisVertical } from "ionicons/icons";
 
 interface StudyEditPageParams {
   submissionId: string;
 }
 
 const StudyEditPage: React.FC = () => {
-  const [present] = useIonToast();
+  const router = useIonRouter();
+  const [presentToast] = useIonToast();
+  const [presentAlert] = useIonAlert();
   const { submissionId } = useParams<StudyEditPageParams>();
-  const { query: submission, update } = useSubmission(submissionId);
+  const {
+    query: submission,
+    updateMutation,
+    deleteMutation,
+  } = useSubmission(submissionId);
 
   const handleSave = async (submission: SubmissionMetadataCreate) => {
-    update.mutate(submission as SubmissionMetadata, {
+    updateMutation.mutate(submission as SubmissionMetadata, {
       onSuccess: () => {
-        present({
+        presentToast({
           message: "Study updated",
           duration: 3000,
           color: "success",
         });
       },
+    });
+  };
+
+  const handleDeleteInitiate = () => {
+    presentAlert({
+      header: "Delete Study",
+      message:
+        "Are you sure you want to delete this study? All associated sample data will be deleted as well.",
+      buttons: [
+        "Cancel",
+        {
+          text: "Delete",
+          handler: () => {
+            deleteMutation.mutate(submissionId, {
+              onSuccess: () => router.push(paths.home, "back"),
+            });
+          },
+        },
+      ],
     });
   };
 
@@ -47,9 +80,32 @@ const StudyEditPage: React.FC = () => {
             ></IonBackButton>
           </IonButtons>
           <IonTitle>Edit Study</IonTitle>
+          <IonButtons slot="primary">
+            <IonButton id="ellipsis-menu-trigger">
+              <IonIcon
+                slot="icon-only"
+                ios={ellipsisHorizontal}
+                md={ellipsisVertical}
+              ></IonIcon>
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
+        <IonPopover
+          trigger="ellipsis-menu-trigger"
+          triggerAction="click"
+          dismissOnSelect
+        >
+          <IonContent>
+            <IonList lines="none">
+              <IonItem button detail={false} onClick={handleDeleteInitiate}>
+                Delete Study
+              </IonItem>
+            </IonList>
+          </IonContent>
+        </IonPopover>
+
         <IonProgressBar
           type="indeterminate"
           style={{
