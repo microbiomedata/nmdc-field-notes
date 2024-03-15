@@ -1,9 +1,5 @@
 import { SubmissionMetadata } from "../api";
-import {
-  defaultAddressForm,
-  defaultContextForm,
-  defaultMultiOmicsForm,
-} from "../data";
+import { initAddressForm, initContextForm, initMultiOmicsForm } from "../data";
 
 export function generateSubmission(
   numberOfSamples: number,
@@ -21,9 +17,9 @@ export function generateSubmission(
     author_orcid: "0000-0000-0000-0000",
     metadata_submission: {
       packageName: "soil",
-      multiOmicsForm: defaultMultiOmicsForm(),
-      contextForm: defaultContextForm(),
-      addressForm: defaultAddressForm(),
+      multiOmicsForm: initMultiOmicsForm(),
+      contextForm: initContextForm(),
+      addressForm: initAddressForm(),
       templates: ["soil"],
       studyForm: {
         studyName: "",

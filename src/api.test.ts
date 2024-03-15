@@ -1,5 +1,5 @@
 import { nmdcServerClient } from "./api";
-import { defaultSubmission } from "./data";
+import { initSubmission } from "./data";
 
 test("getSubmissionList", async () => {
   const submissions = await nmdcServerClient.getSubmissionList();
@@ -26,7 +26,7 @@ test("updateSubmission", async () => {
 });
 
 test("createSubmission", async () => {
-  const submissionCreate = defaultSubmission();
+  const submissionCreate = initSubmission();
   submissionCreate.metadata_submission.studyForm.studyName = "New Study";
   submissionCreate.metadata_submission.studyForm.piEmail = "test@fake.edu";
   const submission = await nmdcServerClient.createSubmission(submissionCreate);

@@ -14,7 +14,7 @@ import {
 } from "./queries";
 import { produce } from "immer";
 import { patchMetadataSubmissionError, server, delay } from "./mocks/server";
-import { defaultSubmission } from "./data";
+import { initSubmission } from "./data";
 
 interface TestWrapperProps {
   children: ReactNode;
@@ -289,7 +289,7 @@ test("useSubmissionCreate should create submission", async () => {
   const { result } = renderHook(() => useSubmissionCreate(), { wrapper });
 
   // Create a new submission
-  const newSubmission = defaultSubmission();
+  const newSubmission = initSubmission();
   newSubmission.metadata_submission.studyForm.studyName = "New Study";
   newSubmission.metadata_submission.studyForm.piEmail = "test@fake.org";
   await act(() => {

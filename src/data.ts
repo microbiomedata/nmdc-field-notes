@@ -8,7 +8,7 @@ import {
   SubmissionMetadataCreate,
 } from "./api";
 
-export const defaultAddress = (): Address => ({
+export const initAddress = (): Address => ({
   city: "",
   email: "",
   line1: "",
@@ -19,7 +19,7 @@ export const defaultAddress = (): Address => ({
   state: "",
 });
 
-export const defaultAddressForm = (): AddressForm => ({
+export const initAddressForm = (): AddressForm => ({
   biosafetyLevel: "",
   comments: "",
   description: "",
@@ -29,12 +29,12 @@ export const defaultAddressForm = (): AddressForm => ({
   permitNumber: "",
   randomization: "",
   sample: "",
-  shipper: defaultAddress(),
+  shipper: initAddress(),
   shippingConditions: "",
   usdaRegulated: null,
 });
 
-export const defaultContextForm = (): ContextForm => ({
+export const initContextForm = (): ContextForm => ({
   award: null,
   dataGenerated: null,
   datasetDoi: "",
@@ -43,7 +43,7 @@ export const defaultContextForm = (): ContextForm => ({
   otherAward: "",
 });
 
-export const defaultStudyForm = (): StudyForm => ({
+export const initStudyForm = (): StudyForm => ({
   contributors: [],
   description: "",
   linkOutWebpage: [],
@@ -55,7 +55,7 @@ export const defaultStudyForm = (): StudyForm => ({
   notes: "",
 });
 
-export const defaultMultiOmicsForm = (): MultiOmicsForm => ({
+export const initMultiOmicsForm = (): MultiOmicsForm => ({
   GOLDStudyId: "",
   JGIStudyId: "",
   NCBIBioProjectId: "",
@@ -64,16 +64,16 @@ export const defaultMultiOmicsForm = (): MultiOmicsForm => ({
   studyNumber: "",
 });
 
-export const defaultMetadataSubmission = (): MetadataSubmission => ({
-  addressForm: defaultAddressForm(),
-  contextForm: defaultContextForm(),
-  multiOmicsForm: defaultMultiOmicsForm(),
+export const initMetadataSubmission = (): MetadataSubmission => ({
+  addressForm: initAddressForm(),
+  contextForm: initContextForm(),
+  multiOmicsForm: initMultiOmicsForm(),
   packageName: "",
   sampleData: {},
-  studyForm: defaultStudyForm(),
+  studyForm: initStudyForm(),
   templates: [],
 });
 
-export const defaultSubmission = (): SubmissionMetadataCreate => ({
-  metadata_submission: defaultMetadataSubmission(),
+export const initSubmission = (): SubmissionMetadataCreate => ({
+  metadata_submission: initMetadataSubmission(),
 });

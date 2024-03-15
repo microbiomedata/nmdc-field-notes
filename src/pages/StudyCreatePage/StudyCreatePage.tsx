@@ -14,14 +14,14 @@ import StudyForm from "../../components/StudyForm/StudyForm";
 import { useSubmissionCreate } from "../../queries";
 import { SubmissionMetadataCreate } from "../../api";
 import { paths } from "../../Router";
-import { defaultSubmission } from "../../data";
+import { initSubmission } from "../../data";
 import { checkmark } from "ionicons/icons";
 
 const StudyCreatePage: React.FC = () => {
   const router = useIonRouter();
   const [present] = useIonToast();
   const submissionCreate = useSubmissionCreate();
-  const submission = useMemo(defaultSubmission, []);
+  const submission = useMemo(initSubmission, []);
 
   const handleSave = async (submission: SubmissionMetadataCreate) => {
     submissionCreate.mutate(submission, {

@@ -3,7 +3,7 @@ import { Paginated, SubmissionMetadata } from "../api";
 import { submissions as submissionsFixture } from "./fixtures";
 import { setupServer } from "msw/node";
 import config from "../config";
-import { defaultSubmission } from "../data";
+import { initSubmission } from "../data";
 
 const { NMDC_SERVER_API_URL } = config;
 
@@ -55,7 +55,7 @@ export const handlers = [
         lock_updated: "",
         locked_by: undefined,
         status: "",
-        ...defaultSubmission(),
+        ...initSubmission(),
       };
       // TODO: this should be a true deep merge between the empty submission and the incoming body,
       // But for now this is good enough for the tests
