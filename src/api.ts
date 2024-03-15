@@ -201,7 +201,7 @@ class FetchClient {
     return response;
   }
 
-  protected async json<T>(
+  protected async fetchJson<T>(
     endpoint: string,
     options: RequestInit = {},
   ): Promise<T> {
@@ -243,7 +243,7 @@ class NmdcServerClient extends FetchClient {
       ...pagination,
     };
     const query = new URLSearchParams(pagination as Record<string, string>);
-    const submissions = await this.json<Paginated<SubmissionMetadata>>(
+    const submissions = await this.fetchJson<Paginated<SubmissionMetadata>>(
       `/metadata_submission?${query}`,
     );
     submissions.results.forEach((submission) => {
@@ -253,7 +253,7 @@ class NmdcServerClient extends FetchClient {
   }
 
   async getSubmission(id: string) {
-    const submission = await this.json<SubmissionMetadata>(
+    const submission = await this.fetchJson<SubmissionMetadata>(
       `/metadata_submission/${id}`,
     );
     NmdcServerClient.injectStableSampleIndexes(submission);
@@ -261,14 +261,14 @@ class NmdcServerClient extends FetchClient {
   }
 
   async updateSubmission(id: string, data: Partial<SubmissionMetadata>) {
-    return this.json<SubmissionMetadata>(`/metadata_submission/${id}`, {
+    return this.fetchJson<SubmissionMetadata>(`/metadata_submission/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
     });
   }
 
   async createSubmission(data: SubmissionMetadataCreate) {
-    return this.json<SubmissionMetadata>("/metadata_submission", {
+    return this.fetchJson<SubmissionMetadata>("/metadata_submission", {
       method: "POST",
       body: JSON.stringify(data),
     });
@@ -281,7 +281,7 @@ class NmdcServerClient extends FetchClient {
   }
 
   async getCurrentUser() {
-    return this.json<string>("/me");
+    return this.fetchJson<string>("/me");
   }
 }
 
