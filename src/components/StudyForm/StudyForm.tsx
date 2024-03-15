@@ -18,6 +18,17 @@ interface StudyFormProps {
   onSave: (submission: SubmissionMetadataCreate) => Promise<unknown>;
 }
 
+// Based on the email validator from https://zod.dev/
+// Allows:
+//   - name@example.org
+//   - first.last@example.org
+//   - name@example.co
+// Disallows:
+//   - name@example
+//   - name@example.c
+//   - first..last@example.org
+//   - .name@example.org
+//   - name.@example.org
 const EMAIL_REGEX =
   /^(?!\.)(?!.*\.\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
 
