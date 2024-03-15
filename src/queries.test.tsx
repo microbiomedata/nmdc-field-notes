@@ -9,10 +9,12 @@ import {
   addDefaultMutationFns,
   useCurrentUser,
   useSubmission,
+  useSubmissionCreate,
   useSubmissionList,
 } from "./queries";
 import { produce } from "immer";
 import { patchMetadataSubmissionError, server, delay } from "./mocks/server";
+import { initSubmission } from "./data";
 
 interface TestWrapperProps {
   children: ReactNode;
@@ -104,12 +106,12 @@ test("useSubmission should mutate data", async () => {
     draft.metadata_submission.studyForm.studyName = "UPDATED";
   });
   await act(() => {
-    result.current.mutation.mutate(updatedSubmission);
+    result.current.updateMutation.mutate(updatedSubmission);
     return delay(10);
   });
   // Verify that the mutation has optimistically updated the data
   expect(
-    result.current.mutation.data?.metadata_submission.studyForm.studyName,
+    result.current.updateMutation.data?.metadata_submission.studyForm.studyName,
   ).toBe("UPDATED");
   expect(
     result.current.query.data?.metadata_submission.studyForm.studyName,
@@ -117,10 +119,12 @@ test("useSubmission should mutate data", async () => {
 
   // Once the mutation completes, ensure that both the mutation, query, and list query still return
   // the updated data
-  await waitFor(() => expect(result.current.mutation.isSuccess).toBe(true));
-  expect(result.current.mutation.data).toBeDefined();
+  await waitFor(() =>
+    expect(result.current.updateMutation.isSuccess).toBe(true),
+  );
+  expect(result.current.updateMutation.data).toBeDefined();
   expect(
-    result.current.mutation.data?.metadata_submission.studyForm.studyName,
+    result.current.updateMutation.data?.metadata_submission.studyForm.studyName,
   ).toBe("UPDATED");
   expect(
     result.current.query.data?.metadata_submission.studyForm.studyName,
@@ -163,7 +167,7 @@ test("useSubmission should replace paused mutations when offline", async () => {
   // waits for the entire request to go through successfully which won't happen here because we're
   // offline. So instead just pause for a very short duration.
   await act(() => {
-    result.current.mutation.mutate(update1);
+    result.current.updateMutation.mutate(update1);
     return delay(10);
   });
 
@@ -171,14 +175,16 @@ test("useSubmission should replace paused mutations when offline", async () => {
     draft.metadata_submission.studyForm.studyName = "UPDATE 2";
   });
   await act(() => {
-    result.current.mutation.mutate(update2);
+    result.current.updateMutation.mutate(update2);
     return delay(10);
   });
 
   // Go back online, ensure that the mutation successfully completes, that only one PATCH
   // request was sent, and that the final data is correct.
   onlineManager.setOnline(true);
-  await waitFor(() => expect(result.current.mutation.isSuccess).toBe(true));
+  await waitFor(() =>
+    expect(result.current.updateMutation.isSuccess).toBe(true),
+  );
   expect(patchCount).toBe(1);
   expect(
     result.current.query.data?.metadata_submission.studyForm.studyName,
@@ -209,7 +215,7 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
     draft.metadata_submission.studyForm.studyName = "UPDATED";
   });
   await act(() => {
-    result.current.mutation.mutate(updatedSubmission);
+    result.current.updateMutation.mutate(updatedSubmission);
     return delay(10);
   });
   // Verify that the mutation has optimistically updated the data
@@ -219,7 +225,7 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
 
   // Once the mutation completes (as failed), ensure that both the mutation, query, and list query
   // now return the rolled back data
-  await waitFor(() => expect(result.current.mutation.isError).toBe(true));
+  await waitFor(() => expect(result.current.updateMutation.isError).toBe(true));
   expect(
     result.current.query.data?.metadata_submission.studyForm.studyName,
   ).toBe("TEST 1");
@@ -231,4 +237,72 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
   expect(submissionFromList?.metadata_submission.studyForm.studyName).toBe(
     "TEST 1",
   );
+});
+
+test("useSubmission should delete submission", async () => {
+  const wrapper = createWrapper();
+
+  // First fetch data from the submission list query
+  const { result: listResult, rerender: listRerender } = renderHook(
+    () => useSubmissionList(),
+    {
+      wrapper,
+    },
+  );
+  await waitFor(() => expect(listResult.current.isSuccess).toBe(true));
+
+  // Second fetch data from the individual submission query. Wait for the background fetch to
+  // complete before proceeding.
+  const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
+  await waitFor(() => expect(result.current.query.isFetching).toBe(false));
+
+  // Delete the submission
+  await act(() => {
+    return result.current.deleteMutation.mutateAsync(TEST_ID_1);
+  });
+
+  // Ensure that the mutation completes successfully and that the submission is no longer in the
+  // list
+  await waitFor(() =>
+    expect(result.current.deleteMutation.isSuccess).toBe(true),
+  );
+  listRerender();
+  expect(
+    listResult.current.data?.pages[0].results.find(
+      (submission) => submission.id === TEST_ID_1,
+    ),
+  ).toBeUndefined();
+});
+
+test("useSubmissionCreate should create submission", async () => {
+  const wrapper = createWrapper();
+
+  // First fetch data from the submission list query
+  const { result: listResult, rerender: listRerender } = renderHook(
+    () => useSubmissionList(),
+    {
+      wrapper,
+    },
+  );
+  await waitFor(() => expect(listResult.current.isSuccess).toBe(true));
+
+  const { result } = renderHook(() => useSubmissionCreate(), { wrapper });
+
+  // Create a new submission
+  const newSubmission = initSubmission();
+  newSubmission.metadata_submission.studyForm.studyName = "New Study";
+  newSubmission.metadata_submission.studyForm.piEmail = "test@fake.org";
+  await act(() => {
+    return result.current.mutateAsync(newSubmission);
+  });
+
+  // Ensure that the mutation completes successfully and that the submission is in the list
+  await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  listRerender();
+  expect(
+    listResult.current.data?.pages[0].results.find(
+      (submission) =>
+        submission.metadata_submission.studyForm.studyName === "New Study",
+    ),
+  ).toBeDefined();
 });

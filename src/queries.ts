@@ -8,7 +8,12 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { Paginated, SubmissionMetadata, nmdcServerClient } from "./api";
+import {
+  Paginated,
+  SubmissionMetadata,
+  nmdcServerClient,
+  SubmissionMetadataCreate,
+} from "./api";
 import { produce } from "immer";
 
 export const userKeys = {
@@ -18,8 +23,11 @@ export const userKeys = {
 export const submissionKeys = {
   all: () => ["submissions"],
   list: () => [...submissionKeys.all(), "list"],
+  create: () => [...submissionKeys.all(), "create"],
   details: () => [...submissionKeys.all(), "detail"],
   detail: (id: string) => [...submissionKeys.details(), id],
+  deletes: () => [...submissionKeys.details(), "delete"],
+  delete: (id: string) => [...submissionKeys.deletes(), id],
 };
 
 export function addDefaultMutationFns(queryClient: QueryClient) {
@@ -29,6 +37,22 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
         queryKey: submissionKeys.detail(updated.id),
       });
       return nmdcServerClient.updateSubmission(updated.id, updated);
+    },
+  });
+  queryClient.setMutationDefaults(submissionKeys.create(), {
+    mutationFn: async (newSubmission: SubmissionMetadataCreate) => {
+      await queryClient.cancelQueries({
+        queryKey: submissionKeys.create(),
+      });
+      return nmdcServerClient.createSubmission(newSubmission);
+    },
+  });
+  queryClient.setMutationDefaults(submissionKeys.deletes(), {
+    mutationFn: async (id: string) => {
+      await queryClient.cancelQueries({
+        queryKey: submissionKeys.delete(id),
+      });
+      return nmdcServerClient.deleteSubmission(id);
     },
   });
 }
@@ -113,7 +137,7 @@ export function useSubmission(id: string) {
   type SubmissionMetadataMutationContext = {
     previousData?: SubmissionMetadata;
   };
-  const mutation = useMutation<
+  const updateMutation = useMutation<
     SubmissionMetadata,
     DefaultError,
     SubmissionMetadata,
@@ -155,8 +179,32 @@ export function useSubmission(id: string) {
     },
   });
 
+  const deleteMutation = useMutation<void, DefaultError, string>({
+    mutationKey: submissionKeys.delete(id),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: submissionKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
+    },
+  });
+
   return {
     query,
-    mutation,
+    updateMutation,
+    deleteMutation,
   };
+}
+
+export function useSubmissionCreate() {
+  const queryClient = useQueryClient();
+  const mutation = useMutation<
+    SubmissionMetadata,
+    DefaultError,
+    SubmissionMetadataCreate
+  >({
+    mutationKey: submissionKeys.create(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
+    },
+  });
+  return mutation;
 }
