@@ -157,7 +157,7 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
             <IonInput
               className={`${(fieldState.isTouched || formState.isSubmitted) && "ion-touched"} ${fieldState.invalid && "ion-invalid"}`}
               label="ORCID iD"
-              helperText="ORCID iD of the Principal Investigator.."
+              helperText="ORCID iD of the Principal Investigator."
               labelPlacement="floating"
               type="text"
               onIonBlur={field.onBlur}
