@@ -1,14 +1,30 @@
 import React from "react";
-import { IonContent, IonPage, IonTitle } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
+import Tutorial from "../../components/Tutorial/Tutorial";
 
 import "./TutorialPage.css";
 
 const TutorialPage: React.FC = () => {
   return (
     <IonPage>
-      <IonContent fullscreen className={"ion-padding"}>
-        {/* TODO: Implement this page. */}
-        <IonTitle>TutorialPage</IonTitle>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/"></IonBackButton>
+          </IonButtons>
+          <IonTitle>Tutorial</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <Tutorial />
       </IonContent>
     </IonPage>
   );
