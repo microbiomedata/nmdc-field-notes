@@ -14,21 +14,21 @@ export const handlers = [
     Record<string, never>,
     Record<string, never>,
     Paginated<SubmissionMetadata>
-  >(`${NMDC_SERVER_API_URL}/metadata_submission`, async () => {
+  >(`${NMDC_SERVER_API_URL}/api/metadata_submission`, async () => {
     return HttpResponse.json({
       count: submissions.length,
       results: submissions,
     });
   }),
   http.get<{ id: string }, Record<string, never>, SubmissionMetadata>(
-    `${NMDC_SERVER_API_URL}/metadata_submission/:id`,
+    `${NMDC_SERVER_API_URL}/api/metadata_submission/:id`,
     async ({ params }) => {
       const { id } = params;
       return HttpResponse.json(submissions.find((s) => s.id === id));
     },
   ),
   http.patch<{ id: string }, SubmissionMetadata, SubmissionMetadata>(
-    `${NMDC_SERVER_API_URL}/metadata_submission/:id`,
+    `${NMDC_SERVER_API_URL}/api/metadata_submission/:id`,
     async ({ params, request }) => {
       const { id } = params;
       const body = await request.json();
@@ -39,7 +39,7 @@ export const handlers = [
     },
   ),
   http.post<Record<never, never>, SubmissionMetadata, SubmissionMetadata>(
-    `${NMDC_SERVER_API_URL}/metadata_submission`,
+    `${NMDC_SERVER_API_URL}/api/metadata_submission`,
     async ({ request }) => {
       const body = await request.json();
       const submission: SubmissionMetadata = {
@@ -68,20 +68,20 @@ export const handlers = [
     },
   ),
   http.delete<{ id: string }>(
-    `${NMDC_SERVER_API_URL}/metadata_submission/:id`,
+    `${NMDC_SERVER_API_URL}/api/metadata_submission/:id`,
     async ({ params }) => {
       const { id } = params;
       submissions = submissions.filter((s) => s.id !== id);
       return new HttpResponse(null, { status: 204 });
     },
   ),
-  http.get(`${NMDC_SERVER_API_URL}/me`, async () => {
+  http.get(`${NMDC_SERVER_API_URL}/api/me`, async () => {
     return HttpResponse.json("Test Testerson");
   }),
 ];
 
 export const patchMetadataSubmissionError = http.patch<{ id: string }>(
-  `${NMDC_SERVER_API_URL}/metadata_submission/:id`,
+  `${NMDC_SERVER_API_URL}/api/metadata_submission/:id`,
   async () => {
     // This delay helps tests validate optimistic updates before the request fails
     await delay(300);

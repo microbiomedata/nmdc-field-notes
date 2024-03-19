@@ -1,4 +1,5 @@
 import config from "./config";
+import { SchemaDefinition } from "./linkml-metamodel";
 
 export interface Paginated<Type> {
   count: number;
@@ -244,7 +245,7 @@ class NmdcServerClient extends FetchClient {
     };
     const query = new URLSearchParams(pagination as Record<string, string>);
     const submissions = await this.fetchJson<Paginated<SubmissionMetadata>>(
-      `/metadata_submission?${query}`,
+      `/api/metadata_submission?${query}`,
     );
     submissions.results.forEach((submission) => {
       NmdcServerClient.injectStableSampleIndexes(submission);
@@ -254,21 +255,24 @@ class NmdcServerClient extends FetchClient {
 
   async getSubmission(id: string) {
     const submission = await this.fetchJson<SubmissionMetadata>(
-      `/metadata_submission/${id}`,
+      `/api/metadata_submission/${id}`,
     );
     NmdcServerClient.injectStableSampleIndexes(submission);
     return submission;
   }
 
   async updateSubmission(id: string, data: Partial<SubmissionMetadata>) {
-    return this.fetchJson<SubmissionMetadata>(`/metadata_submission/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(data),
-    });
+    return this.fetchJson<SubmissionMetadata>(
+      `/api/metadata_submission/${id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      },
+    );
   }
 
   async createSubmission(data: SubmissionMetadataCreate) {
-    return this.fetchJson<SubmissionMetadata>("/metadata_submission", {
+    return this.fetchJson<SubmissionMetadata>("/api/metadata_submission", {
       method: "POST",
       body: JSON.stringify(data),
     });
@@ -281,7 +285,13 @@ class NmdcServerClient extends FetchClient {
   }
 
   async getCurrentUser() {
-    return this.fetchJson<string>("/me");
+    return this.fetchJson<string>("/api/me");
+  }
+
+  async getSubmissionSchema() {
+    return this.fetchJson<SchemaDefinition>(
+      `/static/submission_schema/submission_schema.json`,
+    );
   }
 }
 

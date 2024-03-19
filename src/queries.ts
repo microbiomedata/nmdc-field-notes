@@ -28,6 +28,8 @@ export const submissionKeys = {
   detail: (id: string) => [...submissionKeys.details(), id],
   deletes: () => [...submissionKeys.details(), "delete"],
   delete: (id: string) => [...submissionKeys.deletes(), id],
+  schemas: () => ["schemas"],
+  submissionSchema: () => [...submissionKeys.schemas(), "submission_schema"],
 };
 
 export function addDefaultMutationFns(queryClient: QueryClient) {
@@ -207,4 +209,12 @@ export function useSubmissionCreate() {
     },
   });
   return mutation;
+}
+
+export function useSubmissionSchema() {
+  return useQuery({
+    queryKey: submissionKeys.submissionSchema(),
+    queryFn: () => nmdcServerClient.getSubmissionSchema(),
+    staleTime: 1000 * 60 * 60 * 72, // 72 hours; these files only change between releases
+  });
 }
