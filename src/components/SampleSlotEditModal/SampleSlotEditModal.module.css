@@ -1,0 +1,27 @@
+.inputAndClearContainer {
+  border-color: var(--ion-color-primary);
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 4px;
+  padding: 0 4px;
+  position: relative;
+}
+
+.inputWrapper {
+  padding-right: 30px;
+}
+
+.clearWrapper {
+  position: absolute;
+  top: calc(var(--padding-top) - 8px);
+  right: 4px;
+}
+
+.clearButton {
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  background: none;
+  border: none;
+  color: var(--ion-color-medium);
+}
