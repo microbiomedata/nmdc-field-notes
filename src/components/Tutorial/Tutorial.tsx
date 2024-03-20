@@ -13,13 +13,13 @@ import { informationCircleOutline, checkmarkCircle } from "ionicons/icons";
 import { soilPackageTutorial } from "./md-in-js/soilPackageTutorial";
 import Markdown from "react-markdown";
 
-import "./Tutorial.css";
+import styles from "./Tutorial.module.css";
 
 const Tutorial: React.FC = () => {
   return (
     <IonAccordionGroup>
-      <div className="tutorial-header">
-        <span className="title">{soilPackageTutorial.header}</span>
+      <div className={styles.header}>
+        <span className={styles.title}>{soilPackageTutorial.header}</span>
         <IonIcon
           id="hover-trigger-soil"
           icon={informationCircleOutline}
@@ -52,7 +52,7 @@ const Tutorial: React.FC = () => {
               components={{
                 ul: (props) => <IonList>{props!.children}</IonList>,
                 li: (props) => (
-                  <IonItem lines={"none"}>
+                  <IonItem className={styles.listItem} lines={"none"}>
                     <IonIcon
                       size={"small"}
                       slot={"start"}
