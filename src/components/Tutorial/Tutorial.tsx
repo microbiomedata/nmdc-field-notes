@@ -6,10 +6,13 @@ import {
   IonAccordionGroup, 
   IonItem, 
   IonLabel,
+  IonList,
   IonPopover,
 } from "@ionic/react";
-import { informationCircleOutline } from 'ionicons/icons';
+import { informationCircleOutline, checkmarkCircle } from 'ionicons/icons';
 import TextListItem from "../../components/TextListItem/TextListItem";
+import { sections } from "./md-in-js";
+import Markdown from "react-markdown";
 
 import "./Tutorial.css";
 
@@ -31,165 +34,34 @@ const Tutorial: React.FC = () => {
           </IonContent>
         </IonPopover>
       </div>
-      
-      <IonAccordion value="soildPackage1">
-        <IonItem slot="header" >
-          <IonLabel>What to consider bringing out to the field to collect sample metadata</IonLabel>
-        </IonItem>
-        <div className="ion-padding" slot="content">
-          <TextListItem color="primary">Way of measuring sampling depth e.g., ruler, measurement device</TextListItem>
-          <TextListItem color="primary">Sample storage method (e.g., preservative, cooler, freezer)</TextListItem>
-          <TextListItem color="primary">
-            Way of labeling samples (e.g., labeled tubes, sharpies, barcodes); 
-            can also bring barcode reader to log sample numbers from barcodes in the app
-          </TextListItem>
-          <TextListItem color="primary">Sample collection device (link the things from sample collection device field)</TextListItem>
-          <TextListItem color="primary">Thermometer, or way of measuring air temperature and sample temperature</TextListItem>
-          <TextListItem color="primary">Way of measuring elevation </TextListItem>
-          <TextListItem color="primary">Way of locating sampling point (latitude and longitude) </TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Way of collecting pH (e.g., pH strips)</TextListItem>
-        </div>
-      </IonAccordion>
-      <IonAccordion value="soildPackage2">
-        <IonItem slot="header" >
-          <IonLabel>Basic recommendations for fieldwork</IonLabel>
-        </IonItem>
-        <div className="ion-padding" slot="content">
-          <TextListItem color="primary">Bring sunscreen, hat, sunglasses, bug spray </TextListItem>
-          <TextListItem color="primary">Tell at least one person where you are going, when you are going, other information about your sampling trip</TextListItem>
-          <TextListItem color="primary">Know local animals and dangers they may pose</TextListItem>
-          <TextListItem color="primary">Check weather conditions and know risks for local weather events (e.g., flash floods)</TextListItem>
-          <TextListItem color="primary">Know risks for injuries in the sampling environment</TextListItem>
-          <TextListItem color="primary">Bring plenty of food and water</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-        </div>
-      </IonAccordion>
-      <IonAccordion value="soildPackage3">
-        <IonItem slot="header" >
-          <IonLabel>All required fields of the NMDC soil metadata package relevant to the sample and the field collection</IonLabel>
-        </IonItem>
-        <div className="ion-padding" slot="content">
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-        </div>
-      </IonAccordion>
-      <IonAccordion value="soildPackage4">
-        <IonItem slot="header" >
-          <IonLabel>All recommended fields of the NMDC soil metadata package relevant to the sample and the field collection</IonLabel>
-        </IonItem>
-        <div className="ion-padding" slot="content">
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-        </div>
-      </IonAccordion>
-      <IonAccordion value="soildPackage5">
-        <IonItem slot="header" >
-          <IonLabel>Other fields in the NMDC Submission Portal that may be relevant to the sample or to later processing steps</IonLabel>
-        </IonItem>
-        <div className="ion-padding" slot="content">
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Slope aspect?</TextListItem>
-          <TextListItem color="primary">Sample name</TextListItem>
-          <TextListItem color="primary">Ecosystem</TextListItem>
-        </div>
-      </IonAccordion>
-      
+
+      {/* Render each section in its own accordion. */}
+      {sections.map(s => (
+        <IonAccordion key={s.title}>
+          <IonItem slot={"header"}>
+            <IonLabel>{s.title}</IonLabel>
+          </IonItem>
+          <div className={"ion-padding"} slot={"content"}>
+            <Markdown
+              // Map Markdown elements to React elements.
+              components={{
+                ul: (props) => (
+                    <IonList>{props!.children}</IonList>
+                ),
+                li: (props) => (
+                  <IonItem lines={"none"}>
+                    <IonIcon slot={"start"} icon={checkmarkCircle} color={"primary"} />
+                    {props!.children as string}
+                  </IonItem>
+                ),
+              }}
+            >
+              {s.md}
+            </Markdown>
+          </div>
+        </IonAccordion>
+      ))}
+
       <div className="tutorial-header">
         <span className="title">Metadata Collection</span>
         <IonIcon id="hover-trigger-metadata" icon={informationCircleOutline} size="small" color="primary"></IonIcon>
