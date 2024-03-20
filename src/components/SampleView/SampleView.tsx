@@ -7,7 +7,7 @@ import { SchemaDefinition, SlotDefinition } from "../../linkml-metamodel";
 import { warningOutline } from "ionicons/icons";
 
 function formatSlotValue(value: SampleDataValue) {
-  if (!value) {
+  if (value == null) {
     return null;
   }
   if (Array.isArray(value)) {

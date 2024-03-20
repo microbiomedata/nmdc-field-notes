@@ -58,7 +58,7 @@ const SamplePage: React.FC = () => {
     const updatedSubmission = produce(submission.data, (draft) => {
       const sample = getSubmissionSample(draft, parseInt(sampleIndex));
       if (sample) {
-        if (value) {
+        if (value != null) {
           sample[modalSlot.name] = value;
         } else {
           delete sample[modalSlot.name];

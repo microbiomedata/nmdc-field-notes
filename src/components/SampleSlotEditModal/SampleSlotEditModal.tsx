@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { SchemaDefinition, SlotDefinition } from "../../linkml-metamodel";
+import { Geolocation } from "@capacitor/geolocation";
 import {
   IonButton,
   IonCol,
@@ -19,6 +20,7 @@ import SchemaSlotHelp from "../SchemaSlotHelp/SchemaSlotHelp";
 import styles from "./SampleSlotEditModal.module.css";
 import { closeCircle, warningOutline } from "ionicons/icons";
 import { SampleDataValue } from "../../api";
+import { format } from "date-fns";
 
 interface SampleSlotEditModalProps {
   defaultValue: SampleDataValue;
@@ -110,7 +112,7 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
                   autoGrow
                   rows={1}
                   aria-label={slot.title || slot.name}
-                  value={value ? String(value) : undefined}
+                  value={value != null ? String(value) : undefined}
                   onIonInput={(e) => handleValueChange(e.target.value)}
                 />
               )}
@@ -121,7 +123,7 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
                   aria-label="Clear"
                   className={styles.clearButton}
                   type="button"
-                  onClick={() => setValue(null)}
+                  onClick={() => handleValueChange(null)}
                 >
                   <IonIcon icon={closeCircle} />
                 </button>
@@ -138,6 +140,33 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
               />
               <IonLabel color="warning">{validationResult}</IonLabel>
             </IonItem>
+          )}
+
+          {slot.name === "collection_date" && (
+            <IonButton
+              className="ion-padding-vertical"
+              expand="block"
+              onClick={() =>
+                handleValueChange(format(new Date(), "yyyy-MM-dd"))
+              }
+            >
+              Set to today
+            </IonButton>
+          )}
+
+          {slot.name === "lat_lon" && (
+            <IonButton
+              className="ion-padding-vertical"
+              expand="block"
+              onClick={async () => {
+                const position = await Geolocation.getCurrentPosition();
+                handleValueChange(
+                  position.coords.latitude + " " + position.coords.longitude,
+                );
+              }}
+            >
+              Use GPS location
+            </IonButton>
           )}
           <SchemaSlotHelp slot={slot} />
           <IonGrid>
