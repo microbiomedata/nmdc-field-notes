@@ -50,7 +50,7 @@ const Tutorial: React.FC = () => {
                 ),
                 li: (props) => (
                   <IonItem lines={"none"}>
-                    <IonIcon slot={"start"} icon={checkmarkCircle} color={"primary"} />
+                    <IonIcon size={"small"} slot={"start"} icon={checkmarkCircle} color={"primary"} />
                     {props!.children as string}
                   </IonItem>
                 ),
