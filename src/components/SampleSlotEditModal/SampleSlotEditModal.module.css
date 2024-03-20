@@ -3,12 +3,17 @@
   border-width: 2px;
   border-style: solid;
   border-radius: 4px;
-  padding: 0 4px;
+  padding: 0 8px;
   position: relative;
 }
 
 .inputWrapper {
   padding-right: 30px;
+}
+
+.inputWrapper ion-textarea {
+  --padding-top: 12px;
+  --highlight-color-focused: none;
 }
 
 .clearWrapper {
