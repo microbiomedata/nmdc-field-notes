@@ -2,14 +2,14 @@ import React from "react";
 import {
   IonIcon,
   IonContent,
-  IonAccordion, 
-  IonAccordionGroup, 
-  IonItem, 
+  IonAccordion,
+  IonAccordionGroup,
+  IonItem,
   IonLabel,
   IonList,
   IonPopover,
 } from "@ionic/react";
-import { informationCircleOutline, checkmarkCircle } from 'ionicons/icons';
+import { informationCircleOutline, checkmarkCircle } from "ionicons/icons";
 import { soilPackageTutorial } from "./md-in-js/soilPackageTutorial";
 import Markdown from "react-markdown";
 
@@ -20,23 +20,28 @@ const Tutorial: React.FC = () => {
     <IonAccordionGroup>
       <div className="tutorial-header">
         <span className="title">{soilPackageTutorial.header}</span>
-        <IonIcon id="hover-trigger-soil" icon={informationCircleOutline} size="small" color="primary"></IonIcon>
+        <IonIcon
+          id="hover-trigger-soil"
+          icon={informationCircleOutline}
+          size="small"
+          color="primary"
+        ></IonIcon>
         <IonPopover trigger="hover-trigger-soil" triggerAction="hover">
           <IonContent class="ion-padding">
-            {soilPackageTutorial.info.split("\n").map(function(item, index) {
+            {soilPackageTutorial.info.split("\n").map(function (item, index) {
               return (
                 <span key={index}>
                   {item}
-                  <br/>
+                  <br />
                 </span>
-              )
+              );
             })}
           </IonContent>
         </IonPopover>
       </div>
 
       {/* Render each section in its own accordion. */}
-      {soilPackageTutorial.sections.map(s => (
+      {soilPackageTutorial.sections.map((s) => (
         <IonAccordion key={s.title}>
           <IonItem slot={"header"}>
             <IonLabel>{s.title}</IonLabel>
@@ -45,12 +50,15 @@ const Tutorial: React.FC = () => {
             <Markdown
               // Map Markdown elements to React elements.
               components={{
-                ul: (props) => (
-                    <IonList>{props!.children}</IonList>
-                ),
+                ul: (props) => <IonList>{props!.children}</IonList>,
                 li: (props) => (
                   <IonItem lines={"none"}>
-                    <IonIcon size={"small"} slot={"start"} icon={checkmarkCircle} color={"primary"} />
+                    <IonIcon
+                      size={"small"}
+                      slot={"start"}
+                      icon={checkmarkCircle}
+                      color={"primary"}
+                    />
                     {props!.children as string}
                   </IonItem>
                 ),

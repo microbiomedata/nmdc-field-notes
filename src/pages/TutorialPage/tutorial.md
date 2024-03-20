@@ -6,8 +6,8 @@ Are you planning a trip to the field to collect soil samples and metadata? Below
 
 Note: The NMDC metadata requirements also encompass fields required by NCBI and the Genomic Standards Consortium (GSC)
 
-
 ### What to consider bringing out to the field to collect sample metadata
+
 - Way of measuring sampling depth e.g., ruler, measurement device
 - Sample storage method (e.g., preservative, cooler, freezer)
 - Way of labeling samples (e.g., labeled tubes, sharpies, barcodes); can also bring barcode reader to log sample numbers from barcodes in the app
@@ -18,8 +18,8 @@ Note: The NMDC metadata requirements also encompass fields required by NCBI and 
 - Slope aspect?
 - Way of collecting pH (e.g., pH strips)
 
-
 ### Basic recommendations for fieldwork
+
 - Bring sunscreen, hat, sunglasses, bug spray
 - Tell at least one person where you are going, when you are going, other information about your sampling trip
 - Know local animals and dangers they may pose
@@ -30,7 +30,6 @@ Note: The NMDC metadata requirements also encompass fields required by NCBI and 
 - Proper shoes and clothes for the environment and weather
 - Always better to sample with a group or another individual, try to never go alone
 - Pack layers of clothing
-
 
 ### All required fields of the NMDC soil metadata package relevant to the sample and the field collection
 
@@ -46,7 +45,6 @@ Note: The NMDC metadata requirements also encompass fields required by NCBI and 
 - Elevation, meters
 - Sample storage temperature
 - Depth, meters
-
 
 ### All recommended fields of the NMDC soil metadata package relevant to the sample and the field collection
 
@@ -80,7 +78,6 @@ Note: The NMDC metadata requirements also encompass fields required by NCBI and 
 - Isotope exposure/addition
 - Microbial biomass carbon method
 
-
 ### Other fields in the NMDC Submission Portal that may be relevant to the sample or to later processing steps
 
 - Source material identifier
@@ -113,7 +110,7 @@ Note: The NMDC metadata requirements also encompass fields required by NCBI and 
 - History/previous land use
 - Profile position
 - Average seasonal precipitation
-- Mean seasonal temperature 
+- Mean seasonal temperature
 - Slope gradient
 - Soil horizon
 - Soil texture measurement
@@ -139,11 +136,9 @@ Note: The NMDC metadata requirements also encompass fields required by NCBI and 
 - Phosphate
 - Salinity
 
-
 ## Metadata Collection
 
 Metadata collection in the field
-
 
 ### metadata collection 1
 

@@ -19,11 +19,12 @@ const sections: Array<Section> = [
 ];
 
 const header = "Soil Package";
-const info = "Are you planning a trip to the field to collect soil samples and metadata? " +
-            "Below we have listed the NMDC soil package required metadata fields to ensure " +
-            "you pack the right tools and make required measurements in the field!\n\n" +
-            "Note: The NMDC metadata requirements also encompass fields required by NCBI and " +
-            "the Genomic Standards Consortium (GSC)";
+const info =
+  "Are you planning a trip to the field to collect soil samples and metadata? " +
+  "Below we have listed the NMDC soil package required metadata fields to ensure " +
+  "you pack the right tools and make required measurements in the field!\n\n" +
+  "Note: The NMDC metadata requirements also encompass fields required by NCBI and " +
+  "the Genomic Standards Consortium (GSC)";
 
 export const soilPackageTutorial = {
   header: header,
