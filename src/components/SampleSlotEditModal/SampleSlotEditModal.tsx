@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { SchemaDefinition, SlotDefinition } from "../../linkml-metamodel";
 import {
   IonButton,
@@ -6,6 +6,8 @@ import {
   IonContent,
   IonGrid,
   IonIcon,
+  IonItem,
+  IonLabel,
   IonModal,
   IonRow,
   IonSelect,
@@ -15,31 +17,66 @@ import {
 import SchemaSlotHelp from "../SchemaSlotHelp/SchemaSlotHelp";
 
 import styles from "./SampleSlotEditModal.module.css";
-import { closeCircle } from "ionicons/icons";
+import { closeCircle, warningOutline } from "ionicons/icons";
+import { SampleDataValue } from "../../api";
 
 interface SampleSlotEditModalProps {
-  defaultValue: Nullable<string | number>;
+  defaultValue: SampleDataValue;
   onCancel: () => void;
-  onSave: (value: Nullable<string>) => void;
+  onChange: (value: SampleDataValue) => void;
+  onSave: (value: SampleDataValue) => void;
   saving: boolean;
   schema: SchemaDefinition;
   slot: SlotDefinition | null;
+  validationResult?: string;
 }
 const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
   defaultValue,
   onCancel,
+  onChange,
   onSave,
   saving,
   schema,
   slot,
+  validationResult,
 }) => {
-  const [value, setValue] = React.useState<Nullable<string>>(
-    defaultValue as string,
-  );
+  const [value, setValue] = React.useState<SampleDataValue>(defaultValue);
+  const slotIsNumeric: boolean = useMemo(() => {
+    if (!slot) {
+      return false;
+    }
+    if (slot.range && schema.types && slot.range in schema.types) {
+      const slotTypeUri = schema.types[slot.range].uri;
+      return (
+        slotTypeUri === "xsd:integer" ||
+        slotTypeUri === "xsd:decimal" ||
+        slotTypeUri === "xsd:float" ||
+        slotTypeUri === "xsd:double"
+      );
+    } else {
+      return false;
+    }
+  }, [slot]);
+
   useEffect(() => {
-    console.log("defaultValue", defaultValue);
-    setValue(defaultValue as string);
+    setValue(defaultValue);
   }, [defaultValue]);
+
+  const handleValueChange = (value: Nullable<string>) => {
+    let parsed: SampleDataValue = value;
+    if (slotIsNumeric && value != null) {
+      parsed = Number.parseFloat(value);
+      if (Number.isNaN(parsed)) {
+        // that wasn't a number, fall back to the original value
+        parsed = value;
+      }
+    }
+    if (onChange) {
+      onChange(parsed);
+    }
+    setValue(parsed);
+  };
+
   return (
     <IonModal
       breakpoints={[0, 0.8]}
@@ -58,12 +95,14 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
                   aria-label={slot.title || slot.name}
                   value={value}
                   multiple={slot.multivalued}
-                  onIonChange={(e) => setValue(e.detail.value)}
+                  onIonChange={(e) => handleValueChange(e.detail.value)}
                 >
                   {Object.entries(
                     schema.enums[slot.range].permissible_values || {},
                   ).map(([key, val]) => (
-                    <IonSelectOption key={key}>{val.text}</IonSelectOption>
+                    <IonSelectOption key={key} value={val.text}>
+                      {val.text}
+                    </IonSelectOption>
                   ))}
                 </IonSelect>
               ) : (
@@ -71,13 +110,13 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
                   autoGrow
                   rows={1}
                   aria-label={slot.title || slot.name}
-                  value={value}
-                  onIonInput={(e) => setValue(e.detail.value)}
+                  value={value ? String(value) : undefined}
+                  onIonInput={(e) => handleValueChange(e.target.value)}
                 />
               )}
             </div>
             <div className={styles.clearWrapper}>
-              {value && (
+              {value != null && (
                 <button
                   aria-label="Clear"
                   className={styles.clearButton}
@@ -89,6 +128,17 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
               )}
             </div>
           </div>
+          {validationResult && (
+            <IonItem lines="none">
+              <IonIcon
+                aria-hidden="true"
+                icon={warningOutline}
+                slot="start"
+                color="warning"
+              />
+              <IonLabel color="warning">{validationResult}</IonLabel>
+            </IonItem>
+          )}
           <SchemaSlotHelp slot={slot} />
           <IonGrid>
             <IonRow>

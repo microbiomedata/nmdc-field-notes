@@ -68,9 +68,17 @@ export interface MultiOmicsForm {
   omicsProcessingTypes: string[];
 }
 
+export type SampleDataValue =
+  | string
+  | number
+  | boolean
+  | string[]
+  | null
+  | undefined;
+
 export interface SampleData {
   _index: number;
-  [key: string]: string | number;
+  [key: string]: SampleDataValue;
 }
 
 // This should eventually come from the schema itself

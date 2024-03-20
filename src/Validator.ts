@@ -17,8 +17,8 @@ interface ValidatorOptions {
   dateTimeFormat?: string;
 }
 
-type ValidatorFn = (value: unknown) => string | undefined;
-type ValidationResults = Record<number, Record<string, string>>;
+export type ValidatorFn = (value: unknown) => string | undefined;
+export type ValidationResults = Record<number, Record<string, string>>;
 
 const REF_DATE = new Date(0);
 
@@ -60,7 +60,6 @@ function validateUniqueValues(values: unknown[][]): boolean[] {
 
 class Validator {
   private schema: SchemaDefinition;
-  // #parser;
   private targetClass: ClassDefinition | undefined;
   private targetClassInducedSlots: Record<string, SlotDefinition> | undefined;
   private valueValidatorMap: Map<string, ValidatorFn>;
@@ -334,7 +333,7 @@ class Validator {
       if (!nonEmptyRowNumbers.includes(idx)) {
         continue;
       }
-      for (const slotName of Object.keys(data[idx])) {
+      for (const slotName of Object.keys(this.targetClassInducedSlots!)) {
         const valueValidator = this.getValidatorForSlot(slotName, {
           cacheKey: slotName,
         });
