@@ -287,7 +287,7 @@ class NmdcServerClient extends FetchClient {
   }
 
   async deleteSubmission(id: string) {
-    return this.fetch(`/metadata_submission/${id}`, {
+    return this.fetch(`/api/metadata_submission/${id}`, {
       method: "DELETE",
     });
   }
