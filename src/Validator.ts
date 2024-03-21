@@ -209,7 +209,7 @@ class Validator {
               slotType.uri === "xsd:decimal") &&
             typeof value !== "number"
           ) {
-            return "Value is not correct numeric format";
+            return "Value is not numeric";
           }
           if (slotType.uri === "xsd:boolean" && typeof value !== "boolean") {
             return "Value is not a boolean";

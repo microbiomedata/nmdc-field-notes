@@ -123,7 +123,7 @@ test("Validator should validate numeric types", () => {
     expect(fn(14)).toBeUndefined();
     expect(fn(-14)).toBeUndefined();
     expect(fn(3.1415)).toBeUndefined();
-    expect(fn("hello")).toEqual("Value is not correct numeric format");
+    expect(fn("hello")).toEqual("Value is not numeric");
   }
 });
 
