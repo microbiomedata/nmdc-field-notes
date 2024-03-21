@@ -20,6 +20,11 @@ interface ValidatorOptions {
 export type ValidatorFn = (value: unknown) => string | undefined;
 export type ValidationResults = Record<number, Record<string, string>>;
 
+// Get the date representing the Unix epoch (January 1, 1970). We'll use it as a
+// source of specific date elements when parsing ambiguous dates. Specifically,
+// this will cause midnight to be used as the time when parsing a string that only
+// contains a date.
+// Reference: https://date-fns.org/v3.6.0/docs/parse#arguments
 const REF_DATE = new Date(0);
 
 function validateUniqueValues(values: unknown[][]): boolean[] {
