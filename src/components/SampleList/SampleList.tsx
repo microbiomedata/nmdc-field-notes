@@ -25,11 +25,13 @@ import { getSubmissionSamples } from "../../utils";
 interface SampleListProps {
   submission: SubmissionMetadata;
   collapsedSize?: number;
+  onSampleCreate: () => void;
 }
 
 const SampleList: React.FC<SampleListProps> = ({
   submission,
   collapsedSize = 5,
+  onSampleCreate,
 }) => {
   const searchElement = React.useRef<HTMLIonSearchbarElement>(null);
 
@@ -81,9 +83,7 @@ const SampleList: React.FC<SampleListProps> = ({
     <>
       <IonListHeader>
         <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
-        <IonButton routerLink={paths.sampleCreate(submission.id)}>
-          New
-        </IonButton>
+        <IonButton onClick={onSampleCreate}>New</IonButton>
       </IonListHeader>
 
       <IonGrid className={isSearchVisible ? "ion-hide" : ""}>

@@ -3,19 +3,29 @@ import { render, screen, waitFor } from "@testing-library/react";
 import SampleList from "./SampleList";
 import userEvent from "@testing-library/user-event";
 import { generateSubmission } from "../../mocks/fixtures";
+import { vi } from "vitest";
 
 async function renderSampleList(numberOfSamples: number) {
   const user = userEvent.setup();
-  render(<SampleList submission={generateSubmission(numberOfSamples)} />);
+  const handleSampleCreate = vi.fn();
+  render(
+    <SampleList
+      submission={generateSubmission(numberOfSamples)}
+      onSampleCreate={handleSampleCreate}
+    />,
+  );
 
   const searchInput = await screen.findByLabelText("search text");
   const showSearchButton = screen.getByTitle("show sample search");
+  const newSampleButton = screen.getByText("New");
 
   return {
     user,
+    handleSampleCreate,
     elements: {
       searchInput,
       showSearchButton,
+      newSampleButton,
       // These elements are conditionally rendered, so we use getters to re-query
       // them whenever they are needed
       get showAllButton() {
@@ -120,4 +130,15 @@ test("SampleList shows a message when no samples exist", async () => {
   await renderSampleList(0);
   expect(screen.getByText("No samples yet")).toBeInTheDocument();
   expect(screen.queryByText("Show All")).not.toBeInTheDocument();
+});
+
+test("SampleList allows adding a sample", async () => {
+  const { user, elements, handleSampleCreate } = await renderSampleList(3);
+  expect(handleSampleCreate).not.toHaveBeenCalled();
+
+  // Click the "New" button
+  await user.click(elements.newSampleButton);
+
+  // Verify that the handler was called
+  expect(handleSampleCreate).toHaveBeenCalled();
 });
