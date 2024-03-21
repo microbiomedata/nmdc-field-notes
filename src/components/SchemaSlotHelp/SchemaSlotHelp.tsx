@@ -3,8 +3,12 @@ import { SlotDefinition } from "../../linkml-metamodel";
 
 interface SchemaSlotHelpProps {
   slot: SlotDefinition;
+  containingObjectName?: string;
 }
-const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({ slot }) => {
+const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
+  slot,
+  containingObjectName = "record",
+}) => {
   const guidanceParagraphs: string[] = [];
   if (slot.comments && slot.comments.length) {
     guidanceParagraphs.concat(...slot.comments);
@@ -30,7 +34,7 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({ slot }) => {
   }
   if (slot.identifier) {
     guidanceParagraphs.push(
-      "Each record must have a unique value for this field.",
+      `Each ${containingObjectName} must have a unique value in this field.`,
     );
   }
   if (slot.multivalued) {

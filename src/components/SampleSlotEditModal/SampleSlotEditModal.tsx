@@ -168,7 +168,7 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
               Use GPS location
             </IonButton>
           )}
-          <SchemaSlotHelp slot={slot} />
+          <SchemaSlotHelp slot={slot} containingObjectName="sample" />
           <IonGrid>
             <IonRow>
               <IonCol>
