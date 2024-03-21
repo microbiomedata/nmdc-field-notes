@@ -151,6 +151,12 @@ class Validator {
       slotType?.uri,
     );
 
+    /**
+     * Validate a value against a slot definition.
+     * @param value - The value to validate
+     * @return A string describing the validation issue if the value fails validation, otherwise
+     *     undefined if the value passes validation
+     */
     const validate = (value: unknown) => {
       const valueDefined = value != null && value !== "";
       if (slotDefinition.required && !valueDefined) {
