@@ -113,22 +113,18 @@ test("Validator should validate numeric types", () => {
   expect(fn(14)).toBeUndefined();
   expect(fn(-14)).toBeUndefined();
   expect(fn(3.1415)).toEqual("Value is not an integer");
+  expect(fn("hello")).toEqual("Value is not an integer");
 
-  fn = validator.getValidatorForSlot("a_float");
-  expect(fn(undefined)).toBeUndefined();
-  expect(fn(3.1415)).toBeUndefined();
-  expect(fn("hello")).toEqual("Value is not correct numeric format");
-
-  fn = validator.getValidatorForSlot("a_double");
-  expect(fn(undefined)).toBeUndefined();
-  expect(fn(3.1415)).toBeUndefined();
-  expect(fn("hello")).toEqual("Value is not correct numeric format");
-
-  fn = validator.getValidatorForSlot("a_decimal");
-  expect(fn(undefined)).toBeUndefined();
-  expect(fn(3.1415)).toBeUndefined();
-  expect(fn(-0.071)).toBeUndefined();
-  expect(fn("hello")).toEqual("Value is not correct numeric format");
+  // These types are distinct in the schema, but in JavaScript they are all just numbers with
+  // no additional validation
+  for (const slot of ["a_float", "a_double", "a_decimal"]) {
+    fn = validator.getValidatorForSlot(slot);
+    expect(fn(undefined)).toBeUndefined();
+    expect(fn(14)).toBeUndefined();
+    expect(fn(-14)).toBeUndefined();
+    expect(fn(3.1415)).toBeUndefined();
+    expect(fn("hello")).toEqual("Value is not correct numeric format");
+  }
 });
 
 test("Validator should validate enum types", () => {
@@ -168,10 +164,12 @@ it("should validate date and time types", () => {
   let fn = validator.getValidatorForSlot("a_date");
   expect(fn(undefined)).toBeUndefined();
   expect(fn("2022-02-22")).toBeUndefined();
+  expect(fn("2022-02-22 02:22")).toEqual("Value does not match date format");
   expect(fn("whoops")).toEqual("Value does not match date format");
 
   fn = validator.getValidatorForSlot("a_datetime");
   expect(fn(undefined)).toBeUndefined();
+  expect(fn("2022-02-22")).toEqual("Value does not match datetime format");
   expect(fn("2022-02-22 02:22")).toBeUndefined();
   expect(fn("whoops")).toEqual("Value does not match datetime format");
 });
@@ -184,18 +182,35 @@ test("Validator should validate required fields", () => {
         range: "string",
         required: true,
       },
+      required_integer: {
+        name: "required_integer",
+        range: "integer",
+        required: true,
+      },
     },
   });
   const validator = new Validator(schema);
   validator.useTargetClass("Test");
 
-  const fn = validator.getValidatorForSlot("required_string");
+  let fn = validator.getValidatorForSlot("required_string");
   expect(fn("correct")).toBeUndefined();
+  expect(fn(0)).toEqual("Value is not a string");
+  expect(fn(" ")).toBeUndefined(); // No automatic trimming is performed!
   expect(fn("")).toEqual("This field is required");
+  expect(fn(null)).toEqual("This field is required");
+  expect(fn(undefined)).toEqual("This field is required");
+
+  fn = validator.getValidatorForSlot("required_integer");
+  expect(fn("whoops")).toEqual("Value is not an integer");
+  expect(fn(0)).toBeUndefined();
+  expect(fn(1)).toBeUndefined();
+  // An empty string is always caught as a missing value before other checks (i.e. it's not an integer)
+  expect(fn("")).toEqual("This field is required");
+  expect(fn(null)).toEqual("This field is required");
   expect(fn(undefined)).toEqual("This field is required");
 });
 
-test("Validator should validate minimum and maximum numeric constraints", () => {
+test("Validator should validate minimum and maximum integer constraints", () => {
   const schema = buildTestSchema({
     attributes: {
       a_big_number: {
@@ -234,6 +249,47 @@ test("Validator should validate minimum and maximum numeric constraints", () => 
   expect(fn(50)).toBeUndefined();
   expect(fn(11)).toEqual("Value is less than minimum value");
   expect(fn(82)).toEqual("Value is greater than maximum value");
+});
+
+test("Validator should validate minimum and maximum float constraints", () => {
+  const schema = buildTestSchema({
+    attributes: {
+      a_big_float: {
+        name: "a_big_float",
+        range: "float",
+        minimum_value: 123.45,
+      },
+      a_small_float: {
+        name: "a_small_float",
+        range: "float",
+        maximum_value: -10.1,
+      },
+      a_medium_float: {
+        name: "a_medium_float",
+        range: "float",
+        minimum_value: -9.99,
+        maximum_value: 9.99,
+      },
+    },
+  });
+  const validator = new Validator(schema);
+  validator.useTargetClass("Test");
+
+  let fn = validator.getValidatorForSlot("a_big_float");
+  expect(fn(undefined)).toBeUndefined();
+  expect(fn(124.5)).toBeUndefined();
+  expect(fn(123.1)).toEqual("Value is less than minimum value");
+
+  fn = validator.getValidatorForSlot("a_small_float");
+  expect(fn(undefined)).toBeUndefined();
+  expect(fn(-10.5)).toBeUndefined();
+  expect(fn(-10)).toEqual("Value is greater than maximum value");
+
+  fn = validator.getValidatorForSlot("a_medium_float");
+  expect(fn(undefined)).toBeUndefined();
+  expect(fn(0)).toBeUndefined();
+  expect(fn(-10)).toEqual("Value is less than minimum value");
+  expect(fn(10)).toEqual("Value is greater than maximum value");
 });
 
 test("Validator should validate minimum and maximum date constraints", () => {
@@ -452,6 +508,7 @@ test("Validator should validate multivalued slots", () => {
   expect(fn([1, 2.2, 3])).toEqual("Value is not an integer");
   expect(fn([1, 2, "whoops"])).toEqual("Value is not an integer");
   expect(fn([11, 2, 3])).toEqual("Value is greater than maximum value");
+  expect(fn([11, "whoops", 13])).toEqual("Value is greater than maximum value");
 });
 
 test("Validator should validate multivalued cardinality constraints", () => {
