@@ -16,11 +16,11 @@ import {
   IonTextarea,
 } from "@ionic/react";
 import SchemaSlotHelp from "../SchemaSlotHelp/SchemaSlotHelp";
-
-import styles from "./SampleSlotEditModal.module.css";
 import { closeCircle, warningOutline } from "ionicons/icons";
 import { SampleDataValue } from "../../api";
 import { format } from "date-fns";
+
+import styles from "./SampleSlotEditModal.module.css";
 
 interface SampleSlotEditModalProps {
   defaultValue: SampleDataValue;
