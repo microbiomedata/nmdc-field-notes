@@ -16,7 +16,6 @@ import TabNavigator from "./components/TabNavigator/TabNavigator";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
 import SamplePage from "./pages/SamplePage/SamplePage";
-import SampleCreatePage from "./pages/SampleCreatePage/SampleCreatePage";
 
 const IN = "/in";
 const STUDY = `${IN}/study`;
@@ -33,8 +32,6 @@ export const paths = {
   studyEdit: (submissionId: string) => `${STUDY}/${submissionId}/edit`,
   sample: (submissionId: string, sampleIndex: string | number) =>
     `${STUDY}/${submissionId}/sample/${sampleIndex}`,
-  sampleCreate: (submissionId: string) =>
-    `${STUDY}/${submissionId}/sample/create`,
   guide: `${IN}/guide`,
   settings: `${IN}/settings`,
 };
@@ -79,9 +76,6 @@ const Router: React.FC = () => {
               path={paths.sample(":submissionId", ":sampleIndex")}
             >
               <SamplePage />
-            </AuthRoute>
-            <AuthRoute exact path={paths.sampleCreate(":submissionId")}>
-              <SampleCreatePage />
             </AuthRoute>
             <AuthRoute exact path={paths.home}>
               <HomePage />
