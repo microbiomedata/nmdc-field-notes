@@ -48,7 +48,7 @@ function validateUniqueValues(values: unknown[][]): boolean[] {
     // If we have seen this hash value before it will be in the previousValues
     // map. The key will be the row where we last saw it. This means we have a
     // duplicate and both this row and the previous row need to be marked as
-    // in valid.
+    // invalid.
     let rowValid = true;
     if (previousValues.has(rowHash)) {
       const previousRow = previousValues.get(rowHash);
