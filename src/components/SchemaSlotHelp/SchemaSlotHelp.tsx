@@ -18,7 +18,7 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({ slot }) => {
   const hasMinValue = slot.minimum_value != null;
   const hasMaxValue = slot.maximum_value != null;
   if (hasMinValue || hasMaxValue) {
-    let paragraph = "Value should be ";
+    let paragraph = "Value must be ";
     if (hasMinValue && hasMaxValue) {
       paragraph += `between ${slot.minimum_value} and ${slot.maximum_value} (inclusive).`;
     } else if (hasMinValue) {
