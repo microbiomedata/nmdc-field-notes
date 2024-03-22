@@ -93,9 +93,21 @@ const SamplePage: React.FC = () => {
           return;
         }
         if (result) {
-          draft[parseInt(sampleIndex)][modalSlot.name] = result;
+          // If the sample previously passed validation, its index won't be
+          // in `draft`. But it needs to be after this partial validation,
+          // so add a spot for it now.
+          if (!(sampleIndexInt in draft)) {
+            draft[sampleIndexInt] = {};
+          }
+          draft[sampleIndexInt][modalSlot.name] = result;
         } else {
-          delete draft[parseInt(sampleIndex)][modalSlot.name];
+          // If the sample previously passed validation, its index won't be
+          // in `draft`. Since it's still passing after this partial
+          // validation, just move on.
+          if (!(sampleIndexInt in draft)) {
+            return;
+          }
+          delete draft[sampleIndexInt][modalSlot.name];
         }
       }),
     );
