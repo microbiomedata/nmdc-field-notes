@@ -12,7 +12,6 @@ import {
   IonPopover,
   IonProgressBar,
   IonTitle,
-  IonToolbar,
   useIonAlert,
   useIonRouter,
   useIonToast,
@@ -27,6 +26,7 @@ import {
   ellipsisHorizontal,
   ellipsisVertical,
 } from "ionicons/icons";
+import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 
 interface StudyEditPageParams {
   submissionId: string;
@@ -77,7 +77,7 @@ const StudyEditPage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <ThemedToolbar>
           <IonButtons slot="start">
             <IonBackButton
               defaultHref={paths.studyView(submissionId)}
@@ -93,7 +93,7 @@ const StudyEditPage: React.FC = () => {
               ></IonIcon>
             </IonButton>
           </IonButtons>
-        </IonToolbar>
+        </ThemedToolbar>
       </IonHeader>
       <IonContent>
         <IonPopover

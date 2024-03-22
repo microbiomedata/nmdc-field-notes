@@ -1,30 +1,20 @@
 import React from "react";
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonContent, IonHeader, IonPage, IonTitle } from "@ionic/react";
 import "./HomePage.css";
 import StudyList from "../../components/StudyList/StudyList";
+import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 
 const HEADER_TEXT = "NMDC Field Notes";
 
 const HomePage: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader translucent={true}>
-        <IonToolbar>
+      <IonHeader>
+        <ThemedToolbar>
           <IonTitle>{HEADER_TEXT}</IonTitle>
-        </IonToolbar>
+        </ThemedToolbar>
       </IonHeader>
       <IonContent>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">{HEADER_TEXT}</IonTitle>
-          </IonToolbar>
-        </IonHeader>
         <StudyList />
       </IonContent>
     </IonPage>

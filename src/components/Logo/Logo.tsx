@@ -3,7 +3,7 @@ import logoMarkSvg from "./img/logo-mark.svg";
 import logoTextSvg from "./img/logo-text.svg";
 import { IonText } from "@ionic/react";
 
-import "./Logo.css";
+import styles from "./Logo.module.css";
 
 interface Props extends React.ComponentProps<typeof IonText> {}
 
@@ -23,7 +23,12 @@ const Logo: React.FC<Props> = ({ style, ...rest }) => {
         alt={"NMDC emblem"}
         style={{ height: 55, marginRight: 10 }}
       />
-      <img src={logoTextSvg} alt={"NMDC name"} style={{ height: 50 }} />
+      <img
+        src={logoTextSvg}
+        alt={"NMDC name"}
+        style={{ height: 50 }}
+        className={styles.darkModeInvert}
+      />
     </IonText>
   );
 };

@@ -11,7 +11,6 @@ import {
   IonPage,
   IonPopover,
   IonTitle,
-  IonToolbar,
   useIonAlert,
   useIonRouter,
 } from "@ionic/react";
@@ -26,6 +25,7 @@ import SampleSlotEditModal from "../../components/SampleSlotEditModal/SampleSlot
 import { produce } from "immer";
 import Validator, { ValidationResults } from "../../Validator";
 import { ellipsisHorizontal, ellipsisVertical } from "ionicons/icons";
+import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 
 interface SamplePageParams {
   submissionId: string;
@@ -151,7 +151,7 @@ const SamplePage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <ThemedToolbar>
           <IonButtons slot="start">
             <IonBackButton
               defaultHref={paths.studyView(submissionId)}
@@ -167,7 +167,7 @@ const SamplePage: React.FC = () => {
               ></IonIcon>
             </IonButton>
           </IonButtons>
-        </IonToolbar>
+        </ThemedToolbar>
       </IonHeader>
       <IonContent>
         <IonPopover
