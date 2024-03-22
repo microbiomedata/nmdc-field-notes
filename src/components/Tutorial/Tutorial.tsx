@@ -59,7 +59,7 @@ const Tutorial: React.FC = () => {
                       icon={checkmarkCircle}
                       color={"primary"}
                     />
-                    {props!.children as string}
+                    <span>{props!.children}</span>
                   </IonItem>
                 ),
               }}
