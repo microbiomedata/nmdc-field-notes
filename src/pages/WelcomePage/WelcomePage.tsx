@@ -16,7 +16,7 @@ import {
 import { logIn } from "ionicons/icons";
 import Logo from "../../components/Logo/Logo";
 import { paths } from "../../Router";
-import "./WelcomePage.css";
+import classes from "./WelcomePage.module.css";
 import { Browser } from "@capacitor/browser";
 import config from "../../config";
 
@@ -31,21 +31,21 @@ const WelcomePage: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen className={"ion-padding"}>
-        <IonGrid className={"nmdc__full-height"}>
-          <IonRow className={"nmdc__full-height ion-align-items-center"}>
+        <IonGrid className={classes.fullHeight}>
+          <IonRow className={`${classes.fullHeight} ion-align-items-center`}>
             <IonCol>
               <IonRow>
                 <IonCol className={"ion-text-center"}>
-                  <Logo className={"nmdc__margin-auto"} />
+                  <Logo className={classes.marginAuto} />
                 </IonCol>
               </IonRow>
               <IonRow>
                 <IonCol className={"ion-text-center"}>
-                  <IonCard className={"nmdc__margin-bottom-0"}>
+                  <IonCard className={classes.marginBottomZero}>
                     <IonCardHeader>
                       <IonCardTitle>Welcome</IonCardTitle>
                     </IonCardHeader>
-                    <IonCardContent className={"nmdc__padding-bottom-0"}>
+                    <IonCardContent className={classes.paddingBottomZero}>
                       Welcome to NMDC Field Notes, an app designed to help you
                       collect environmental metadata on the go.
                     </IonCardContent>
@@ -61,7 +61,7 @@ const WelcomePage: React.FC = () => {
                     <IonCardHeader>
                       <IonCardTitle>Checklist</IonCardTitle>
                     </IonCardHeader>
-                    <IonCardContent className={"nmdc__padding-bottom-0"}>
+                    <IonCardContent className={classes.paddingBottomZero}>
                       Before you go out into the field, do you have everything
                       you need to collect your metadata?
                     </IonCardContent>
