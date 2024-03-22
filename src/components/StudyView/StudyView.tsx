@@ -27,7 +27,9 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
       return;
     }
     const updatedSubmission = produce(submission.data, (draft) => {
-      const samples = getSubmissionSamples(draft);
+      const samples = getSubmissionSamples(draft, {
+        createSampleDataFieldIfMissing: true,
+      });
       samples.push({});
     });
     updateMutation.mutate(updatedSubmission, {

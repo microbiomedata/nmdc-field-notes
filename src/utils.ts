@@ -1,7 +1,13 @@
 import { SubmissionMetadata, TEMPLATES } from "./api";
 import { SchemaDefinition, SlotDefinition } from "./linkml-metamodel";
 
-export function getSubmissionSamples(submission?: SubmissionMetadata) {
+export interface GetSubmissionSamplesOptions {
+  createSampleDataFieldIfMissing?: boolean;
+}
+export function getSubmissionSamples(
+  submission?: SubmissionMetadata,
+  options: GetSubmissionSamplesOptions = {},
+) {
   if (!submission) {
     return [];
   }
@@ -9,6 +15,12 @@ export function getSubmissionSamples(submission?: SubmissionMetadata) {
   const sampleDataField = TEMPLATES[environmentalPackageName]?.sampleDataSlot;
   if (!sampleDataField) {
     return [];
+  }
+  if (
+    !(sampleDataField in submission.metadata_submission.sampleData) &&
+    options.createSampleDataFieldIfMissing
+  ) {
+    submission.metadata_submission.sampleData[sampleDataField] = [];
   }
   return submission.metadata_submission.sampleData[sampleDataField] || [];
 }
