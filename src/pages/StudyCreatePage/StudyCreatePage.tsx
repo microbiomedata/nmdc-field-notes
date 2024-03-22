@@ -6,7 +6,6 @@ import {
   IonHeader,
   IonPage,
   IonTitle,
-  IonToolbar,
   useIonRouter,
   useIonToast,
 } from "@ionic/react";
@@ -16,6 +15,7 @@ import { SubmissionMetadataCreate } from "../../api";
 import { paths } from "../../Router";
 import { initSubmission } from "../../data";
 import { checkmark } from "ionicons/icons";
+import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 
 const StudyCreatePage: React.FC = () => {
   const router = useIonRouter();
@@ -39,12 +39,12 @@ const StudyCreatePage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <ThemedToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/"></IonBackButton>
           </IonButtons>
           <IonTitle>New Study</IonTitle>
-        </IonToolbar>
+        </ThemedToolbar>
       </IonHeader>
       <IonContent>
         <StudyForm submission={submission} onSave={handleSave} />

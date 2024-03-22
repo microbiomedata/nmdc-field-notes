@@ -8,10 +8,10 @@ import {
   IonHeader,
   IonPage,
   IonTitle,
-  IonToolbar,
 } from "@ionic/react";
 import StudyView from "../../components/StudyView/StudyView";
 import { paths } from "../../Router";
+import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 
 interface StudyViewPageParams {
   submissionId: string;
@@ -22,7 +22,7 @@ const StudyViewPage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <ThemedToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/"></IonBackButton>
           </IonButtons>
@@ -32,7 +32,7 @@ const StudyViewPage: React.FC = () => {
               Edit
             </IonButton>
           </IonButtons>
-        </IonToolbar>
+        </ThemedToolbar>
       </IonHeader>
       <IonContent>
         <StudyView submissionId={submissionId} />
