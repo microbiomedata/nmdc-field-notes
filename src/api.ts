@@ -77,8 +77,11 @@ export type SampleDataValue =
   | undefined;
 
 export interface SampleData {
-  _index: number;
   [key: string]: SampleDataValue;
+}
+
+export interface IndexedSampleData extends SampleData {
+  _index: number;
 }
 
 // This should eventually come from the schema itself
@@ -228,23 +231,6 @@ class NmdcServerClient extends FetchClient {
     });
   }
 
-  /**
-   * Injects the "_index" property into each sample in the submission's sampleData.
-   *
-   * Because the submission portal backend needs to be tolerant of storing "invalid" data, some
-   * samples could essentially be empty. Therefore, there are no existing fields we can treat as a
-   * key (or persistent identifier). The samples are essentially identified by their position in the
-   * array. However, because the SampleList component allows the user to filter samples, we need to
-   * keep track of the original index of each sample.
-   */
-  private static injectStableSampleIndexes(submission: SubmissionMetadata) {
-    Object.values(submission.metadata_submission.sampleData).map((samples) => {
-      samples.forEach((sample, index) => {
-        sample["_index"] = index;
-      });
-    });
-  }
-
   async getSubmissionList(pagination: PaginationOptions = {}) {
     pagination = {
       limit: 10,
@@ -252,21 +238,15 @@ class NmdcServerClient extends FetchClient {
       ...pagination,
     };
     const query = new URLSearchParams(pagination as Record<string, string>);
-    const submissions = await this.fetchJson<Paginated<SubmissionMetadata>>(
+    return await this.fetchJson<Paginated<SubmissionMetadata>>(
       `/api/metadata_submission?${query}`,
     );
-    submissions.results.forEach((submission) => {
-      NmdcServerClient.injectStableSampleIndexes(submission);
-    });
-    return submissions;
   }
 
   async getSubmission(id: string) {
-    const submission = await this.fetchJson<SubmissionMetadata>(
+    return await this.fetchJson<SubmissionMetadata>(
       `/api/metadata_submission/${id}`,
     );
-    NmdcServerClient.injectStableSampleIndexes(submission);
-    return submission;
   }
 
   async updateSubmission(id: string, data: Partial<SubmissionMetadata>) {

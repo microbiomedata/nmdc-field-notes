@@ -28,16 +28,13 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
     }
     const updatedSubmission = produce(submission.data, (draft) => {
       const samples = getSubmissionSamples(draft);
-      samples.push({
-        _index: samples.length,
-      });
+      samples.push({});
     });
     updateMutation.mutate(updatedSubmission, {
       onSuccess: (result) => {
         const samples = getSubmissionSamples(result);
-        const lastSample = samples[samples.length - 1];
         router.push(
-          paths.sample(submissionId, lastSample._index.toString()),
+          paths.sample(submissionId, samples.length - 1),
           "forward",
           "push",
         );

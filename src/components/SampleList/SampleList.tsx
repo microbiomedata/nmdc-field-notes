@@ -17,10 +17,11 @@ import {
 import { paths } from "../../Router";
 import { search as searchIcon } from "ionicons/icons";
 import NoneOr from "../NoneOr/NoneOr";
-import { SubmissionMetadata } from "../../api";
+import { IndexedSampleData, SubmissionMetadata } from "../../api";
 import { IonSearchbarCustomEvent } from "@ionic/core/dist/types/components";
 import { useMiniSearch } from "react-minisearch";
 import { getSubmissionSamples } from "../../utils";
+import { produce } from "immer";
 
 interface SampleListProps {
   submission: SubmissionMetadata;
@@ -40,11 +41,23 @@ const SampleList: React.FC<SampleListProps> = ({
   const [isSearchVisible, setIsSearchVisible] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState<string | null>();
 
-  const samples = useMemo(
-    // This is reversed so that the most recent samples are shown first
-    () => getSubmissionSamples(submission).toReversed(),
-    [submission],
-  );
+  const samples = useMemo(() => {
+    return produce(
+      getSubmissionSamples(submission) as IndexedSampleData[],
+      (draft) => {
+        // Because the submission portal backend needs to be tolerant of storing "invalid" data, some
+        // samples could essentially be empty. Therefore, there are no existing fields we can treat as a
+        // key (or persistent identifier). The samples are essentially identified by their position in the
+        // array. However, because the SampleList component allows the user to filter samples, we need to
+        // keep track of the original index of each sample.
+        draft.forEach((sample, index) => {
+          sample["_index"] = index;
+        });
+        // Reverse so that the most recent samples are shown first
+        draft.reverse();
+      },
+    );
+  }, [submission]);
 
   // Whenever the search field changes from hidden to visible, focus on it.
   // This is done in a useEffect so that it happens after the searchbox is rendered.

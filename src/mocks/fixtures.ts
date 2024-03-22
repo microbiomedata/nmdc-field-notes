@@ -34,7 +34,6 @@ export function generateSubmission(
       },
       sampleData: {
         soil_data: Array.from({ length: numberOfSamples }, (_, i) => ({
-          _index: i,
           samp_name:
             (i % 3 === 0 ? "Silt" : i % 5 === 0 ? "Clay" : "Loam") + " " + i,
         })),
