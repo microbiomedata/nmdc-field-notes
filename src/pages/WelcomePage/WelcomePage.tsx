@@ -30,7 +30,10 @@ const WelcomePage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent fullscreen className={"ion-padding"}>
+      <IonContent
+        fullscreen
+        className={`ion-padding ${classes.themedBackground}`}
+      >
         <IonGrid className={classes.fullHeight}>
           <IonRow className={`${classes.fullHeight} ion-align-items-center`}>
             <IonCol>
