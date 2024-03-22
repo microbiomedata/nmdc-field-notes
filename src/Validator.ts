@@ -341,9 +341,6 @@ class Validator {
     // be performed atomically on the value in the cell according to the column's
     // slot.
     for (let idx = 0; idx < data.length; idx += 1) {
-      if (!nonEmptyRowNumbers.includes(idx)) {
-        continue;
-      }
       for (const slotName of Object.keys(this.targetClassInducedSlots!)) {
         const valueValidator = this.getValidatorForSlot(slotName, {
           cacheKey: slotName,

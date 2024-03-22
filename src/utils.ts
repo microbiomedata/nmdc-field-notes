@@ -20,9 +20,7 @@ export function getSubmissionSample(
   if (!submission || index === undefined) {
     return undefined;
   }
-  return getSubmissionSamples(submission).find(
-    (sample) => sample._index === index,
-  );
+  return getSubmissionSamples(submission)[index];
 }
 
 function compareByRank(a: { rank?: number }, b: { rank?: number }): number {
