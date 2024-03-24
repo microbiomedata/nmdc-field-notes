@@ -52,8 +52,8 @@ const WelcomePage: React.FC = () => {
                       Welcome to NMDC Field Notes, an app designed to help you
                       collect environmental metadata on the go.
                     </IonCardContent>
-                    <IonButton fill={"clear"} routerLink={paths.tutorial}>
-                      Take the tutorial
+                    <IonButton fill={"clear"} routerLink={paths.tour}>
+                      Take a tour
                     </IonButton>
                   </IonCard>
                 </IonCol>
@@ -68,11 +68,7 @@ const WelcomePage: React.FC = () => {
                       Before you go out into the field, do you have everything
                       you need to collect your metadata?
                     </IonCardContent>
-                    <IonButton
-                      fill={"clear"}
-                      // TODO: Navigate to the checklist screen.
-                      onClick={() => console.log("View the checklist")}
-                    >
+                    <IonButton fill={"clear"} routerLink={paths.checklist}>
                       View the checklist
                     </IonButton>
                   </IonCard>
@@ -83,7 +79,6 @@ const WelcomePage: React.FC = () => {
                   <IonButton
                     expand={"block"}
                     className={"ion-margin-horizontal"}
-                    // TODO: Initiate the ORCiD Login flow.
                     onClick={handleLogin}
                   >
                     <IonIcon

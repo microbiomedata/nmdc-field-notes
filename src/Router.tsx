@@ -22,7 +22,8 @@ const STUDY = `${IN}/study`;
 export const paths = {
   root: "/",
   home: STUDY,
-  tutorial: "/tutorial",
+  checklist: "/checklist",
+  tour: "/tour",
   welcome: "/welcome",
   login: "/login",
   token: "/token",
@@ -53,8 +54,11 @@ const Router: React.FC = () => {
         <Route exact path={paths.welcome}>
           <WelcomePage />
         </Route>
-        <Route exact path={paths.tutorial}>
+        <Route exact path={paths.checklist}>
           <TutorialPage />
+        </Route>
+        <Route exact path={paths.tour}>
+          <PlaceholderPage title={"Tour"} body={"Take a tour of the app"} />
         </Route>
 
         <Route path={IN}>
