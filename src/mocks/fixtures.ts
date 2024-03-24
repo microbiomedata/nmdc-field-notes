@@ -1,6 +1,9 @@
 import { SubmissionMetadata } from "../api";
+import { initAddressForm, initContextForm, initMultiOmicsForm } from "../data";
 
-export function generateSubmission(numberOfSamples: number) {
+export function generateSubmission(
+  numberOfSamples: number,
+): SubmissionMetadata {
   return {
     id: "1",
     author: {
@@ -14,9 +17,9 @@ export function generateSubmission(numberOfSamples: number) {
     author_orcid: "0000-0000-0000-0000",
     metadata_submission: {
       packageName: "soil",
-      multiOmicsForm: {},
-      contextForm: {},
-      addressForm: {},
+      multiOmicsForm: initMultiOmicsForm(),
+      contextForm: initContextForm(),
+      addressForm: initAddressForm(),
       templates: ["soil"],
       studyForm: {
         studyName: "",
@@ -27,10 +30,10 @@ export function generateSubmission(numberOfSamples: number) {
         studyDate: undefined,
         description: "",
         contributors: [],
+        notes: "",
       },
       sampleData: {
         soil_data: Array.from({ length: numberOfSamples }, (_, i) => ({
-          _index: i,
           samp_name:
             (i % 3 === 0 ? "Silt" : i % 5 === 0 ? "Clay" : "Loam") + " " + i,
         })),

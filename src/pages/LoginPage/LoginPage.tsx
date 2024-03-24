@@ -1,12 +1,12 @@
 import React from "react";
 import { IonButton, IonPage } from "@ionic/react";
-
+import config from "../../config";
 import { Browser } from "@capacitor/browser";
 
 const LoginPage: React.FC = () => {
   const handleLogin = async () => {
     await Browser.open({
-      url: `${import.meta.env.VITE_NMDC_SERVER_LOGIN_URL}?behavior=app`,
+      url: `${config.NMDC_SERVER_LOGIN_URL}?behavior=app`,
       windowName: "_self", // web only
     });
   };

@@ -1,0 +1,16 @@
+ion-toolbar.themedBackground {
+  --background: local center / cover no-repeat
+    url("../../theme/NMDC_microbe_light.png");
+  --opacity: 0.6;
+}
+
+.themedBackground ion-button {
+  --opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-toolbar.themedBackground {
+    --background: local center / cover no-repeat
+      url("../../theme/NMDC_microbe_dark.png");
+  }
+}

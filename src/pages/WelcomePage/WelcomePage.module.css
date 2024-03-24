@@ -1,0 +1,29 @@
+/* Note: These are "utility" classes for which I failed to find an equivalent `ion-*` class. */
+
+.fullHeight {
+  height: 100%;
+}
+
+.marginAuto {
+  margin: auto;
+}
+
+.marginBottomZero {
+  margin-bottom: 0;
+}
+
+.paddingBottomZero {
+  padding-bottom: 0;
+}
+
+ion-content.themedBackground::part(background) {
+  background-image: url("../../theme/NMDC_microbe_light.png");
+  background-size: cover;
+  opacity: 0.4;
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-content.themedBackground::part(background) {
+    background-image: url("../../theme/NMDC_microbe_dark.png");
+  }
+}

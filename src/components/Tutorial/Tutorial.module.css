@@ -1,0 +1,12 @@
+.header {
+  padding: 10px 10px 10px 10px;
+}
+
+.header .title {
+  font-weight: bold;
+  color: var(--ion-color-primary);
+}
+
+.listItem {
+  color: var(--ion-color-primary);
+}

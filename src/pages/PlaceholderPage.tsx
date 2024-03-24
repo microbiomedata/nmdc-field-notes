@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonContent, IonHeader, IonPage, IonTitle } from "@ionic/react";
+import ThemedToolbar from "../components/ThemedToolbar/ThemedToolbar";
 
 interface Props {
   title?: string;
@@ -21,13 +16,11 @@ const PlaceholderPage: React.FC<Props> = ({ title, body }) => {
   return (
     <IonPage>
       <IonHeader translucent={true}>
-        <IonToolbar>
+        <ThemedToolbar>
           <IonTitle>{title}</IonTitle>
-        </IonToolbar>
+        </ThemedToolbar>
       </IonHeader>
-      <IonContent fullscreen className={"ion-padding"}>
-        {body}
-      </IonContent>
+      <IonContent className={"ion-padding"}>{body}</IonContent>
     </IonPage>
   );
 };

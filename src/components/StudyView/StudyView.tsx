@@ -1,16 +1,48 @@
 import React from "react";
 import { useSubmission } from "../../queries";
-import { IonItem, IonLabel, IonList, IonProgressBar } from "@ionic/react";
+import {
+  IonItem,
+  IonLabel,
+  IonList,
+  IonProgressBar,
+  useIonRouter,
+} from "@ionic/react";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import NoneOr from "../NoneOr/NoneOr";
 import SampleList from "../SampleList/SampleList";
+import { getSubmissionSamples } from "../../utils";
+import { produce } from "immer";
+import { paths } from "../../Router";
 
 interface StudyViewProps {
   submissionId: string;
 }
 
 const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
-  const { query: submission } = useSubmission(submissionId);
+  const router = useIonRouter();
+  const { query: submission, updateMutation } = useSubmission(submissionId);
+
+  const handleSampleCreate = () => {
+    if (!submission.data) {
+      return;
+    }
+    const updatedSubmission = produce(submission.data, (draft) => {
+      const samples = getSubmissionSamples(draft, {
+        createSampleDataFieldIfMissing: true,
+      });
+      samples.push({});
+    });
+    updateMutation.mutate(updatedSubmission, {
+      onSuccess: (result) => {
+        const samples = getSubmissionSamples(result);
+        router.push(
+          paths.sample(submissionId, samples.length - 1),
+          "forward",
+          "push",
+        );
+      },
+    });
+  };
 
   return (
     <>
@@ -93,7 +125,10 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
             </IonItem>
           </IonList>
 
-          <SampleList submission={submission.data} />
+          <SampleList
+            submission={submission.data}
+            onSampleCreate={handleSampleCreate}
+          />
         </>
       )}
     </>
