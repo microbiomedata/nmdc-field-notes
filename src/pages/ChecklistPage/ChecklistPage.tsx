@@ -7,12 +7,10 @@ import {
   IonPage,
   IonTitle,
 } from "@ionic/react";
-import Tutorial from "../../components/Tutorial/Tutorial";
+import Checklist from "../../components/Checklist/Checklist";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 
-import "./TutorialPage.css";
-
-const TutorialPage: React.FC = () => {
+const ChecklistPage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
@@ -20,14 +18,14 @@ const TutorialPage: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/"></IonBackButton>
           </IonButtons>
-          <IonTitle>Tutorial</IonTitle>
+          <IonTitle>Checklist</IonTitle>
         </ThemedToolbar>
       </IonHeader>
       <IonContent>
-        <Tutorial />
+        <Checklist />
       </IonContent>
     </IonPage>
   );
 };
 
-export default TutorialPage;
+export default ChecklistPage;
