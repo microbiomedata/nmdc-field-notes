@@ -1,7 +1,7 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "io.ionic.starter",
+  appId: "org.microbiomedata.fieldnotes",
   appName: "NMDC Field Notes",
   webDir: "dist",
   server: {
