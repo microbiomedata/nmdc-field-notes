@@ -1,6 +1,7 @@
 {
   "short_name": "Field Notes",
   "name": "NMDC Field Notes",
+  "description": "Mobile app for metadata collection on the go",
   "icons": [
     {
       "src": "../icons/icon-48.webp",
