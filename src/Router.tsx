@@ -5,7 +5,7 @@ import { Redirect, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import TokenPage from "./pages/TokenPage/TokenPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
-import TutorialPage from "./pages/TutorialPage/TutorialPage";
+import ChecklistPage from "./pages/ChecklistPage/ChecklistPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import HomePage from "./pages/HomePage/HomePage";
 import { useStore } from "./Store";
@@ -22,7 +22,8 @@ const STUDY = `${IN}/study`;
 export const paths = {
   root: "/",
   home: STUDY,
-  tutorial: "/tutorial",
+  checklist: "/checklist",
+  tour: "/tour",
   welcome: "/welcome",
   login: "/login",
   token: "/token",
@@ -53,8 +54,11 @@ const Router: React.FC = () => {
         <Route exact path={paths.welcome}>
           <WelcomePage />
         </Route>
-        <Route exact path={paths.tutorial}>
-          <TutorialPage />
+        <Route exact path={paths.checklist}>
+          <ChecklistPage />
+        </Route>
+        <Route exact path={paths.tour}>
+          <PlaceholderPage title={"Tour"} body={"Take a tour of the app"} />
         </Route>
 
         <Route path={IN}>

@@ -10,16 +10,16 @@ import {
   IonPopover,
 } from "@ionic/react";
 import { informationCircleOutline, checkmarkCircle } from "ionicons/icons";
-import { soilPackageTutorial } from "./md-in-js/soilPackageTutorial";
+import { soilPackageChecklist } from "./md-in-js/soilPackageChecklist";
 import Markdown from "react-markdown";
 
-import styles from "./Tutorial.module.css";
+import styles from "./Checklist.module.css";
 
-const Tutorial: React.FC = () => {
+const Checklist: React.FC = () => {
   return (
     <IonAccordionGroup>
       <div className={styles.header}>
-        <span className={styles.title}>{soilPackageTutorial.header}</span>
+        <span className={styles.title}>{soilPackageChecklist.header}</span>
         <IonIcon
           id="hover-trigger-soil"
           icon={informationCircleOutline}
@@ -28,7 +28,7 @@ const Tutorial: React.FC = () => {
         ></IonIcon>
         <IonPopover trigger="hover-trigger-soil" triggerAction="hover">
           <IonContent class="ion-padding">
-            {soilPackageTutorial.info.split("\n").map(function (item, index) {
+            {soilPackageChecklist.info.split("\n").map(function (item, index) {
               return (
                 <span key={index}>
                   {item}
@@ -41,7 +41,7 @@ const Tutorial: React.FC = () => {
       </div>
 
       {/* Render each section in its own accordion. */}
-      {soilPackageTutorial.sections.map((s) => (
+      {soilPackageChecklist.sections.map((s) => (
         <IonAccordion key={s.title}>
           <IonItem slot={"header"}>
             <IonLabel>{s.title}</IonLabel>
@@ -73,4 +73,4 @@ const Tutorial: React.FC = () => {
   );
 };
 
-export default Tutorial;
+export default Checklist;
