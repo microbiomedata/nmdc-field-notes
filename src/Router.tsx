@@ -16,6 +16,7 @@ import TabNavigator from "./components/TabNavigator/TabNavigator";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
 import SamplePage from "./pages/SamplePage/SamplePage";
+import GuidePage from "./pages/GuidePage/GuidePage";
 
 const IN = "/in";
 const STUDY = `${IN}/study`;
@@ -87,10 +88,7 @@ const Router: React.FC = () => {
 
             {/* GUIDE TAB ROUTES */}
             <AuthRoute exact path={paths.guide}>
-              <PlaceholderPage
-                title={"Guide"}
-                body={"Base route on Guide tab"}
-              />
+              <GuidePage />
             </AuthRoute>
 
             {/* SETTINGS TAB ROUTES */}
