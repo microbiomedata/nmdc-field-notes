@@ -8,6 +8,8 @@
     "build": "tsc && vite build",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
+    "sim.android": "npm run build && npx cap run android",
+    "sim.ios": "npm run build && npx cap run ios",
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
@@ -83,5 +85,5 @@
     "vite": "^5.0.0",
     "vitest": "^0.34.6"
   },
-  "description": "An Ionic project"
+  "description": "Mobile app for metadata collection on the go"
 }

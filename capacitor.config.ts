@@ -1,8 +1,8 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "io.ionic.starter",
-  appName: "Field Notes",
+  appId: "org.microbiomedata.fieldnotes",
+  appName: "NMDC Field Notes",
   webDir: "dist",
   server: {
     androidScheme: "https",
