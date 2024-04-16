@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import {
   IonBackButton,
   IonButton,
@@ -18,9 +18,9 @@ import { useParams } from "react-router";
 import { paths } from "../../Router";
 import { useSubmission, useSubmissionSchema } from "../../queries";
 import { getSubmissionSample, getSubmissionSamples } from "../../utils";
-import { SampleDataValue, TEMPLATES } from "../../api";
+import { SampleData, SampleDataValue, TEMPLATES } from "../../api";
 import SampleView from "../../components/SampleView/SampleView";
-import { SlotDefinition } from "../../linkml-metamodel";
+import { SlotDefinition, SlotDefinitionName } from "../../linkml-metamodel";
 import SampleSlotEditModal from "../../components/SampleSlotEditModal/SampleSlotEditModal";
 import { produce } from "immer";
 import Validator, { ValidationResults } from "../../Validator";
@@ -44,35 +44,44 @@ const SamplePage: React.FC = () => {
   const { query: submission, updateMutation } = useSubmission(submissionId);
   const sample = useMemo(
     () => getSubmissionSample(submission.data, sampleIndexInt),
-    [submission.data, sampleIndex],
+    [submission.data, sampleIndexInt],
+  );
+
+  const getSlotValue = useCallback(
+    (slotName: SlotDefinitionName) => {
+      return sample?.[slotName];
+    },
+    [sample],
   );
 
   const packageName = submission.data?.metadata_submission.packageName;
   const schemaClassName = packageName && TEMPLATES[packageName].schemaClass;
   const validator = useMemo(() => {
-    if (!schema.data || !schemaClassName) {
+    if (!schema.data?.schema || !schemaClassName) {
       return null;
     }
-    const validator = new Validator(schema.data);
+    const validator = new Validator(schema.data.schema);
     validator.useTargetClass(schemaClassName);
     return validator;
-  }, [schema.data, schemaClassName]);
+  }, [schema.data?.schema, schemaClassName]);
 
   const handleSlotClick = (slot: SlotDefinition) => {
     setModalSlot(slot);
   };
 
-  const handleSave = (value: SampleDataValue) => {
+  const handleSave = (values: SampleData) => {
     if (!modalSlot || !submission.data) {
       return;
     }
     const updatedSubmission = produce(submission.data, (draft) => {
       const sample = getSubmissionSample(draft, sampleIndexInt);
       if (sample) {
-        if (value != null) {
-          sample[modalSlot.name] = value;
-        } else {
-          delete sample[modalSlot.name];
+        for (const [key, value] of Object.entries(values)) {
+          if (value != null) {
+            sample[key] = value;
+          } else {
+            delete sample[key];
+          }
         }
       }
     });
@@ -188,17 +197,19 @@ const SamplePage: React.FC = () => {
             <SampleView
               onSlotClick={handleSlotClick}
               sample={sample}
-              schema={schema.data}
+              schema={schema.data.schema}
               schemaClass={schemaClassName}
               validationResults={validationResults?.[sampleIndexInt]}
             />
             <SampleSlotEditModal
               defaultValue={modalSlot && sample?.[modalSlot.name]}
+              getSlotValue={getSlotValue}
+              goldEcosystemTree={schema.data.goldEcosystemTree}
               onCancel={() => setModalSlot(null)}
               onSave={handleSave}
               onChange={handleModalValueChange}
               saving={updateMutation.isPending}
-              schema={schema.data}
+              schema={schema.data.schema}
               slot={modalSlot}
               validationResult={
                 modalSlot

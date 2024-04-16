@@ -214,6 +214,8 @@ export function useSubmissionCreate() {
 export function useSubmissionSchema() {
   return useQuery({
     queryKey: submissionKeys.submissionSchema(),
+    // These two files are used in conjunction with each other so make the two requests in parallel
+    // and return an object bundling the results together.
     queryFn: async () => {
       const result = await Promise.all([
         nmdcServerClient.getSubmissionSchema(),
