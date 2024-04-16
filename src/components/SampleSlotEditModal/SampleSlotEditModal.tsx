@@ -248,10 +248,12 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
             </div>
           </div>
           {selectState.warning && (
-            <IonText color="medium">{selectState.warning}</IonText>
+            <IonItem className={styles.inputMessage} lines="none">
+              <IonText color="medium">{selectState.warning}</IonText>
+            </IonItem>
           )}
           {validationResult && (
-            <IonItem lines="none">
+            <IonItem className={styles.inputMessage} lines="none">
               <IonIcon
                 aria-hidden="true"
                 icon={warningOutline}

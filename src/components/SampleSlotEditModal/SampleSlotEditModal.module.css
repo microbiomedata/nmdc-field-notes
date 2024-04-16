@@ -30,3 +30,8 @@
   border: none;
   color: var(--ion-color-medium);
 }
+
+.inputMessage {
+  --background: transparent;
+  --padding-start: 0;
+}
