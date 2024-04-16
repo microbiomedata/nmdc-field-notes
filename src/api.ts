@@ -185,6 +185,13 @@ export interface PaginationOptions {
   offset?: number;
 }
 
+export interface GoldEcosystemTreeNode {
+  name: string;
+  url?: string;
+  count?: string;
+  children: GoldEcosystemTreeNode[];
+}
+
 class FetchClient {
   private readonly baseUrl: string;
   private readonly defaultOptions: RequestInit;
@@ -279,6 +286,12 @@ class NmdcServerClient extends FetchClient {
   async getSubmissionSchema() {
     return this.fetchJson<SchemaDefinition>(
       `/static/submission_schema/submission_schema.json`,
+    );
+  }
+
+  async getGoldEcosystemTree() {
+    return this.fetchJson<GoldEcosystemTreeNode>(
+      "/static/submission_schema/GoldEcosystemTree.json",
     );
   }
 }
