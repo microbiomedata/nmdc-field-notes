@@ -51,7 +51,7 @@ const GOLD_ECOSYSTEM_SLOTS = [
 
 // This function takes a slot and first determines based on the schema whether to render a select
 // control (`isSelectable`), and if so what the permissible values are. If the slot is in the
-// GOLD_ECOSYSTEM_SLOTS list, it will also filter the permissible values based on the GOLD Ecoystem
+// GOLD_ECOSYSTEM_SLOTS list, it will also filter the permissible values based on the GOLD Ecosystem
 // Tree and the values of upstream slots. This process may also produce a warning message that
 // should disable the select control if the user hasn't set values for the upstream slots.
 function getSelectState(
@@ -89,15 +89,15 @@ function getSelectState(
         validPathCompletions = [];
         break;
       }
-      const next = validPathCompletions.find(
+      const upstreamValueTreeNode = validPathCompletions.find(
         (node) => node.name === upstreamValue,
       );
-      if (!next) {
+      if (!upstreamValueTreeNode) {
         warning = `Unable to determine permissible values. Try changing ${upstreamSlot}.`;
         validPathCompletions = [];
         break;
       }
-      validPathCompletions = next.children;
+      validPathCompletions = upstreamValueTreeNode.children;
     }
     permissibleValues = Object.fromEntries(
       Object.entries(permissibleValues).filter(([key]) =>
@@ -182,17 +182,17 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
       return;
     }
     // Always update the value of the target slot
-    const update: SampleData = { [slot.name]: value };
+    const updates: SampleData = { [slot.name]: value };
 
     // If the target slot is in the GOLD_ECOSYSTEM_SLOTS list, clear downstream slots
     const goldIndex = GOLD_ECOSYSTEM_SLOTS.indexOf(slot.name);
     if (goldIndex > -1) {
       const downstream = GOLD_ECOSYSTEM_SLOTS.slice(goldIndex + 1);
       for (const field of downstream) {
-        update[field] = null;
+        updates[field] = null;
       }
     }
-    onSave(update);
+    onSave(updates);
   };
 
   return (
