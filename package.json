@@ -45,8 +45,7 @@
     "react-markdown": "^9.0.1",
     "react-minisearch": "^6.3.0",
     "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4",
-    "vite-plugin-package-version": "^1.1.0"
+    "react-router-dom": "^5.3.4"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.4",
@@ -85,6 +84,7 @@
     "terser": "^5.4.0",
     "typescript": "^5.1.6",
     "vite": "^5.0.0",
+    "vite-plugin-package-version": "^1.1.0",
     "vitest": "^0.34.6"
   },
   "description": "Mobile app for metadata collection on the go"
