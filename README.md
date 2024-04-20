@@ -182,3 +182,13 @@ npm run storybook
 Once the Storybook web server is running, you will be able to access it at:
 
 - http://localhost:6006
+
+### Add an environment variable
+
+Here's how you can introduce a new environment variable to the code base:
+
+1. Add its TypeScript type information to the `ImportMetaEnv` interface in `src/vite-env.d.ts`
+2. Add its name and an example value to `.env.local.example`
+3. Add the variable to the `Config` interface and the `config` object in `config.ts`
+4. Elsewhere in the code base, access the variable via the `config` object exported by `config.ts` (instead of
+   accessing `import.meta.env.{NAME}` directly)
