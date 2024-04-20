@@ -4,6 +4,10 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonNote,
   IonPage,
   IonTitle,
 } from "@ionic/react";
@@ -21,7 +25,14 @@ const SettingsPage: React.FC = () => {
           <IonTitle>Settings</IonTitle>
         </ThemedToolbar>
       </IonHeader>
-      <IonContent>App version is {config.APP_VERSION}</IonContent>
+      <IonContent>
+        <IonList inset={true}>
+          <IonItem>
+            <IonLabel>App version</IonLabel>
+            <IonNote color={"medium"}>{config.APP_VERSION}</IonNote>
+          </IonItem>
+        </IonList>
+      </IonContent>
     </IonPage>
   );
 };
