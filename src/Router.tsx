@@ -17,6 +17,7 @@ import PlaceholderPage from "./pages/PlaceholderPage";
 import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
 import SamplePage from "./pages/SamplePage/SamplePage";
 import GuidePage from "./pages/GuidePage/GuidePage";
+import SettingsPage from "./pages/SettingsPage/SettingsPage";
 
 const IN = "/in";
 const STUDY = `${IN}/study`;
@@ -93,10 +94,7 @@ const Router: React.FC = () => {
 
             {/* SETTINGS TAB ROUTES */}
             <AuthRoute exact path={paths.settings}>
-              <PlaceholderPage
-                title={"Settings"}
-                body={"Base route on Settings tab"}
-              />
+              <SettingsPage />
             </AuthRoute>
 
             {/* Fallback route for when the requested path doesn't match any of the above paths. */}
