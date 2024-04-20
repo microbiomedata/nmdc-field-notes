@@ -8,8 +8,7 @@ import {
   IonTitle,
 } from "@ionic/react";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
-
-const APP_VERSION = import.meta.env.PACKAGE_VERSION;
+import config from "../../config";
 
 const SettingsPage: React.FC = () => {
   return (
@@ -22,7 +21,7 @@ const SettingsPage: React.FC = () => {
           <IonTitle>Settings</IonTitle>
         </ThemedToolbar>
       </IonHeader>
-      <IonContent>App version is {APP_VERSION}</IonContent>
+      <IonContent>App version is {config.APP_VERSION}</IonContent>
     </IonPage>
   );
 };
