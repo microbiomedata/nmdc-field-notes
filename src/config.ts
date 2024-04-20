@@ -5,7 +5,7 @@
  * This module adds (a) type hints, (b) documentation, (c) default values, and (d) sanitization.
  *
  * Note: Now that we have implemented https://vitejs.dev/guide/env-and-mode#intellisense-for-typescript,
- *       the "(a) type hints" selling point of this module, on its own, is obsolete.
+ *       the "(a) type hints" added by this module are more redundant than before.
  *
  * Reference: https://vitejs.dev/guide/env-and-mode
  */
