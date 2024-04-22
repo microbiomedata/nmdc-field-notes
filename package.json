@@ -84,6 +84,7 @@
     "terser": "^5.4.0",
     "typescript": "^5.1.6",
     "vite": "^5.0.0",
+    "vite-plugin-package-version": "^1.1.0",
     "vitest": "^0.34.6"
   },
   "description": "Mobile app for metadata collection on the go"
