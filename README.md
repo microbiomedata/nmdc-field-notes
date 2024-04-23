@@ -193,7 +193,7 @@ Here's how you can introduce a new environment variable to the code base:
 4. Elsewhere in the code base, access the variable via the `config` object exported by `config.ts` (instead of
    accessing `import.meta.env.{NAME}` directly)
 
-### License / Copyright
+## License / Copyright
 
 NMDC Field Notes Phone Application (NMDC Field Notes) Copyright (c) 2024, The Regents of the University of California,
 through Lawrence Berkeley National Laboratory, and Triad National Security, LLC through Los Alamos National Laboratory (subject
