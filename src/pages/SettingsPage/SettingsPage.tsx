@@ -29,7 +29,9 @@ const SettingsPage: React.FC = () => {
         <IonList inset={true}>
           <IonItem>
             <IonLabel>App version</IonLabel>
-            <IonNote color={"medium"}>{config.APP_VERSION}</IonNote>
+            <IonNote color={"medium"} slot={"end"}>
+              {config.APP_VERSION}
+            </IonNote>
           </IonItem>
         </IonList>
       </IonContent>
