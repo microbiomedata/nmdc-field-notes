@@ -74,14 +74,22 @@ You can visit the development server at:
 
 #### Switching styles between iOS and Android
 
-By default, Ionic will use the web browser's user agent to determine whether to style the web app like an iOS app or an Android app. For most web browser user agents, it will style it like an Android app. You can force a particular style by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to the URL.
+By default, Ionic will use the web browser's user agent to determine whether to style the web app like an iOS app or an Android app. For most web browser user agents, it will style it like an Android app. You can force a particular style by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to the URL, as shown below.
 
-For example, to force Ionic to style the web app like an _iOS_ app, you can modify the URL like this:
+##### Force iOS style
 
 ```diff
 - http://localhost:5173/
 + http://localhost:5173/?ionic:mode=ios
 ```
+
+##### Force Android style
+
+```diff
+- http://localhost:5173/
++ http://localhost:5173/?ionic:mode=md
+```
+> The `md` stands for [Material Design](https://material.google.com).
 
 ### Run linter
 
