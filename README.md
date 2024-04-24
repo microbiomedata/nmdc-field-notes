@@ -89,6 +89,7 @@ By default, Ionic will use the web browser's user agent to determine whether to 
 - http://localhost:5173/
 + http://localhost:5173/?ionic:mode=md
 ```
+
 > The `md` stands for [Material Design](https://material.google.com).
 
 ### Run linter
