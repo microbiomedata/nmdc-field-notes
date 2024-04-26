@@ -10,6 +10,7 @@ import {
   IonCol,
   IonContent,
   IonGrid,
+  IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
@@ -19,6 +20,8 @@ import {
   IonSelectOption,
   IonText,
   IonTextarea,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
 import SchemaSlotHelp from "../SchemaSlotHelp/SchemaSlotHelp";
 import { closeCircle, warningOutline } from "ionicons/icons";
@@ -197,14 +200,15 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
 
   return (
     <IonModal
-      breakpoints={[0, 0.8]}
-      initialBreakpoint={0.8}
+      className={styles.sampleSlotEditModal}
+      breakpoints={[0, 1]}
+      initialBreakpoint={1}
       isOpen={slot !== null}
       onIonModalDidDismiss={onCancel}
     >
       {slot && (
         <IonContent className="ion-padding">
-          <h2>{slot.title || slot.name}</h2>
+          <h2 className={styles.slotName}>{slot.title || slot.name}</h2>
           <div className={styles.inputAndClearContainer}>
             <div className={styles.inputWrapper}>
               {selectState.isSelectable ? (
