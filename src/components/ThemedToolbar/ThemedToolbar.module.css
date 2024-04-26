@@ -8,7 +8,9 @@ ion-toolbar.themedBackground {
   --opacity: 1;
 }
 
-@media (prefers-color-scheme: dark) {
+/* Note: `:global()` switches to the global scope for the wrapped selector.
+         Reference: https://github.com/css-modules/css-modules/blob/master/docs/composition.md#exceptions */
+:global(:root.ion-palette-dark) {
   ion-toolbar.themedBackground {
     --background: local center / cover no-repeat
       url("../../theme/NMDC_microbe_dark.png");
