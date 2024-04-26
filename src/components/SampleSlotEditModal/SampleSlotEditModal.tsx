@@ -208,7 +208,7 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
     >
       {slot && (
         <IonContent className="ion-padding">
-          <h2 className={styles.slotName}>{slot.title || slot.name}</h2>
+          <h2>{slot.title || slot.name}</h2>
           <div className={styles.inputAndClearContainer}>
             <div className={styles.inputWrapper}>
               {selectState.isSelectable ? (
