@@ -1,3 +1,21 @@
+ion-modal.sampleSlotEditModal {
+  /**
+   * This is the height of the modal when it is in the "expanded" state. The docs recommend this
+   * approach over having a max breakpoint < 1. See:
+   *   - https://ionicframework.com/docs/api/modal#custom-sheet-height
+   *   - https://github.com/ionic-team/ionic-framework/issues/24583
+   */
+  --height: 80vh;
+}
+
+ion-modal.sampleSlotEditModal::part(content) {
+  /**
+   * This makes the sheet modal handle look a little more natural when content scrolls under it.
+   * The value is derived from the handle height and top offset.
+   */
+  padding-top: 15px;
+}
+
 .inputAndClearContainer {
   border-color: var(--ion-color-primary);
   border-width: 2px;

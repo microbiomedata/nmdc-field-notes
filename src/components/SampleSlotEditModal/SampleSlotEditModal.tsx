@@ -197,8 +197,9 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
 
   return (
     <IonModal
-      breakpoints={[0, 0.8]}
-      initialBreakpoint={0.8}
+      className={styles.sampleSlotEditModal}
+      breakpoints={[0, 1]}
+      initialBreakpoint={1}
       isOpen={slot !== null}
       onIonModalDidDismiss={onCancel}
     >
