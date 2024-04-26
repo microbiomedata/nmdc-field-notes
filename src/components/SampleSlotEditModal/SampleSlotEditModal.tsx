@@ -10,7 +10,6 @@ import {
   IonCol,
   IonContent,
   IonGrid,
-  IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
@@ -20,8 +19,6 @@ import {
   IonSelectOption,
   IonText,
   IonTextarea,
-  IonTitle,
-  IonToolbar,
 } from "@ionic/react";
 import SchemaSlotHelp from "../SchemaSlotHelp/SchemaSlotHelp";
 import { closeCircle, warningOutline } from "ionicons/icons";
