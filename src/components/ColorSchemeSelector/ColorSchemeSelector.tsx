@@ -1,19 +1,21 @@
 import React from "react";
-import { activateColorScheme, ColorScheme } from "../../theme";
+import { ColorScheme } from "../../theme/colorScheme";
 import { IonSelect, IonSelectOption } from "@ionic/react";
+import { useStore } from "../../Store";
 
 const ColorSchemeSelector: React.FC = () => {
+  const { setColorScheme, colorScheme } = useStore();
+
   return (
     <IonSelect
       label={"Color scheme"}
       placeholder={"Select color scheme"}
-      onIonChange={(event) => activateColorScheme(event.target.value)}
-      value={undefined} // FIXME
+      onIonChange={(event) => setColorScheme(event.target.value)}
+      value={colorScheme}
     >
       <IonSelectOption value={ColorScheme.Dark}>
         {ColorScheme.Dark}
       </IonSelectOption>
-      a
       <IonSelectOption value={ColorScheme.Light}>
         {ColorScheme.Light}
       </IonSelectOption>

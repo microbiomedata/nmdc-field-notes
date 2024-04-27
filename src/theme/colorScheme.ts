@@ -5,6 +5,13 @@ export enum ColorScheme {
 }
 
 /**
+ * Returns `true` if the value is a valid color scheme.
+ */
+export const isValidColorScheme = (value: unknown) => {
+  return Object.values(ColorScheme).includes(value as ColorScheme);
+};
+
+/**
  * Toggles the dark color scheme according to the flag passed in.
  *
  * Note: Activate/deactivating the dark color scheme is a matter of adding/removing
@@ -22,26 +29,16 @@ export const toggleDarkColorScheme = (wantsDarkColorScheme: boolean) => {
 /**
  * Checks whether the system prefers the dark color scheme.
  */
-export const checkWhetherSystemPrefersDarkness = () => {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+export const doesSystemPreferDarkColorScheme = () => {
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return prefersDark;
 };
 
 /**
- * Set up an event listener that keeps the app's color scheme in sync with the system preference.
+ * Activates the specified color scheme.
+ *
+ * @param colorScheme {ColorScheme} A value that influences which color scheme gets applied.
  */
-export const watchSystemColorSchemePreference = () => {
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", (event) => {
-      const wantsDarkness = event.matches;
-
-      // FIXME: Only do this if the user has selected the `System` color scheme.
-      if (true) {
-        toggleDarkColorScheme(wantsDarkness);
-      }
-    });
-};
-
 export const activateColorScheme = (colorScheme: ColorScheme) => {
   switch (colorScheme) {
     case ColorScheme.Light: {
@@ -53,12 +50,7 @@ export const activateColorScheme = (colorScheme: ColorScheme) => {
       break;
     }
     case ColorScheme.System: {
-      const systemPrefersDarkColorScheme = checkWhetherSystemPrefersDarkness();
-      if (systemPrefersDarkColorScheme) {
-        toggleDarkColorScheme(true);
-      } else {
-        toggleDarkColorScheme(false);
-      }
+      toggleDarkColorScheme(doesSystemPreferDarkColorScheme());
       break;
     }
     default: {

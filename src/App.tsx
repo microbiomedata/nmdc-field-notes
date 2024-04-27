@@ -1,6 +1,6 @@
 import React from "react";
 import { IonApp, setupIonicReact } from "@ionic/react";
-
+import SystemColorSchemePreferenceMonitor from "./components/SystemColorSchemePreferenceMonitor/SystemColorSchemePreferenceMonitor";
 import QueryClientProvider from "./QueryClientProvider";
 import Router from "./Router";
 import StoreProvider from "./Store";
@@ -47,6 +47,7 @@ const App: React.FC = () => {
     <StoreProvider>
       <QueryClientProvider>
         <IonApp>
+          <SystemColorSchemePreferenceMonitor />
           <Router />
         </IonApp>
       </QueryClientProvider>
