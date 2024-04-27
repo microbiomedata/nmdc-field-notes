@@ -1,5 +1,5 @@
 ion-toolbar.themedBackground {
-  --background: local center / cover no-repeat
+  background: local center / cover no-repeat
     url("../../theme/NMDC_microbe_light.png");
   --opacity: 0.6;
 }
@@ -12,7 +12,7 @@ ion-toolbar.themedBackground {
          Reference: https://github.com/css-modules/css-modules/blob/master/docs/composition.md#exceptions */
 :global(:root.ion-palette-dark) {
   ion-toolbar.themedBackground {
-    --background: local center / cover no-repeat
+    background: local center / cover no-repeat
       url("../../theme/NMDC_microbe_dark.png");
   }
 }
