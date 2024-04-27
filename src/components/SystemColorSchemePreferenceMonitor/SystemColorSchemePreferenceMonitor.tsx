@@ -26,8 +26,7 @@ const SystemColorSchemePreferenceMonitor: React.FC = () => {
       }
     };
 
-    // Set up an event listener that listens for changes in the system's color scheme preference.
-    // Reference: https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList
+    // Add the event listener.
     mediaQueryList.addEventListener("change", onChangePreference);
 
     // Remove the event listener.

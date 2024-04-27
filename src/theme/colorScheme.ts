@@ -14,7 +14,7 @@ export const isValidColorScheme = (value: unknown) => {
 /**
  * Toggles the dark color scheme according to the flag passed in.
  *
- * Note: Activate/deactivating the dark color scheme is a matter of adding/removing
+ * Note: Activating/deactivating the dark color scheme is a matter of adding/removing
  *       the `.ion-palette-dark` class from the `<html>` element.
  *
  * Reference: https://ionicframework.com/docs/theming/dark-mode#css-class
