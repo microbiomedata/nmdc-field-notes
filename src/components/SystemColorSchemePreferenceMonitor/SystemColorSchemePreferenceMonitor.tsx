@@ -1,29 +1,35 @@
 import React, { useLayoutEffect } from "react";
 import { useStore } from "../../Store";
-import { documentMQL } from "../../theme/colorScheme";
-import { ColorScheme, toggleDarkColorScheme } from "../../theme/colorScheme";
+import {
+  ColorScheme,
+  documentMQL,
+  toggleDarkColorScheme,
+} from "../../theme/colorScheme";
 
 /**
- * This component monitors the "CSS media feature `prefers-color-scheme`,"
- * which I refer to as the system's color scheme preference.
+ * This component attaches/detaches an event listener from the `MediaQueryList`.
+ * The event listener changes the app's color scheme based upon the event.
  */
 const SystemColorSchemePreferenceMonitor: React.FC = () => {
   const { colorScheme } = useStore();
 
   useLayoutEffect(() => {
     const onChangePreference = (event: MediaQueryListEvent) => {
-      console.debug("System prefers dark color scheme: ", event.matches);
-      if (colorScheme === ColorScheme.System) {
-        toggleDarkColorScheme(event.matches);
-      }
+      const prefersDark = event.matches;
+      console.debug("Color scheme preference:", prefersDark ? "dark" : "light");
+      toggleDarkColorScheme(event.matches);
     };
 
-    // Add the event listener.
-    documentMQL.addEventListener("change", onChangePreference);
+    // Attach the event listener if the color scheme is "System".
+    if (colorScheme === ColorScheme.System) {
+      documentMQL.addEventListener("change", onChangePreference);
+      console.debug("👂 Listening for changes to color scheme preference.");
+    }
 
-    // Remove the event listener.
+    // Detach the event listener.
     return function cleanup() {
       documentMQL.removeEventListener("change", onChangePreference);
+      console.debug("🙉 Not listening for changes to color scheme preference.");
     };
   }, [colorScheme]);
 
