@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect } from "react";
 import { useStore } from "../../Store";
 import {
   ColorScheme,
@@ -13,7 +13,7 @@ import {
 const SystemColorSchemePreferenceMonitor: React.FC = () => {
   const { colorScheme } = useStore();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const onChangePreference = (event: MediaQueryListEvent) => {
       const prefersDark = event.matches;
       console.debug("Color scheme preference:", prefersDark ? "dark" : "light");
