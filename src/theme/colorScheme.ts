@@ -4,6 +4,18 @@ export enum ColorScheme {
   System = "System",
 }
 
+// Get a single reference to a `MediaQueryList` that the app can use to (a) determine
+// whether the user's system is configured to prefer a dark color scheme and (b) to
+// potentially react to changes in that configuration.
+//
+// References:
+// - https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList
+// - https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
+//
+export const documentMQL: MediaQueryList = window.matchMedia(
+  "(prefers-color-scheme: dark)",
+);
+
 /**
  * Returns `true` if the value is a valid color scheme.
  */
@@ -29,9 +41,8 @@ export const toggleDarkColorScheme = (wantsDarkColorScheme: boolean) => {
 /**
  * Checks whether the system prefers the dark color scheme.
  */
-export const doesSystemPreferDarkColorScheme = () => {
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  return prefersDark;
+export const doesSystemPreferDarkColorScheme = (): boolean => {
+  return documentMQL.matches;
 };
 
 /**

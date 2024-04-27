@@ -1,15 +1,7 @@
 import React, { useLayoutEffect } from "react";
 import { useStore } from "../../Store";
+import { documentMQL } from "../../theme/colorScheme"
 import { ColorScheme, toggleDarkColorScheme } from "../../theme/colorScheme";
-
-// Get a reference to a `MediaQueryList` to which I can attach an event listener
-// so that I can respond to `change` events.
-//
-// References:
-// - https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList
-// - https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme
-//
-const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
 
 /**
  * This component monitors the "CSS media feature `prefers-color-scheme`,"
@@ -27,11 +19,11 @@ const SystemColorSchemePreferenceMonitor: React.FC = () => {
     };
 
     // Add the event listener.
-    mediaQueryList.addEventListener("change", onChangePreference);
+    documentMQL.addEventListener("change", onChangePreference);
 
     // Remove the event listener.
     return function cleanup() {
-      mediaQueryList.removeEventListener("change", onChangePreference);
+      documentMQL.removeEventListener("change", onChangePreference);
     };
   }, [colorScheme]);
 
