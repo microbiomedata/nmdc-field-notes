@@ -1,6 +1,6 @@
 import React, { useLayoutEffect } from "react";
 import { useStore } from "../../Store";
-import { documentMQL } from "../../theme/colorScheme"
+import { documentMQL } from "../../theme/colorScheme";
 import { ColorScheme, toggleDarkColorScheme } from "../../theme/colorScheme";
 
 /**
