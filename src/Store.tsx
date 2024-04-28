@@ -44,8 +44,6 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
 
-  // TODO: Define storage keys in an Enum to avoid collisions and facilitate maintenance.
-
   useEffect(() => {
     async function init() {
       const storage = new Storage({
