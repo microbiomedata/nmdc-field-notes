@@ -77,11 +77,15 @@
 }
 
 /**
- * Avoid situation where dark background seeps through translucent elements when
- * app's Ionic palette is "light" and system-level `prefers-color-scheme` is "dark".
+ * Keep the background color of the `:root` element consistent with the applied
+ * color palette, instead of with the `prefers-color-scheme` preference.
  *
- * Note: That is a phenomenon that would affect the "Welcome" screen and the
- *       themed header.
+ * Note: This avoids the situation where the dark background of the `:root`
+ *       element seeps through the translucent background images of child
+ *       elements, causing them to appear dim. That would happen when the
+ *       applied color palette is "light" (default) and the value of the
+ *       `prefers-color-scheme` is "dark"; which would affect the "Welcome"
+ *       screen and the themed header.
  *
  * Reference: https://ionicframework.com/docs/theming/themes#application-colors
  */
