@@ -44,19 +44,26 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
 
+  // Initialize the store.
   useEffect(() => {
     async function init() {
+
+      // Setup browser storage.
       const storage = new Storage({
         name: "nmdc_field_notes",
         storeName: "app_store",
       });
       await storage.create();
+
+      // If browser storage contains an API token, load that into the Context and the API client.
       const token = await storage.get(StorageKey.API_TOKEN);
       setApiToken(token || null);
       if (token) {
         nmdcServerClient.setBearerToken(token);
       }
 
+      // If browser storage contains a color palette mode, load that into the Context and
+      // apply the corresponding color palette to the UI.
       const colorPaletteModeFromStorage = await storage.get(
         StorageKey.COLOR_PALETTE_MODE,
       );
@@ -73,9 +80,15 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setStore(storage);
     }
 
-    init();
+    init().then(() => console.debug("Storage is initialized"));
   }, []);
 
+  /**
+   * Updates the Context, store, and API client so they each contain the specified API token.
+   *
+   * TODO: If the token is falsy, this function will update the Context and the store,
+   *       but not the API client. Add a comment explaining that divergence.
+   */
   async function _setApiToken(token: string | null) {
     setApiToken(token);
     if (token) {
@@ -88,6 +101,10 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     return store.set(StorageKey.API_TOKEN, token);
   }
 
+  /**
+   * Updates the Context and the store so they each contain the specified color palette mode,
+   * and applies the corresponding color palette to the UI.
+   */
   async function _setColorPaletteMode(colorPaletteMode: ColorPaletteMode) {
     setColorPaletteMode(colorPaletteMode);
     applyColorPalette(colorPaletteMode);
