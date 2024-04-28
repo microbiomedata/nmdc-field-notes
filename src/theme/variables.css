@@ -81,11 +81,11 @@
  * color palette, instead of with the `prefers-color-scheme` preference.
  *
  * Note: This avoids the situation where the dark background of the `:root`
- *       element seeps through the translucent background images of child
- *       elements, causing them to appear dim. That would happen when the
- *       applied color palette is "light" (default) and the value of the
- *       `prefers-color-scheme` is "dark"; which would affect the "Welcome"
- *       screen and the themed header.
+ *       element seeps through child elements whose opacity is less than 1,
+ *       causing them to appear dim. That would happen when the applied color
+ *       palette is "light" (default) and the value of `prefers-color-scheme`
+ *       preference is "dark"; which would affect the "Welcome" screen and the
+ *       themed header.
  *
  * Reference: https://ionicframework.com/docs/theming/themes#application-colors
  */
