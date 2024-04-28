@@ -5,12 +5,12 @@ export enum ColorPaletteMode {
   System = "System",
 }
 
-// Get a single reference to the `<html>` element in which the app exists.
+// Get a single reference to the `<html>` element within which the app exists.
 const htmlEl = document.documentElement;
 
-// Get a single reference to a `MediaQueryList` that the app can use to (a) determine
-// whether the user's system is configured to prefer a dark color scheme and (b) to
-// potentially react to changes in that configuration.
+// Get a single reference to a `MediaQueryList` that the app can use to both:
+// (a) determine whether the user currently prefers dark color schemes and
+// (b) react to changes in that preference over time.
 //
 // References:
 // - https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList
@@ -35,7 +35,7 @@ export const isValidColorPaletteMode = (value: unknown) => {
  *
  * Reference: https://ionicframework.com/docs/theming/dark-mode#css-class
  *
- * @param wantsDarkColorPalette {boolean} Whether you want the dark color palette to be enabled.
+ * @param wantsDarkColorPalette {boolean} Whether you want the dark color palette to be enabled
  */
 export const toggleDarkColorPalette = (wantsDarkColorPalette: boolean) => {
   htmlEl.classList.toggle("ion-palette-dark", wantsDarkColorPalette);
