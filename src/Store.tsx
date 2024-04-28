@@ -47,7 +47,6 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // Initialize the store.
   useEffect(() => {
     async function init() {
-
       // Setup browser storage.
       const storage = new Storage({
         name: "nmdc_field_notes",
