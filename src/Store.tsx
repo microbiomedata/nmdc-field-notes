@@ -70,7 +70,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         colorPaletteModeFromStorage,
       )
         ? colorPaletteModeFromStorage
-        : ColorPaletteMode.Light;
+        : ColorPaletteMode.System;
       setColorPaletteMode(sanitizedColorPaletteMode);
       applyColorPalette(sanitizedColorPaletteMode);
 
