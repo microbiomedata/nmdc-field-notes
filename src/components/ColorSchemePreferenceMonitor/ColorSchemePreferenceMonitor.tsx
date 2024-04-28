@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useStore } from "../../Store";
 import {
-  ColorScheme,
+  ColorPaletteMode,
   documentMQL,
-  toggleDarkColorScheme,
-} from "../../theme/colorScheme";
+  toggleDarkColorPalette,
+} from "../../theme/colorPalette";
 
 /**
  * This component attaches/detaches an event listener to/from the `MediaQueryList`
@@ -12,7 +12,7 @@ import {
  * listens for the "change" event and updates the app's color palette accordingly.
  */
 const ColorSchemePreferenceMonitor: React.FC = () => {
-  const { colorScheme } = useStore();
+  const { colorPaletteMode } = useStore();
 
   useEffect(() => {
     const onChangePreference = (event: MediaQueryListEvent) => {
@@ -21,11 +21,11 @@ const ColorSchemePreferenceMonitor: React.FC = () => {
         "Color scheme preference:",
         isPreferenceDark ? "dark" : "light",
       );
-      toggleDarkColorScheme(event.matches);
+      toggleDarkColorPalette(event.matches);
     };
 
     // Attach the event listener if the color scheme is "System".
-    if (colorScheme === ColorScheme.System) {
+    if (colorPaletteMode === ColorPaletteMode.System) {
       documentMQL.addEventListener("change", onChangePreference);
       console.debug("👂 Listening for changes to color scheme preference.");
     }
@@ -36,7 +36,7 @@ const ColorSchemePreferenceMonitor: React.FC = () => {
       documentMQL.removeEventListener("change", onChangePreference);
       console.debug("🙉 Not listening for changes to color scheme preference.");
     };
-  }, [colorScheme]);
+  }, [colorPaletteMode]);
 
   return null;
 };

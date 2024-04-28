@@ -8,17 +8,22 @@ import React, {
 import { Storage } from "@ionic/storage";
 import { nmdcServerClient } from "./api";
 import {
-  activateColorScheme,
-  ColorScheme,
-  isValidColorScheme,
-} from "./theme/colorScheme";
+  applyColorPalette,
+  ColorPaletteMode,
+  isValidColorPaletteMode,
+} from "./theme/colorPalette";
+
+enum StorageKey {
+  API_TOKEN = "apiToken",
+  COLOR_PALETTE_MODE = "colorPaletteMode",
+}
 
 interface StoreContextValue {
   store: Storage | null;
   apiToken: string | null;
   setApiToken: (token: string | null) => Promise<void>;
-  colorScheme: ColorScheme | null;
-  setColorScheme: (colorScheme: ColorScheme) => void;
+  colorPaletteMode: ColorPaletteMode | null;
+  setColorPaletteMode: (colorPaletteMode: ColorPaletteMode) => void;
 }
 
 const StoreContext = createContext<StoreContextValue>({
@@ -27,16 +32,17 @@ const StoreContext = createContext<StoreContextValue>({
   setApiToken: () => {
     throw new Error("setApiToken called outside of provider");
   },
-  colorScheme: null,
-  setColorScheme: () => {
-    throw new Error("setColorScheme called outside of provider");
+  colorPaletteMode: null,
+  setColorPaletteMode: () => {
+    throw new Error("setColorPaletteMode called outside of provider");
   },
 });
 
 const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [store, setStore] = useState<Storage | null>(null);
   const [apiToken, setApiToken] = useState<string | null>(null);
-  const [colorScheme, setColorScheme] = useState<ColorScheme | null>(null);
+  const [colorPaletteMode, setColorPaletteMode] =
+    useState<ColorPaletteMode | null>(null);
 
   // TODO: Define storage keys in an Enum to avoid collisions and facilitate maintenance.
 
@@ -47,18 +53,22 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         storeName: "app_store",
       });
       await storage.create();
-      const token = await storage.get("apiToken");
+      const token = await storage.get(StorageKey.API_TOKEN);
       setApiToken(token || null);
       if (token) {
         nmdcServerClient.setBearerToken(token);
       }
 
-      const colorSchemeFromStorage = await storage.get("colorScheme");
-      const sanitizedColorScheme = isValidColorScheme(colorSchemeFromStorage)
-        ? colorSchemeFromStorage
-        : ColorScheme.Light;
-      setColorScheme(sanitizedColorScheme);
-      activateColorScheme(sanitizedColorScheme);
+      const colorPaletteModeFromStorage = await storage.get(
+        StorageKey.COLOR_PALETTE_MODE,
+      );
+      const sanitizedColorPaletteMode = isValidColorPaletteMode(
+        colorPaletteModeFromStorage,
+      )
+        ? colorPaletteModeFromStorage
+        : ColorPaletteMode.Light;
+      setColorPaletteMode(sanitizedColorPaletteMode);
+      applyColorPalette(sanitizedColorPaletteMode);
 
       // This should be done last so that we can block rendering until in-memory state is fully
       // hydrated from the store
@@ -77,17 +87,17 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       console.warn("setApiToken called before storage initialization");
       return;
     }
-    return store.set("apiToken", token);
+    return store.set(StorageKey.API_TOKEN, token);
   }
 
-  async function _setColorScheme(colorScheme: ColorScheme) {
-    setColorScheme(colorScheme);
-    activateColorScheme(colorScheme);
+  async function _setColorPaletteMode(colorPaletteMode: ColorPaletteMode) {
+    setColorPaletteMode(colorPaletteMode);
+    applyColorPalette(colorPaletteMode);
     if (store === null) {
-      console.warn("setColorScheme called before storage initialization");
-      return undefined;
+      console.warn("setColorPaletteMode called before storage initialization");
+      return;
     } else {
-      return store.set("colorScheme", colorScheme);
+      return store.set(StorageKey.COLOR_PALETTE_MODE, colorPaletteMode);
     }
   }
 
@@ -97,8 +107,8 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         store,
         apiToken,
         setApiToken: _setApiToken,
-        colorScheme,
-        setColorScheme: _setColorScheme,
+        colorPaletteMode: colorPaletteMode,
+        setColorPaletteMode: _setColorPaletteMode,
       }}
     >
       {children}

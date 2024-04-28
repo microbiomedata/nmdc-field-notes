@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import config from "../../config";
-import ColorSchemeSelector from "../../components/ColorSchemeSelector/ColorSchemeSelector";
+import ColorPaletteModeSelector from "../../components/ColorPaletteModeSelector/ColorPaletteModeSelector";
 
 const SettingsPage: React.FC = () => {
   return (
@@ -35,7 +35,7 @@ const SettingsPage: React.FC = () => {
             </IonNote>
           </IonItem>
           <IonItem>
-            <ColorSchemeSelector />
+            <ColorPaletteModeSelector />
           </IonItem>
         </IonList>
       </IonContent>
