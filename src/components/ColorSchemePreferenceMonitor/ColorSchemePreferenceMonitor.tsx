@@ -7,16 +7,20 @@ import {
 } from "../../theme/colorScheme";
 
 /**
- * This component attaches/detaches an event listener from the `MediaQueryList`.
- * The event listener changes the app's color scheme based upon the event.
+ * This component attaches/detaches an event listener to/from the `MediaQueryList`
+ * that indicates whether the user prefers a dark color scheme. The event listener
+ * listens for the "change" event and updates the app's color palette accordingly.
  */
-const SystemColorSchemePreferenceMonitor: React.FC = () => {
+const ColorSchemePreferenceMonitor: React.FC = () => {
   const { colorScheme } = useStore();
 
   useEffect(() => {
     const onChangePreference = (event: MediaQueryListEvent) => {
-      const prefersDark = event.matches;
-      console.debug("Color scheme preference:", prefersDark ? "dark" : "light");
+      const isPreferenceDark = event.matches;
+      console.debug(
+        "Color scheme preference:",
+        isPreferenceDark ? "dark" : "light",
+      );
       toggleDarkColorScheme(event.matches);
     };
 
@@ -26,7 +30,8 @@ const SystemColorSchemePreferenceMonitor: React.FC = () => {
       console.debug("👂 Listening for changes to color scheme preference.");
     }
 
-    // Detach the event listener.
+    // Note: This "cleanup" function detaches the event listener.
+    // Reference: https://react.dev/reference/react/useEffect#usage
     return function cleanup() {
       documentMQL.removeEventListener("change", onChangePreference);
       console.debug("🙉 Not listening for changes to color scheme preference.");
@@ -36,4 +41,4 @@ const SystemColorSchemePreferenceMonitor: React.FC = () => {
   return null;
 };
 
-export default SystemColorSchemePreferenceMonitor;
+export default ColorSchemePreferenceMonitor;
