@@ -13,6 +13,7 @@ import {
 } from "@ionic/react";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import config from "../../config";
+import ColorPaletteModeSelector from "../../components/ColorPaletteModeSelector/ColorPaletteModeSelector";
 
 const SettingsPage: React.FC = () => {
   return (
@@ -26,12 +27,15 @@ const SettingsPage: React.FC = () => {
         </ThemedToolbar>
       </IonHeader>
       <IonContent>
-        <IonList inset={true}>
+        <IonList>
           <IonItem>
             <IonLabel>App version</IonLabel>
             <IonNote color={"medium"} slot={"end"}>
               {config.APP_VERSION}
             </IonNote>
+          </IonItem>
+          <IonItem>
+            <ColorPaletteModeSelector />
           </IonItem>
         </IonList>
       </IonContent>

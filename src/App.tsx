@@ -1,6 +1,6 @@
 import React from "react";
 import { IonApp, setupIonicReact } from "@ionic/react";
-
+import ColorSchemePreferenceMonitor from "./components/ColorSchemePreferenceMonitor/ColorSchemePreferenceMonitor";
 import QueryClientProvider from "./QueryClientProvider";
 import Router from "./Router";
 import StoreProvider from "./Store";
@@ -34,11 +34,8 @@ import "@ionic/react/css/display.css";
  *       When using the `dark.class.css` CSS file...
  *       > "The `.ion-palette-dark` class must be added to the `html`
  *       > element in order to work with the imported dark palette."
- *
- *       TODO: When implementing a light/dark color scheme switcher,
- *             use the `dark.class.css` CSS file instead.
  */
-import "@ionic/react/css/palettes/dark.system.css";
+import "@ionic/react/css/palettes/dark.class.css";
 
 /* Theme variables */
 import "./theme/variables.css";
@@ -50,6 +47,7 @@ const App: React.FC = () => {
     <StoreProvider>
       <QueryClientProvider>
         <IonApp>
+          <ColorSchemePreferenceMonitor />
           <Router />
         </IonApp>
       </QueryClientProvider>

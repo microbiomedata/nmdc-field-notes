@@ -75,3 +75,25 @@
   --ion-color-dark-shade: #1e2023;
   --ion-color-dark-tint: #383a3e;
 }
+
+/**
+ * Keep the background color of the `:root` element consistent with the applied
+ * color palette, instead of with the `prefers-color-scheme` preference.
+ *
+ * Note: This avoids the situation where the dark background of the `:root`
+ *       element seeps through child elements whose opacity is less than 1,
+ *       causing them to appear dim. That would happen when the applied color
+ *       palette is "light" (default) and the `prefers-color-scheme` preference
+ *       is "dark"; which would affect the "Welcome" screen and themed header.
+ *
+ * Reference: https://ionicframework.com/docs/theming/themes#application-colors
+ */
+:root {
+  --ion-background-color: #ffffff;
+  --ion-background-color-rgb: rgb(255, 255, 255);
+}
+
+:root.ion-palette-dark {
+  --ion-background-color: #000000;
+  --ion-background-color-rgb: rgb(0, 0, 0);
+}

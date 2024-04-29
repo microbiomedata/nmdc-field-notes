@@ -22,7 +22,7 @@ ion-content.themedBackground::part(background) {
   opacity: 0.4;
 }
 
-@media (prefers-color-scheme: dark) {
+:global(:root.ion-palette-dark) {
   ion-content.themedBackground::part(background) {
     background-image: url("../../theme/NMDC_microbe_dark.png");
   }
