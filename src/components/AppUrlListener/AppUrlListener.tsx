@@ -6,7 +6,7 @@
  * This component is based upon the example at: https://capacitorjs.com/docs/guides/deep-links#react
  */
 
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { PluginListenerHandle } from "@capacitor/core";
@@ -19,18 +19,22 @@ const AppUrlListener: React.FC<Props> = () => {
   /**
    * Performs client-side navigation to the URL contained within the specified event object.
    */
-  const onAppUrlOpen = (event: URLOpenListenerEvent) => {
-    console.debug("App was opened via URL:", event.url);
+  const onAppUrlOpen = useCallback(
+    (event: URLOpenListenerEvent) => {
+      console.debug("App was opened via URL:", event.url);
 
-    // Extract the path from the URL.
-    const url = new URL(event.url);
-    const path = url.pathname;
+      // Extract the path from the URL.
+      const url = new URL(event.url);
+      const path = url.pathname;
 
-    // If the path is non-empty, perform client-side navigation to it.
-    if (path.length > 0) {
-      history.push(path);
-    }
-  };
+      // If the path is non-empty, perform client-side navigation to it.
+      if (path.length > 0) {
+        console.debug(`Navigating to: ${path}`);
+        history.push(path);
+      }
+    },
+    [history],
+  );
 
   // Keep track of the event listener that is attached to the `App`. This will allow us to detach it.
   const listenerRef = useRef<PluginListenerHandle>();
@@ -38,15 +42,15 @@ const AppUrlListener: React.FC<Props> = () => {
   /**
    * Attaches an event listener to the `App` and updates the ref accordingly.
    */
-  const attachListener = async () => {
+  const attachListener = useCallback(async () => {
     listenerRef.current = await App.addListener("appUrlOpen", onAppUrlOpen);
     console.debug("Attached a listener.", listenerRef.current);
-  };
+  }, [onAppUrlOpen]);
 
   /**
    * Detaches an event listener from the `App` and updates the ref accordingly.
    */
-  const detachListener = () => {
+  const detachListener = useCallback(() => {
     if (
       listenerRef.current !== undefined &&
       typeof listenerRef.current.remove === "function"
@@ -58,7 +62,7 @@ const AppUrlListener: React.FC<Props> = () => {
         console.debug("Detached a listener.");
       });
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Attach a listener.
@@ -68,7 +72,7 @@ const AppUrlListener: React.FC<Props> = () => {
 
     // Return a "cleanup" function that detaches the listener.
     return detachListener;
-  }, []);
+  }, [attachListener, detachListener]);
 
   // Note: There is nothing we want this component to render to the DOM.
   return null;
