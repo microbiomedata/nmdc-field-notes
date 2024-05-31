@@ -5,7 +5,7 @@ import { Redirect, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import TokenPage from "./pages/TokenPage/TokenPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
-import TutorialPage from "./pages/TutorialPage/TutorialPage";
+import ChecklistPage from "./pages/ChecklistPage/ChecklistPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import HomePage from "./pages/HomePage/HomePage";
 import { useStore } from "./Store";
@@ -16,6 +16,8 @@ import TabNavigator from "./components/TabNavigator/TabNavigator";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
 import SamplePage from "./pages/SamplePage/SamplePage";
+import GuidePage from "./pages/GuidePage/GuidePage";
+import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
 
 const IN = "/in";
@@ -23,7 +25,8 @@ const STUDY = `${IN}/study`;
 export const paths = {
   root: "/",
   home: STUDY,
-  tutorial: "/tutorial",
+  checklist: "/checklist",
+  tour: "/tour",
   welcome: "/welcome",
   login: "/login",
   token: "/token",
@@ -55,8 +58,11 @@ const Router: React.FC = () => {
         <Route exact path={paths.welcome}>
           <WelcomePage />
         </Route>
-        <Route exact path={paths.tutorial}>
-          <TutorialPage />
+        <Route exact path={paths.checklist}>
+          <ChecklistPage />
+        </Route>
+        <Route exact path={paths.tour}>
+          <PlaceholderPage title={"Tour"} body={"Take a tour of the app"} />
         </Route>
 
         <Route path={IN}>
@@ -85,18 +91,12 @@ const Router: React.FC = () => {
 
             {/* GUIDE TAB ROUTES */}
             <AuthRoute exact path={paths.guide}>
-              <PlaceholderPage
-                title={"Guide"}
-                body={"Base route on Guide tab"}
-              />
+              <GuidePage />
             </AuthRoute>
 
             {/* SETTINGS TAB ROUTES */}
             <AuthRoute exact path={paths.settings}>
-              <PlaceholderPage
-                title={"Settings"}
-                body={"Base route on Settings tab"}
-              />
+              <SettingsPage />
             </AuthRoute>
 
             {/* Fallback route for when the requested path doesn't match any of the above paths. */}

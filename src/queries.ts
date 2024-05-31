@@ -214,7 +214,18 @@ export function useSubmissionCreate() {
 export function useSubmissionSchema() {
   return useQuery({
     queryKey: submissionKeys.submissionSchema(),
-    queryFn: () => nmdcServerClient.getSubmissionSchema(),
+    // These two files are used in conjunction with each other so make the two requests in parallel
+    // and return an object bundling the results together.
+    queryFn: async () => {
+      const result = await Promise.all([
+        nmdcServerClient.getSubmissionSchema(),
+        nmdcServerClient.getGoldEcosystemTree(),
+      ]);
+      return {
+        schema: result[0],
+        goldEcosystemTree: result[1],
+      };
+    },
     staleTime: 1000 * 60 * 60 * 72, // 72 hours; these files only change between releases
   });
 }

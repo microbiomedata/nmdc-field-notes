@@ -26,10 +26,10 @@ const info =
   "Note: The NMDC metadata requirements also encompass fields required by NCBI and " +
   "the Genomic Standards Consortium (GSC)";
 
-export const soilPackageTutorial = {
+export const soilPackageChecklist = {
   header: header,
   info: info,
   sections: sections,
 };
 
-export default soilPackageTutorial;
+export default soilPackageChecklist;

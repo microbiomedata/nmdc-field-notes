@@ -1,16 +1,16 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import TutorialPage from "./TutorialPage";
+import ChecklistPage from "./ChecklistPage";
 import ionicApp from "../../lib/stories/decorators/ionicApp";
 
 // Export the component metadata as the default export.
 export default {
-  title: "Pages/TutorialPage",
-  component: TutorialPage,
+  title: "Pages/ChecklistPage",
+  component: ChecklistPage,
   decorators: [ionicApp],
-} as Meta<typeof TutorialPage>;
+} as Meta<typeof ChecklistPage>;
 
 // Export each story.
-export const Default: StoryObj<typeof TutorialPage> = {
-  render: (props) => <TutorialPage {...props} />,
+export const Default: StoryObj<typeof ChecklistPage> = {
+  render: (props) => <ChecklistPage {...props} />,
 };

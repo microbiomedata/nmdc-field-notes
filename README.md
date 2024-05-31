@@ -74,14 +74,23 @@ You can visit the development server at:
 
 #### Switching styles between iOS and Android
 
-By default, Ionic will use the web browser's user agent to determine whether to style the web app like an iOS app or an Android app. For most web browser user agents, it will style it like an Android app. You can force a particular style by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to the URL.
+By default, Ionic will use the web browser's user agent to determine whether to style the web app like an iOS app or an Android app. For most web browser user agents, it will style it like an Android app. You can force a particular style by adding the `ionic:mode` [query parameter](https://ionicframework.com/docs/developing/tips#changing-mode) to the URL, as shown below.
 
-For example, to force Ionic to style the web app like an _iOS_ app, you can modify the URL like this:
+##### Force iOS style
 
 ```diff
 - http://localhost:5173/
 + http://localhost:5173/?ionic:mode=ios
 ```
+
+##### Force Android style
+
+```diff
+- http://localhost:5173/
++ http://localhost:5173/?ionic:mode=md
+```
+
+> The `md` stands for [Material Design](https://material.google.com).
 
 ### Run linter
 
@@ -182,3 +191,30 @@ npm run storybook
 Once the Storybook web server is running, you will be able to access it at:
 
 - http://localhost:6006
+
+### Add an environment variable
+
+Here's how you can introduce a new environment variable to the code base:
+
+1. Add its TypeScript type information to the `ImportMetaEnv` interface in `src/vite-env.d.ts`
+2. Add its name and an example value to `.env.local.example`
+3. Add the variable to the `Config` interface and the `config` object in `config.ts`
+4. Elsewhere in the code base, access the variable via the `config` object exported by `config.ts` (instead of
+   accessing `import.meta.env.{NAME}` directly)
+
+## License / Copyright
+
+NMDC Field Notes Phone Application (NMDC Field Notes) Copyright (c) 2024, The Regents of the University of California,
+through Lawrence Berkeley National Laboratory, and Triad National Security, LLC through Los Alamos National Laboratory (subject
+to receipt of any required approvals from the U.S. Dept. of Energy). All rights reserved.
+
+If you have questions about your rights to use or distribute this software,
+please contact Berkeley Lab's Intellectual Property Office at
+IPO@lbl.gov.
+
+NOTICE. This Software was developed under funding from the U.S. Department
+of Energy and the U.S. Government consequently retains certain rights. As
+such, the U.S. Government has been granted for itself and others acting on
+its behalf a paid-up, nonexclusive, irrevocable, worldwide license in the
+Software to reproduce, distribute copies to the public, prepare derivative
+works, and perform publicly and display publicly, and to permit others to do so.
