@@ -19,20 +19,27 @@ const AppUrlListener: React.FC<Props> = () => {
   const history = useHistory();
 
   /**
-   * Define a callback that performs client-side navigation to the URL contained within the specified event object.
+   * Define a callback that performs client-side navigation to the "path with query string"
+   * portion of the URL contained within the specified event object.
+   *
+   * References:
+   * - https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
+   * - https://developer.mozilla.org/en-US/docs/Web/API/URL/search
    */
   const onAppUrlOpen = useCallback(
     (event: URLOpenListenerEvent) => {
       console.debug("App was opened via URL:", event.url);
 
-      // Extract the path from the URL.
-      const url = new URL(event.url);
-      const path = url.pathname;
+      // Extract the path and query string parts of the URL.
+      const url = new URL(event.url); // e.g. "https://example.com/some/path?k=v"
+      const path = url.pathname; // e.g. "/some/path"
+      const queryString = url.search; // "?k=v"
+      const pathWithQueryStr = `${path}${queryString}`; // e.g. "/some/path?k=v"
 
-      // If the path is non-empty, perform client-side navigation to it.
-      if (path.length > 0) {
-        console.debug(`🌎 Navigating to: ${path}`);
-        history.push(path);
+      // If the path with query string is non-empty, perform client-side navigation to it.
+      if (pathWithQueryStr.length > 0) {
+        console.debug(`🌎 Navigating to: ${pathWithQueryStr}`);
+        history.push(pathWithQueryStr);
       }
     },
     [history],
