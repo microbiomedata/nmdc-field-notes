@@ -15,7 +15,7 @@ import {
 } from "@ionic/react";
 import { logIn } from "ionicons/icons";
 import Logo from "../../components/Logo/Logo";
-import { paths } from "../../Router";
+import paths from "../../paths";
 import classes from "./WelcomePage.module.css";
 import { Browser } from "@capacitor/browser";
 import config from "../../config";

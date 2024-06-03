@@ -14,7 +14,7 @@ import {
   IonSearchbar,
   SearchbarInputEventDetail,
 } from "@ionic/react";
-import { paths } from "../../Router";
+import paths from "../../paths";
 import { search as searchIcon } from "ionicons/icons";
 import NoneOr from "../NoneOr/NoneOr";
 import { IndexedSampleData, SubmissionMetadata } from "../../api";

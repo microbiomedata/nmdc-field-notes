@@ -13,7 +13,7 @@ import {
 import { SubmissionMetadata } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
 import { getSubmissionSamples } from "../../utils";
-import { paths } from "../../Router";
+import paths from "../../paths";
 import NoneOr from "../NoneOr/NoneOr";
 
 const StudyList: React.FC = () => {

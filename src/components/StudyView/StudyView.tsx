@@ -12,7 +12,7 @@ import NoneOr from "../NoneOr/NoneOr";
 import SampleList from "../SampleList/SampleList";
 import { getSubmissionSamples } from "../../utils";
 import { produce } from "immer";
-import { paths } from "../../Router";
+import paths from "../../paths";
 
 interface StudyViewProps {
   submissionId: string;

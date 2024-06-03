@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useStore } from "../../Store";
-import { paths } from "../../Router";
+import paths from "../../paths";
 import { IonPage, useIonViewWillEnter } from "@ionic/react";
 
 const TokenPage: React.FC = () => {
