@@ -103,7 +103,6 @@ npm run lint
 > That tells npm you want it to run the script named `lint`, defined in the `package.json` file.
 > At the time of this writing, that script runs `eslint src`.
 
-
 ### Run circular import check
 
 Identify circular imports using the [`madge`](https://github.com/pahen/madge) package.

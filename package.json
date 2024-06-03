@@ -95,6 +95,11 @@
   "description": "Mobile app for metadata collection on the go",
   "madge": {
     "tsConfig": "tsconfig.json",
-    "fileExtensions": ["ts", "tsx", "js", "jsx"]
+    "fileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx"
+    ]
   }
 }
