@@ -10,7 +10,7 @@ import {
   IonTitle,
 } from "@ionic/react";
 import StudyView from "../../components/StudyView/StudyView";
-import { paths } from "../../Router";
+import paths from "../../paths";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 
 interface StudyViewPageParams {

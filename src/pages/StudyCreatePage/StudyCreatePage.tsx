@@ -12,7 +12,7 @@ import {
 import StudyForm from "../../components/StudyForm/StudyForm";
 import { useSubmissionCreate } from "../../queries";
 import { SubmissionMetadataCreate } from "../../api";
-import { paths } from "../../Router";
+import paths from "../../paths";
 import { initSubmission } from "../../data";
 import { checkmark } from "ionicons/icons";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";

@@ -41,9 +41,11 @@ jobs:
       - name: Install npm packages
         run: npm ci
       - name: Check formatting
-        run: npm run format:check
+        run: npm run check.format
       - name: Lint code
         run: npm run lint
+      - name: Check for circular imports
+        run: npm run check.imports
       - name: Run build
         run: npm run build
       - name: Run unit tests

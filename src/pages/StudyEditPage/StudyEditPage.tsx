@@ -17,7 +17,7 @@ import {
   useIonToast,
 } from "@ionic/react";
 import { useParams } from "react-router";
-import { paths } from "../../Router";
+import paths from "../../paths";
 import StudyForm from "../../components/StudyForm/StudyForm";
 import { useSubmission } from "../../queries";
 import { SubmissionMetadata, SubmissionMetadataCreate } from "../../api";

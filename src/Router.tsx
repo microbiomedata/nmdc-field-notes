@@ -19,26 +19,7 @@ import SamplePage from "./pages/SamplePage/SamplePage";
 import GuidePage from "./pages/GuidePage/GuidePage";
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
-
-const IN = "/in";
-const STUDY = `${IN}/study`;
-export const paths = {
-  root: "/",
-  home: STUDY,
-  checklist: "/checklist",
-  tour: "/tour",
-  welcome: "/welcome",
-  login: "/login",
-  token: "/token",
-  logout: "/logout",
-  studyCreate: `${STUDY}/create`,
-  studyView: (submissionId: string) => `${STUDY}/${submissionId}`,
-  studyEdit: (submissionId: string) => `${STUDY}/${submissionId}/edit`,
-  sample: (submissionId: string, sampleIndex: string | number) =>
-    `${STUDY}/${submissionId}/sample/${sampleIndex}`,
-  guide: `${IN}/guide`,
-  settings: `${IN}/settings`,
-};
+import paths, { IN } from "./paths";
 
 const Router: React.FC = () => {
   const { apiToken } = useStore();

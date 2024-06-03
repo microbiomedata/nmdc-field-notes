@@ -12,7 +12,7 @@ import {
   map as guideIcon,
   settings as settingsIcon,
 } from "ionicons/icons";
-import { paths } from "../../Router";
+import paths from "../../paths";
 
 interface Props extends PropsWithChildren {}
 

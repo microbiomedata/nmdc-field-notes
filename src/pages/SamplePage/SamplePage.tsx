@@ -15,7 +15,7 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import { useParams } from "react-router";
-import { paths } from "../../Router";
+import paths from "../../paths";
 import { useSubmission, useSubmissionSchema } from "../../queries";
 import { getSubmissionSample, getSubmissionSamples } from "../../utils";
 import { SampleData, SampleDataValue, TEMPLATES } from "../../api";

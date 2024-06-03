@@ -1,7 +1,7 @@
 import React from "react";
 import { useStore } from "../../Store";
 import { useHistory } from "react-router-dom";
-import { paths } from "../../Router";
+import paths from "../../paths";
 import { IonPage, useIonViewWillEnter } from "@ionic/react";
 
 const LogoutPage: React.FC = () => {
