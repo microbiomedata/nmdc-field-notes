@@ -64,6 +64,26 @@ That will start a development server, serving the web version of the mobile app.
 
 > The development server is powered by [Vite](https://vitejs.dev/guide/cli.html#dev-server).
 
+### Using a local `nmdc-server`
+
+If you want your local Field Notes instance to work with a local `nmdc-server` instance, there are a few environment variables to set on the server side.
+
+The `NMDC_CORS_ALLOW_ORIGINS` variable controls which origins are allowed to make CORS requests to the server. It is a comma-separated list of origins. Add `http://127.0.0.1:8100` to allow requests from the web-based interface. Add `capacitor://localhost` and `https://localhost` to allow requests from device simulators. So for example, in the `nmdc-server` `.env` file:
+
+```
+NMDC_CORS_ALLOW_ORIGINS=capacitor://localhost,https://localhost,http://127.0.0.1:8100
+```
+
+The `NMDC_LOGIN_REDIRECT_ALLOW_ORIGINS` variable controls which origins are allowed to redirect to after login. It is a comma-separated list of origins. Add `http://127.0.0.1:8100` to allow redirects to the web-based interface. Add `org.microbiomedata.fieldnotes://` to allow redirects to mobile apps. So for example, in the `nmdc-server` `.env` file:
+
+```
+NMDC_LOGIN_REDIRECT_ALLOW_ORIGINS=http://127.0.0.1:8100,org.microbiomedata.fieldnotes://
+```
+
+### Using the dev `nmdc-server`
+
+Alternatively, you can have your local Field Notes instance talk to the dev `nmdc-server` instance. In that case, you can set the `NMDC_SERVER_URL` environment variable in your `.env.local` file to `https://data-dev.microbiomedata.org`.
+
 ### Visit development server
 
 We recommend you use your web browser's developer tools to [decrease the size of your web browser's viewport](<(https://ionicframework.com/docs/developing/previewing#simulating-a-mobile-viewport)>) so that it resembles the screen of a mobile device, then visit the development server.
