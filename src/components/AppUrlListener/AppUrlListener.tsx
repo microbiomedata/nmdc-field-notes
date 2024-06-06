@@ -34,7 +34,9 @@ const AppUrlListener: React.FC<Props> = () => {
       const url = new URL(event.url); // e.g. "https://example.com/some/path?k=v"
       const path = url.pathname; // e.g. "/some/path"
       const queryString = url.search; // "?k=v"
-      const pathWithQueryStr = `${path}${queryString}`; // e.g. "/some/path?k=v"
+      // For some reason on android the `path` looks like `///some/path`.
+      // This is a bit of hack to get it to be `/some/path`
+      const pathWithQueryStr = `${path}${queryString}`.replace(/^\/\/\//, "/"); // e.g. "/some/path?k=v"
 
       // If the path with query string is non-empty, perform client-side navigation to it.
       if (pathWithQueryStr.length > 0) {
