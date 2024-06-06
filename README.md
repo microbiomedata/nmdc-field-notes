@@ -70,7 +70,7 @@ We recommend you use your web browser's developer tools to [decrease the size of
 
 You can visit the development server at:
 
-- http://localhost:5173
+- http://127.0.0.1:8100
 
 #### Switching styles between iOS and Android
 
@@ -79,15 +79,15 @@ By default, Ionic will use the web browser's user agent to determine whether to 
 ##### Force iOS style
 
 ```diff
-- http://localhost:5173/
-+ http://localhost:5173/?ionic:mode=ios
+- http://127.0.0.1:8100/
++ http://127.0.0.1:8100/?ionic:mode=ios
 ```
 
 ##### Force Android style
 
 ```diff
-- http://localhost:5173/
-+ http://localhost:5173/?ionic:mode=md
+- http://127.0.0.1:8100/
++ http://127.0.0.1:8100/?ionic:mode=md
 ```
 
 > The `md` stands for [Material Design](https://material.google.com).
