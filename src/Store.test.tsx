@@ -92,7 +92,7 @@ describe("Store", () => {
     await user.click(elements.loginButton);
 
     // Verify that the in-memory store was updated, the API client was updated, and the refresh
-    // token was saved persisted to storage
+    // token was persisted to storage
     expect(elements.isLoggedIn.textContent).toBe("true");
     expect(setTokensSpy).toHaveBeenCalledWith("access-token", "refresh-token");
     expect(
