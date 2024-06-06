@@ -14,23 +14,27 @@ import {
 } from "./theme/colorPalette";
 
 enum StorageKey {
-  API_TOKEN = "apiToken",
+  REFRESH_TOKEN = "refreshToken",
   COLOR_PALETTE_MODE = "colorPaletteMode",
 }
 
 interface StoreContextValue {
   store: Storage | null;
-  apiToken: string | null;
-  setApiToken: (token: string | null) => Promise<void>;
+  isLoggedIn: boolean;
+  login: (accessToken: string, refreshToken: string) => Promise<void>;
+  logout: () => Promise<void>;
   colorPaletteMode: ColorPaletteMode | null;
   setColorPaletteMode: (colorPaletteMode: ColorPaletteMode) => void;
 }
 
 const StoreContext = createContext<StoreContextValue>({
   store: null,
-  apiToken: null,
-  setApiToken: () => {
-    throw new Error("setApiToken called outside of provider");
+  isLoggedIn: false,
+  login: () => {
+    throw new Error("login called outside of provider");
+  },
+  logout: () => {
+    throw new Error("logout called outside of provider");
   },
   colorPaletteMode: null,
   setColorPaletteMode: () => {
@@ -40,7 +44,7 @@ const StoreContext = createContext<StoreContextValue>({
 
 const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [store, setStore] = useState<Storage | null>(null);
-  const [apiToken, setApiToken] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
 
@@ -54,11 +58,19 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       });
       await storage.create();
 
-      // If browser storage contains an API token, load that into the Context and the API client.
-      const token = await storage.get(StorageKey.API_TOKEN);
-      setApiToken(token || null);
-      if (token) {
-        nmdcServerClient.setBearerToken(token);
+      // If browser storage contains an API refresh token, exchange it for an access token and
+      // set the API client's bearer token.
+      const refreshToken = await storage.get(StorageKey.REFRESH_TOKEN);
+      if (refreshToken) {
+        try {
+          const token =
+            await nmdcServerClient.exchangeRefreshToken(refreshToken);
+          setIsLoggedIn(true);
+          nmdcServerClient.setTokens(token.access_token, refreshToken);
+        } catch (e) {
+          console.debug("Failed to exchange refresh token for access token", e);
+          await storage.remove(StorageKey.REFRESH_TOKEN);
+        }
       }
 
       // If browser storage contains a color palette mode, load that into the Context and
@@ -83,21 +95,34 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   /**
-   * Updates the Context, store, and API client so they each contain the specified API token.
+   * Update the context to reflect that a user is logged in, pass the provided access and refresh
+   * tokens to the API client, and persist the refresh token to storage.
    *
-   * TODO: If the token is falsy, this function will update the Context and the store,
-   *       but not the API client. Add a comment explaining that divergence.
+   * @param accessToken
+   * @param refreshToken
    */
-  async function _setApiToken(token: string | null) {
-    setApiToken(token);
-    if (token) {
-      nmdcServerClient.setBearerToken(token);
-    }
+  async function login(accessToken: string, refreshToken: string) {
+    setIsLoggedIn(true);
+    nmdcServerClient.setTokens(accessToken, refreshToken);
     if (!store) {
-      console.warn("setApiToken called before storage initialization");
+      console.warn("login called before storage initialization");
       return;
     }
-    return store.set(StorageKey.API_TOKEN, token);
+    await store.set(StorageKey.REFRESH_TOKEN, refreshToken);
+  }
+
+  /**
+   * Update the context to reflect that a user is logged out, clear the tokens from the API client,
+   * and remove the refresh token from storage.
+   */
+  async function logout() {
+    setIsLoggedIn(false);
+    nmdcServerClient.setTokens(null, null);
+    if (!store) {
+      console.warn("logout called before storage initialization");
+      return;
+    }
+    await store.remove(StorageKey.REFRESH_TOKEN);
   }
 
   /**
@@ -119,8 +144,9 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     <StoreContext.Provider
       value={{
         store,
-        apiToken,
-        setApiToken: _setApiToken,
+        isLoggedIn,
+        login,
+        logout,
         colorPaletteMode: colorPaletteMode,
         setColorPaletteMode: _setColorPaletteMode,
       }}

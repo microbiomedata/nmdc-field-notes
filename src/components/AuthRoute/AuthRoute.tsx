@@ -4,12 +4,12 @@ import { useStore } from "../../Store";
 import paths from "../../paths";
 
 const AuthRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
-  const { apiToken } = useStore();
+  const { isLoggedIn } = useStore();
   return (
     <Route
       {...rest}
       render={({ location }) => {
-        if (apiToken) {
+        if (isLoggedIn) {
           return <>{children}</>;
         } else {
           return (

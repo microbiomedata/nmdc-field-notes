@@ -5,15 +5,15 @@ import paths from "../../paths";
 import { IonPage, useIonViewWillEnter } from "@ionic/react";
 
 const LogoutPage: React.FC = () => {
-  const { setApiToken } = useStore();
+  const { logout } = useStore();
   const history = useHistory();
 
   useIonViewWillEnter(() => {
-    async function logout() {
-      await setApiToken(null);
+    async function _logout() {
+      await logout();
       history.replace(paths.root);
     }
-    logout();
+    _logout();
   });
 
   return <IonPage>Logging out...</IonPage>;
