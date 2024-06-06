@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "ionic serve --host=127.0.0.1 --port=8100 --no-open",
     "build": "tsc && vite build",
     "format": "prettier . --write",
     "check.format": "prettier . --check",

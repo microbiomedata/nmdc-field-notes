@@ -1,5 +1,5 @@
 import { delay, http, HttpResponse } from "msw";
-import { Paginated, SubmissionMetadata } from "../api";
+import { Paginated, SubmissionMetadata, TokenResponse } from "../api";
 import { submissions as submissionsFixture } from "./fixtures";
 import { setupServer } from "msw/node";
 import config from "../config";
@@ -76,8 +76,23 @@ export const handlers = [
     },
   ),
   http.get(`${NMDC_SERVER_API_URL}/api/me`, async () => {
-    return HttpResponse.json("Test Testerson");
+    return HttpResponse.json({
+      id: "1",
+      orcid: "0000-0000-0000-0000",
+      name: "Test Testerson",
+      is_admin: false,
+    });
   }),
+  http.post<Record<never, never>, { refresh_token: string }, TokenResponse>(
+    `${NMDC_SERVER_API_URL}/auth/refresh`,
+    async () => {
+      return HttpResponse.json({
+        access_token: "refreshed-access-token",
+        token_type: "bearer",
+        expires: 3600,
+      });
+    },
+  ),
 ];
 
 export const patchMetadataSubmissionError = http.patch<{ id: string }>(
@@ -88,6 +103,19 @@ export const patchMetadataSubmissionError = http.patch<{ id: string }>(
     return new HttpResponse(null, { status: 500 });
   },
 );
+
+export const tokenExchangeError = http.post<
+  Record<never, never>,
+  { refresh_token: string },
+  { detail: string }
+>(`${NMDC_SERVER_API_URL}/auth/refresh`, async () => {
+  return HttpResponse.json(
+    {
+      detail: "Could not validate credentials",
+    },
+    { status: 401 },
+  );
+});
 
 export const server = setupServer(...handlers);
 

@@ -22,7 +22,7 @@ import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
 import paths, { IN } from "./paths";
 
 const Router: React.FC = () => {
-  const { apiToken } = useStore();
+  const { isLoggedIn } = useStore();
   return (
     <IonReactRouter>
       <AppUrlListener />
@@ -86,7 +86,7 @@ const Router: React.FC = () => {
         </Route>
 
         <Route exact path={paths.root}>
-          <Redirect to={apiToken ? paths.home : paths.welcome} />
+          <Redirect to={isLoggedIn ? paths.home : paths.welcome} />
         </Route>
         {/* Fallback route for when the requested path doesn't match any of the above paths. */}
         <Redirect to={paths.root} />

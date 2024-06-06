@@ -17,15 +17,11 @@ import { logIn } from "ionicons/icons";
 import Logo from "../../components/Logo/Logo";
 import paths from "../../paths";
 import classes from "./WelcomePage.module.css";
-import { Browser } from "@capacitor/browser";
-import config from "../../config";
+import { initiateLogin } from "../../auth";
 
 const WelcomePage: React.FC = () => {
-  const handleLogin = async () => {
-    await Browser.open({
-      url: `${config.NMDC_SERVER_LOGIN_URL}?behavior=app`,
-      windowName: "_self", // web only
-    });
+  const handleLogin = () => {
+    return initiateLogin();
   };
 
   return (

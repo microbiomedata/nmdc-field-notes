@@ -46,5 +46,5 @@ test("deleteSubmission", async () => {
 
 test("getCurrentUser", async () => {
   const user = await nmdcServerClient.getCurrentUser();
-  expect(user).toEqual("Test Testerson");
+  expect(user.name).toEqual("Test Testerson");
 });
