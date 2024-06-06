@@ -1,14 +1,10 @@
 import React from "react";
 import { IonButton, IonPage } from "@ionic/react";
-import config from "../../config";
-import { Browser } from "@capacitor/browser";
+import { initiateLogin } from "../../auth";
 
 const LoginPage: React.FC = () => {
   const handleLogin = async () => {
-    await Browser.open({
-      url: `${config.NMDC_SERVER_LOGIN_URL}?behavior=app`,
-      windowName: "_self", // web only
-    });
+    return initiateLogin();
   };
 
   return (
