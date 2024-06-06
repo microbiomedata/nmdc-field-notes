@@ -43,7 +43,7 @@ test("useCurrentUser should return data from the query", async () => {
   const wrapper = createWrapper();
   const { result } = renderHook(() => useCurrentUser(), { wrapper });
   await waitFor(() => expect(result.current.isSuccess).toBe(true));
-  expect(result.current.data).toBe("Test Testerson");
+  expect(result.current.data?.name).toBe("Test Testerson");
 });
 
 test("useSubmissionList should return data from the query", async () => {
