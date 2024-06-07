@@ -8,7 +8,6 @@ import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import ChecklistPage from "./pages/ChecklistPage/ChecklistPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import HomePage from "./pages/HomePage/HomePage";
-import { useStore } from "./Store";
 import LogoutPage from "./pages/LogoutPage/LogoutPage";
 import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
 import StudyCreatePage from "./pages/StudyCreatePage/StudyCreatePage";
@@ -19,10 +18,10 @@ import SamplePage from "./pages/SamplePage/SamplePage";
 import GuidePage from "./pages/GuidePage/GuidePage";
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
+import RootPage from "./pages/RootPage/RootPage";
 import paths, { IN } from "./paths";
 
 const Router: React.FC = () => {
-  const { isLoggedIn } = useStore();
   return (
     <IonReactRouter>
       <AppUrlListener />
@@ -86,7 +85,7 @@ const Router: React.FC = () => {
         </Route>
 
         <Route exact path={paths.root}>
-          <Redirect to={isLoggedIn ? paths.home : paths.welcome} />
+          <RootPage />
         </Route>
         {/* Fallback route for when the requested path doesn't match any of the above paths. */}
         <Redirect to={paths.root} />
