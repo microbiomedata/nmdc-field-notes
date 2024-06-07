@@ -12,6 +12,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonAlert,
+  useIonRouter,
 } from "@ionic/react";
 import { logIn } from "ionicons/icons";
 import Logo from "../../components/Logo/Logo";
@@ -20,6 +21,8 @@ import classes from "./WelcomePage.module.css";
 import { initiateLogin } from "../../auth";
 
 const WelcomePage: React.FC = () => {
+  const router = useIonRouter();
+
   const handleLogin = () => {
     return initiateLogin();
   };
@@ -113,8 +116,7 @@ const WelcomePage: React.FC = () => {
                     text: "Continue",
                     role: "confirm",
                     handler: () => {
-                      // TODO: Navigate to the next screen.
-                      console.log("Continue without Login");
+                      router.push(paths.home, "forward");
                     },
                   },
                 ]}
