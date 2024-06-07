@@ -2,13 +2,11 @@ import React from "react";
 import { IonReactRouter } from "@ionic/react-router";
 import { IonRouterOutlet } from "@ionic/react";
 import { Redirect, Route } from "react-router-dom";
-import LoginPage from "./pages/LoginPage/LoginPage";
 import TokenPage from "./pages/TokenPage/TokenPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import ChecklistPage from "./pages/ChecklistPage/ChecklistPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import HomePage from "./pages/HomePage/HomePage";
-import LogoutPage from "./pages/LogoutPage/LogoutPage";
 import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
 import StudyCreatePage from "./pages/StudyCreatePage/StudyCreatePage";
 import TabNavigator from "./components/TabNavigator/TabNavigator";
@@ -26,12 +24,6 @@ const Router: React.FC = () => {
     <IonReactRouter>
       <AppUrlListener />
       <IonRouterOutlet>
-        <Route exact path={paths.login}>
-          <LoginPage />
-        </Route>
-        <Route exact path={paths.logout}>
-          <LogoutPage />
-        </Route>
         <Route exact path={paths.token}>
           <TokenPage />
         </Route>

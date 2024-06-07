@@ -15,7 +15,7 @@ const AuthRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
           return (
             <Redirect
               to={{
-                pathname: paths.login,
+                pathname: paths.welcome,
                 state: { from: location },
               }}
             />
