@@ -45,48 +45,50 @@ const Router: React.FC = () => {
           <PlaceholderPage title={"Tour"} body={"Take a tour of the app"} />
         </Route>
 
+        {/*
+        TAB ROUTES
+        Be cautious about adding nested routes here. They seem to confuse the Ionic router. And
+        definitely never attempt to route *between* tabs.
+        See also: https://ionicframework.com/docs/react/navigation#switching-between-tabs
+        */}
         <Route path={IN}>
           <TabNavigator>
-            {/* STUDIES TAB ROUTES */}
-            {/* It's unclear why the /create routes need to be listed after the /:id routes. It
-                seems backwards from what the react-router docs suggest, but it's what works. */}
-            <AuthRoute exact path={paths.studyView(":submissionId")}>
-              <StudyViewPage />
-            </AuthRoute>
-            <AuthRoute exact path={paths.studyCreate}>
-              <StudyCreatePage />
-            </AuthRoute>
-            <AuthRoute exact path={paths.studyEdit(":submissionId")}>
-              <StudyEditPage />
-            </AuthRoute>
-            <AuthRoute
-              exact
-              path={paths.sample(":submissionId", ":sampleIndex")}
-            >
-              <SamplePage />
-            </AuthRoute>
-            <AuthRoute exact path={paths.home}>
+            <Route exact path={paths.home}>
               <HomePage />
-            </AuthRoute>
+            </Route>
 
-            {/* GUIDE TAB ROUTES */}
-            <AuthRoute exact path={paths.guide}>
+            <Route exact path={paths.guide}>
               <GuidePage />
-            </AuthRoute>
+            </Route>
 
-            {/* SETTINGS TAB ROUTES */}
-            <AuthRoute exact path={paths.settings}>
+            <Route exact path={paths.settings}>
               <SettingsPage />
-            </AuthRoute>
-
-            {/* Fallback route for when the requested path doesn't match any of the above paths. */}
-            <Redirect to={paths.home} />
+            </Route>
           </TabNavigator>
         </Route>
+
+        {/*
+        STUDIES ROUTES
+        It is unclear why the /create routes need to be listed after the /:id routes. It
+        seems backwards from what the react-router docs suggest, but it's what works.
+        */}
+        <AuthRoute exact path={paths.sample(":submissionId", ":sampleIndex")}>
+          <SamplePage />
+        </AuthRoute>
+        <AuthRoute exact path={paths.studyEdit(":submissionId")}>
+          <StudyEditPage />
+        </AuthRoute>
+        <AuthRoute exact path={paths.studyView(":submissionId")}>
+          <StudyViewPage />
+        </AuthRoute>
+        <AuthRoute exact path={paths.studyCreate}>
+          <StudyCreatePage />
+        </AuthRoute>
 
         <Route exact path={paths.root}>
           <RootPage />
         </Route>
+
         {/* Fallback route for when the requested path doesn't match any of the above paths. */}
         <Redirect to={paths.root} />
       </IonRouterOutlet>
