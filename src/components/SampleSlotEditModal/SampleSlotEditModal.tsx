@@ -24,6 +24,10 @@ import SchemaSlotHelp from "../SchemaSlotHelp/SchemaSlotHelp";
 import { closeCircle, warningOutline } from "ionicons/icons";
 import { GoldEcosystemTreeNode, SampleData, SampleDataValue } from "../../api";
 import { format } from "date-fns";
+import {
+  BarcodeFormat,
+} from '@capacitor-mlkit/barcode-scanning';
+import BarcodeScanModal from "../BarcodeScannerModal/BarcodeScanModal";
 
 import styles from "./SampleSlotEditModal.module.css";
 
@@ -137,6 +141,8 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
   validationResult,
 }) => {
   const [value, setValue] = React.useState<SampleDataValue>(defaultValue);
+  const [openBarcodeScanner, setOpenBarcodeScanner] = React.useState<boolean>(false);
+  const barcodeFormats = [BarcodeFormat.QrCode, BarcodeFormat.Codabar, BarcodeFormat.Code39, BarcodeFormat.Code128, BarcodeFormat.Ean13, BarcodeFormat.UpcA];
   const slotIsNumeric: boolean = useMemo(() => {
     if (!slot) {
       return false;
@@ -263,6 +269,26 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
               />
               <IonLabel color="warning">{validationResult}</IonLabel>
             </IonItem>
+          )}
+
+          {slot.name === "samp_name" && (
+            <>
+            <IonButton
+              className="ion-padding-vertical"
+              expand="block"
+              onClick={async () => {
+                setOpenBarcodeScanner(true);
+              }}
+            >
+              Scan barcode
+            </IonButton>
+                <BarcodeScanModal
+                  onCancel={() => setOpenBarcodeScanner(false)}
+                  onChange={handleValueChange}
+                  isOpen={openBarcodeScanner}
+                  formats={barcodeFormats}
+                />
+                </>
           )}
 
           {slot.name === "collection_date" && (
