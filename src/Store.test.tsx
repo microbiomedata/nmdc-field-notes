@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event";
 import { server, tokenExchangeError } from "./mocks/server";
 
 const TestStoreConsumer: React.FC = () => {
-  const { login, logout, isLoggedIn, store } = useStore();
+  const { login, logout, isLoggedIn, loggedInUser, store } = useStore();
 
   const handleLoginClick = async () => {
     await login("access-token", "refresh-token");
@@ -23,6 +23,7 @@ const TestStoreConsumer: React.FC = () => {
         {store == null ? "waiting for store" : "store created"}
       </div>
       <div data-testid="is-logged-in">{isLoggedIn ? "true" : "false"}</div>
+      <div data-testid="logged-in-user">{loggedInUser?.name}</div>
       <button data-testid="login-button" onClick={handleLoginClick}>
         Login
       </button>
@@ -49,6 +50,7 @@ const renderTestStoreConsumer = () => {
     elements: {
       storeStatus: screen.getByTestId("store-status"),
       isLoggedIn: screen.getByTestId("is-logged-in"),
+      loggedInUser: screen.getByTestId("logged-in-user"),
       loginButton: screen.getByTestId("login-button"),
       logoutButton: screen.getByTestId("logout-button"),
     },
@@ -76,6 +78,7 @@ describe("Store", () => {
       expect(elements.storeStatus.textContent).toBe("store created"),
     );
     expect(elements.isLoggedIn.textContent).toBe("false");
+    expect(elements.loggedInUser.textContent).toBe("");
     expect(setTokensSpy).not.toHaveBeenCalled();
   });
 
@@ -94,6 +97,7 @@ describe("Store", () => {
     // Verify that the in-memory store was updated, the API client was updated, and the refresh
     // token was persisted to storage
     expect(elements.isLoggedIn.textContent).toBe("true");
+    expect(elements.loggedInUser.textContent).toBe("Test Testerson");
     expect(setTokensSpy).toHaveBeenCalledWith("access-token", "refresh-token");
     expect(
       window.localStorage.getItem("nmdc_field_notes/app_store/refreshToken"),
@@ -105,6 +109,7 @@ describe("Store", () => {
     // Verify that the token was cleared, the spy to update the API client was called, and the token
     // was removed from storage
     expect(elements.isLoggedIn.textContent).toBe("false");
+    expect(elements.loggedInUser.textContent).toBe("");
     expect(setTokensSpy).toHaveBeenCalledWith(null, null);
     expect(
       window.localStorage.getItem("nmdc_field_notes/app_store/refreshToken"),
@@ -127,6 +132,7 @@ describe("Store", () => {
       expect(elements.storeStatus.textContent).toBe("store created"),
     );
     expect(elements.isLoggedIn.textContent).toBe("true");
+    expect(elements.loggedInUser.textContent).toBe("Test Testerson");
     expect(setTokensSpy).toHaveBeenCalledWith(
       "refreshed-access-token",
       "from-storage",
@@ -152,6 +158,7 @@ describe("Store", () => {
       expect(elements.storeStatus.textContent).toBe("store created"),
     );
     expect(elements.isLoggedIn.textContent).toBe("false");
+    expect(elements.loggedInUser.textContent).toBe("");
     expect(setTokensSpy).not.toHaveBeenCalled();
   });
 });

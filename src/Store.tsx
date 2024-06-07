@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Storage } from "@ionic/storage";
-import { nmdcServerClient } from "./api";
+import { nmdcServerClient, User } from "./api";
 import {
   applyColorPalette,
   ColorPaletteMode,
@@ -21,6 +21,7 @@ enum StorageKey {
 interface StoreContextValue {
   store: Storage | null;
   isLoggedIn: boolean;
+  loggedInUser: User | null;
   login: (accessToken: string, refreshToken: string) => Promise<void>;
   logout: () => Promise<void>;
   colorPaletteMode: ColorPaletteMode | null;
@@ -30,6 +31,7 @@ interface StoreContextValue {
 const StoreContext = createContext<StoreContextValue>({
   store: null,
   isLoggedIn: false,
+  loggedInUser: null,
   login: () => {
     throw new Error("login called outside of provider");
   },
@@ -45,6 +47,7 @@ const StoreContext = createContext<StoreContextValue>({
 const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [store, setStore] = useState<Storage | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
 
@@ -93,6 +96,14 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
     init().then(() => console.debug("Storage is initialized"));
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      nmdcServerClient.getCurrentUser().then((user) => setLoggedInUser(user));
+    } else {
+      setLoggedInUser(null);
+    }
+  }, [isLoggedIn]);
 
   /**
    * Update the context to reflect that a user is logged in, pass the provided access and refresh
@@ -145,6 +156,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       value={{
         store,
         isLoggedIn,
+        loggedInUser,
         login,
         logout,
         colorPaletteMode: colorPaletteMode,
