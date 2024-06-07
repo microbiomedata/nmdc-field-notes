@@ -1,5 +1,6 @@
 import config from "./config";
 import { SchemaDefinition } from "./linkml-metamodel";
+import { REDIRECT_URI } from "./auth";
 
 export interface Paginated<Type> {
   count: number;
@@ -192,6 +193,24 @@ export interface GoldEcosystemTreeNode {
   children: GoldEcosystemTreeNode[];
 }
 
+export interface TokenResponse {
+  access_token: string;
+  refresh_token?: string;
+  token_type: string;
+  expires: number;
+}
+
+class ApiError extends Error {
+  public readonly response: Response;
+
+  constructor(message: string, response: Response) {
+    super(message);
+    Object.setPrototypeOf(this, ApiError.prototype);
+
+    this.response = response;
+  }
+}
+
 class FetchClient {
   private readonly baseUrl: string;
   private readonly defaultOptions: RequestInit;
@@ -202,20 +221,28 @@ class FetchClient {
   }
 
   setBearerToken(token: string) {
-    this.defaultOptions.headers = {
-      ...this.defaultOptions.headers,
-      Authorization: `Bearer ${token}`,
-    };
+    const updatedHeaders = new Headers(this.defaultOptions.headers);
+    updatedHeaders.set("Authorization", `Bearer ${token}`);
+    this.defaultOptions.headers = updatedHeaders;
   }
 
-  protected async fetch(endpoint: string, options: RequestInit = {}) {
+  clearBearerToken() {
+    const updatedHeaders = new Headers(this.defaultOptions.headers);
+    updatedHeaders.delete("Authorization");
+    this.defaultOptions.headers = updatedHeaders;
+  }
+
+  protected async fetch(
+    endpoint: string,
+    options: RequestInit = {},
+  ): Promise<Response> {
     const init = {
       ...this.defaultOptions,
       ...options,
     };
     const response = await fetch(this.baseUrl + endpoint, init);
     if (!response.ok) {
-      throw new Error(`Fetch error: ${response.statusText}`);
+      throw new ApiError(`API error: ${response.statusText}`, response);
     }
     return response;
   }
@@ -230,12 +257,53 @@ class FetchClient {
 }
 
 class NmdcServerClient extends FetchClient {
+  private refreshToken: string | null = null;
+  private exchangeRefreshTokenCache: Promise<TokenResponse> | null = null;
+
   constructor() {
     super(config.NMDC_SERVER_API_URL, {
       headers: {
         "Content-Type": "application/json",
       },
     });
+  }
+
+  setTokens(accessToken: string | null, refreshToken?: string | null) {
+    if (accessToken !== null) {
+      this.setBearerToken(accessToken);
+    } else {
+      this.clearBearerToken();
+    }
+    if (refreshToken !== undefined) {
+      this.refreshToken = refreshToken;
+    }
+  }
+
+  // This subclass's fetch method has logic to handle token refreshes. First the request is
+  // attempted using the superclass' fetch method. If the request fails with a 401 status code and
+  // a refresh token is available, the refresh token is exchanged for a new access token and the
+  // request is retried. If the exchange or the retry request fails, the error is thrown.
+  protected async fetch(
+    endpoint: string,
+    options: RequestInit = {},
+  ): Promise<Response> {
+    try {
+      return await super.fetch(endpoint, options);
+    } catch (error) {
+      if (
+        endpoint.startsWith("/api/") && // Only attempt to refresh tokens for /api/ endpoints, not /auth/ or static files
+        error instanceof ApiError &&
+        error.response.status === 401 &&
+        this.refreshToken !== null
+      ) {
+        const tokenResponse = await this.exchangeRefreshToken(
+          this.refreshToken,
+        );
+        this.setTokens(tokenResponse.access_token);
+        return super.fetch(endpoint, options);
+      }
+      throw error;
+    }
   }
 
   async getSubmissionList(pagination: PaginationOptions = {}) {
@@ -280,7 +348,7 @@ class NmdcServerClient extends FetchClient {
   }
 
   async getCurrentUser() {
-    return this.fetchJson<string>("/api/me");
+    return this.fetchJson<User>("/api/me");
   }
 
   async getSubmissionSchema() {
@@ -293,6 +361,39 @@ class NmdcServerClient extends FetchClient {
     return this.fetchJson<GoldEcosystemTreeNode>(
       "/static/submission_schema/GoldEcosystemTree.json",
     );
+  }
+
+  // This method is rate-limited to once every 20 seconds. This is because it's possible for
+  // multiple requests that require authentication to be made in quick succession, and if they all
+  // fail because of an expired or missing access token we don't want to initiate a token refresh
+  // for each request when only one is needed.
+  async exchangeRefreshToken(refreshToken: string) {
+    if (this.exchangeRefreshTokenCache !== null) {
+      return this.exchangeRefreshTokenCache;
+    }
+    const response = this.fetchJson<TokenResponse>("/auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+    this.exchangeRefreshTokenCache = response;
+    setTimeout(() => {
+      this.clearExchangeRefreshTokenCache();
+    }, 20 * 1000);
+    return response;
+  }
+
+  clearExchangeRefreshTokenCache() {
+    this.exchangeRefreshTokenCache = null;
+  }
+
+  async exchangeAuthorizationCode(code: string) {
+    return this.fetchJson<TokenResponse>("/auth/token", {
+      method: "POST",
+      body: JSON.stringify({
+        code,
+        redirect_uri: REDIRECT_URI,
+      }),
+    });
   }
 }
 

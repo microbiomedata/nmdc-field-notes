@@ -15,7 +15,6 @@ const env = import.meta.env;
 interface Config {
   APP_VERSION: typeof env.PACKAGE_VERSION;
   NMDC_SERVER_API_URL: string;
-  NMDC_SERVER_LOGIN_URL: string;
 }
 
 const config: Config = {
@@ -33,15 +32,6 @@ const config: Config = {
    */
   NMDC_SERVER_API_URL:
     env.VITE_NMDC_SERVER_API_URL || "https://data-dev.microbiomedata.org",
-
-  /**
-   * URL of the endpoint the mobile app can use to authenticate with the NMDC data portal API.
-   *
-   * Default: The `/login` endpoint in the dev environment.
-   */
-  NMDC_SERVER_LOGIN_URL:
-    env.VITE_NMDC_SERVER_LOGIN_URL ||
-    "https://data-dev.microbiomedata.org/login",
 };
 
 export default config;

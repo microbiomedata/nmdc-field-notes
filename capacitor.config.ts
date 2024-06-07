@@ -6,6 +6,9 @@ const config: CapacitorConfig = {
   webDir: "dist",
   server: {
     androidScheme: "https",
+    // TODO: Don't use this in production!
+    // https://capacitorjs.com/docs/guides/environment-specific-configurations
+    cleartext: true,
   },
   plugins: {
     SplashScreen: {
