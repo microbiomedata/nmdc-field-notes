@@ -9,6 +9,7 @@ import {
 } from "@ionic/react";
 import Checklist from "../../components/Checklist/Checklist";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
+import paths from "../../paths";
 
 const ChecklistPage: React.FC = () => {
   return (
@@ -16,7 +17,7 @@ const ChecklistPage: React.FC = () => {
       <IonHeader>
         <ThemedToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/"></IonBackButton>
+            <IonBackButton defaultHref={paths.welcome}></IonBackButton>
           </IonButtons>
           <IonTitle>Checklist</IonTitle>
         </ThemedToolbar>
