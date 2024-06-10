@@ -25,10 +25,10 @@ const TestStoreConsumer: React.FC = () => {
       <div data-testid="is-logged-in">{isLoggedIn ? "true" : "false"}</div>
       <div data-testid="logged-in-user">{loggedInUser?.name}</div>
       <button data-testid="login-button" onClick={handleLoginClick}>
-        Login
+        Log in
       </button>
       <button data-testid="logout-button" onClick={handleLogoutClick}>
-        Logout
+        Log out
       </button>
     </>
   );
@@ -82,7 +82,7 @@ describe("Store", () => {
     expect(setTokensSpy).not.toHaveBeenCalled();
   });
 
-  it("should provide a function to login and logout", async () => {
+  it("should provide a function to log in and log out", async () => {
     // Set up API client spy and render test component
     const { elements, setTokensSpy, user } = renderTestStoreConsumer();
 

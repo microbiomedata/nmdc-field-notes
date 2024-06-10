@@ -85,7 +85,7 @@ const WelcomePage: React.FC = () => {
                       aria-hidden={"true"}
                       slot={"start"}
                     ></IonIcon>
-                    Login with ORCiD
+                    Log in with ORCiD
                   </IonButton>
                 </IonCol>
               </IonRow>
@@ -97,15 +97,15 @@ const WelcomePage: React.FC = () => {
                     expand={"block"}
                     className={"ion-margin-horizontal"}
                   >
-                    Continue without Login
+                    Continue without logging in
                   </IonButton>
                 </IonCol>
               </IonRow>
               <IonAlert
                 trigger={"show-alert-for-continue-without-login"}
-                header={"Continue without Login"}
+                header={"Continue without logging in?"}
                 message={
-                  "Only logged-in users can sync their metadata with the NMDC Submission Portal."
+                  "You will need to log in before you can sync metadata with the NMDC Submission Portal."
                 }
                 buttons={[
                   {

@@ -35,14 +35,14 @@ const SettingsUserList: React.FC = () => {
           </IonItem>
           <IonItem type="button" onClick={handleLogout}>
             <IonLabel color="warning">
-              <h3>Sign Out</h3>
+              <h3>Log Out</h3>
             </IonLabel>
           </IonItem>
         </>
       ) : (
         <IonItem type="button" onClick={handleLogin}>
           <IonLabel>
-            <h3>Sign In</h3>
+            <h3>Log In</h3>
           </IonLabel>
         </IonItem>
       )}
