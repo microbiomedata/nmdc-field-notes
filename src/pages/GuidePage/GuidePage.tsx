@@ -15,9 +15,6 @@ const GuidePage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <ThemedToolbar>
-          <IonButtons slot={"start"}>
-            <IonBackButton defaultHref={"/"}></IonBackButton>
-          </IonButtons>
           <IonTitle>Guide</IonTitle>
         </ThemedToolbar>
       </IonHeader>
