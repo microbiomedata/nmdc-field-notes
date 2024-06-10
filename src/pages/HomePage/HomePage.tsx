@@ -22,8 +22,7 @@ const HomePage: React.FC = () => {
           <StudyList />
         ) : (
           <div slot="fixed">
-            You must <a onClick={initiateLogin}>log in</a> to view and edit
-            studies
+            <a onClick={initiateLogin}>Log in</a> to view and edit studies
           </div>
         )}
       </IonContent>
