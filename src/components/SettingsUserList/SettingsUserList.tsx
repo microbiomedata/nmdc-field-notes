@@ -1,16 +1,8 @@
-import {
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonText,
-  useIonRouter,
-} from "@ionic/react";
+import { IonItem, IonLabel, IonList, useIonRouter } from "@ionic/react";
 import React from "react";
 import { useStore } from "../../Store";
 import paths from "../../paths";
 import { initiateLogin } from "../../auth";
-import { logInOutline, logOutOutline } from "ionicons/icons";
 
 const SettingsUserList: React.FC = () => {
   const { loggedInUser, logout } = useStore();
