@@ -1,9 +1,9 @@
 const IN = "/in";
-const STUDY = `${IN}/study`;
+const STUDY = `/study`;
 
 const paths = {
   root: "/",
-  home: STUDY,
+  home: `${IN}${STUDY}`,
   checklist: "/checklist",
   tour: "/tour",
   welcome: "/welcome",

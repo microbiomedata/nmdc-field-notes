@@ -4,7 +4,7 @@ describe("isValidColorPaletteMode", () => {
   it("recognizes valid color palette modes", () => {
     expect(isValidColorPaletteMode("Light")).toBe(true);
     expect(isValidColorPaletteMode("Dark")).toBe(true);
-    expect(isValidColorPaletteMode("System")).toBe(true);
+    expect(isValidColorPaletteMode("System default")).toBe(true);
   });
   it("detects invalid color palette modes", () => {
     expect(isValidColorPaletteMode("Potato")).toBe(false);

@@ -24,7 +24,7 @@ const StudyViewPage: React.FC = () => {
       <IonHeader>
         <ThemedToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/"></IonBackButton>
+            <IonBackButton defaultHref={paths.home}></IonBackButton>
           </IonButtons>
           <IonTitle>Study</IonTitle>
           <IonButtons slot="end">

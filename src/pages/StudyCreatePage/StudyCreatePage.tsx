@@ -41,7 +41,7 @@ const StudyCreatePage: React.FC = () => {
       <IonHeader>
         <ThemedToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/"></IonBackButton>
+            <IonBackButton defaultHref={paths.home}></IonBackButton>
           </IonButtons>
           <IonTitle>New Study</IonTitle>
         </ThemedToolbar>
