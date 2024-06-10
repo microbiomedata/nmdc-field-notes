@@ -97,3 +97,29 @@
   --ion-background-color: #000000;
   --ion-background-color-rgb: rgb(0, 0, 0);
 }
+
+/**
+ * Style rules related to barcode scanning.
+ *
+ * TODO: Remove these from this `variables.css` file after debugging
+ *       the barcode scanning feature. Put these elsewhere long term.
+ *
+ * Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#usage
+ */
+
+body.barcode-scanner-active {
+  visibility: hidden;
+  --background: transparent;
+  --ion-background-color: transparent;
+}
+
+.barcode-scanner-modal {
+  visibility: visible;
+}
+
+@media (prefers-color-scheme: dark) {
+  .barcode-scanner-modal {
+    --background: transparent;
+    --ion-background-color: transparent;
+  }
+}

@@ -58,5 +58,8 @@
         </array>
       </dict>
     </array>
+    <!-- Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#ios -->
+    <key>NSCameraUsageDescription</key>
+    <string>The app would use the device's camera to scan barcodes.</string>
 </dict>
 </plist>
