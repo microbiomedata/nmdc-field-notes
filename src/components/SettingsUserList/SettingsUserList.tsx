@@ -1,4 +1,5 @@
 import {
+  IonIcon,
   IonItem,
   IonLabel,
   IonList,
@@ -9,6 +10,7 @@ import React from "react";
 import { useStore } from "../../Store";
 import paths from "../../paths";
 import { initiateLogin } from "../../auth";
+import { logInOutline, logOutOutline } from "ionicons/icons";
 
 const SettingsUserList: React.FC = () => {
   const { loggedInUser, logout } = useStore();
@@ -40,11 +42,20 @@ const SettingsUserList: React.FC = () => {
           </IonItem>
         </>
       ) : (
-        <IonItem type="button" onClick={handleLogin}>
-          <IonLabel>
-            <h3>Log In</h3>
-          </IonLabel>
-        </IonItem>
+        <>
+          <IonItem>
+            <IonLabel>
+              <p>
+                <i>Not logged in</i>
+              </p>
+            </IonLabel>
+          </IonItem>
+          <IonItem type="button" onClick={handleLogin}>
+            <IonLabel>
+              <h3>Log In</h3>
+            </IonLabel>
+          </IonItem>
+        </>
       )}
     </IonList>
   );
