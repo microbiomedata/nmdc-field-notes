@@ -18,6 +18,7 @@ import Logo from "../../components/Logo/Logo";
 import paths from "../../paths";
 import classes from "./WelcomePage.module.css";
 import { initiateLogin } from "../../auth";
+import { BarcodeScanner } from "@capacitor-mlkit/barcode-scanning";
 
 const WelcomePage: React.FC = () => {
   const handleLogin = () => {
@@ -95,6 +96,49 @@ const WelcomePage: React.FC = () => {
                     className={"ion-margin-horizontal"}
                   >
                     Continue without Login
+                  </IonButton>
+                </IonCol>
+              </IonRow>
+              {/* TODO: Remove element after proving concept. */}
+              <IonRow>
+                <IonCol className={"ion-text-center"}>
+                  <IonButton
+                    fill={"clear"}
+                    expand={"block"}
+                    className={"ion-margin-horizontal"}
+                    // Note: Barcode scanning is only available on iOS and Android; not PWA.
+                    onClick={async () => {
+                      // Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#ios
+                      // Hide everything except the camera feed.
+                      document
+                        .querySelector("body")
+                        ?.classList.add("barcode-scanner-active");
+
+                      // Listen for events named "barcodeScanned".
+                      await BarcodeScanner.addListener(
+                        "barcodeScanned",
+                        async (result) => {
+                          // Remove the event listener (any that are attached).
+                          // Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#removealllisteners
+                          console.debug("Removing 'barcodeScanned' listeners.")
+                          await BarcodeScanner.removeAllListeners();
+
+                          console.debug(result.barcode);
+                          alert(JSON.stringify(result.barcode));
+
+                          // Stop scanning for barcodes.
+                          // Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#stopscan
+                          console.debug("Stopping scanning for barcodes.")
+                          await BarcodeScanner.stopScan();
+                        },
+                      );
+
+                      // Start scanning for barcodes.
+                      // Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#startscan
+                      await BarcodeScanner.startScan();
+                    }}
+                  >
+                    Scan barcode (iOS / Android)
                   </IonButton>
                 </IonCol>
               </IonRow>

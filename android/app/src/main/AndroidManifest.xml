@@ -43,6 +43,9 @@
             android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#android -->
+        <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="barcode_ui"/>
     </application>
 
     <!-- Permissions -->
@@ -52,4 +55,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-feature android:name="android.hardware.location.gps" />
+
+    <!-- Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#android -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
 </manifest>
