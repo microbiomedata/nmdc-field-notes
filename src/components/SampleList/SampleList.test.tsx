@@ -1,16 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import SampleList from "./SampleList";
 import userEvent from "@testing-library/user-event";
 import { generateSubmission } from "../../mocks/fixtures";
 import { vi } from "vitest";
+import { produce } from "immer";
+
+interface Props {
+  numberOfSamples: number;
+  onSampleCreate: () => void;
+}
+const TestSampleList: React.FC<Props> = ({
+  numberOfSamples,
+  onSampleCreate,
+}) => {
+  const [submission, setSubmission] = useState(
+    generateSubmission(numberOfSamples),
+  );
+  const [newSampleNumber, setNewSampleNumber] = useState(1);
+
+  const handleUpdateSubmission = () => {
+    setSubmission(
+      produce((draft) => {
+        draft.metadata_submission.sampleData.soil_data.push({
+          samp_name: `New Sample ${newSampleNumber}`,
+        });
+      }),
+    );
+    setNewSampleNumber((n) => n + 1);
+  };
+  return (
+    <>
+      <button onClick={handleUpdateSubmission}>Update Submission</button>
+      <SampleList submission={submission} onSampleCreate={onSampleCreate} />
+    </>
+  );
+};
 
 async function renderSampleList(numberOfSamples: number) {
   const user = userEvent.setup();
   const handleSampleCreate = vi.fn();
   render(
-    <SampleList
-      submission={generateSubmission(numberOfSamples)}
+    <TestSampleList
+      numberOfSamples={numberOfSamples}
       onSampleCreate={handleSampleCreate}
     />,
   );
@@ -18,6 +50,7 @@ async function renderSampleList(numberOfSamples: number) {
   const searchInput = await screen.findByLabelText("search text");
   const showSearchButton = screen.getByTitle("show sample search");
   const newSampleButton = screen.getByText("New");
+  const updateSubmissionButton = screen.getByText("Update Submission");
 
   return {
     user,
@@ -26,6 +59,7 @@ async function renderSampleList(numberOfSamples: number) {
       searchInput,
       showSearchButton,
       newSampleButton,
+      updateSubmissionButton,
       // These elements are conditionally rendered, so we use getters to re-query
       // them whenever they are needed
       get showAllButton() {
@@ -88,6 +122,29 @@ test("SampleList can be filtered by search", async () => {
 
   // When the search is filtered to under the collapse cutoff, the show all button should be hidden
   expect(screen.queryByText("Show All")).not.toBeInTheDocument();
+});
+
+test("SampleList search index is updated after submission update", async () => {
+  const { user, elements } = await renderSampleList(30);
+  // Ensure we start with the collapsed list
+  expect(elements.showAllButton).toBeInTheDocument();
+
+  // Click the update submission button twice to trigger a new samples being added to the submission
+  await user.click(elements.updateSubmissionButton);
+  await user.click(elements.updateSubmissionButton);
+
+  // Click the search button and wait for the search in put to be present and focused
+  await user.click(elements.showSearchButton);
+  await waitFor(() => expect(elements.searchInput).toHaveFocus());
+
+  // Type the test search to find the newly added sample
+  await user.keyboard("new");
+
+  // This needs to be awaited because the search is debounced
+  await waitFor(() => expect(elements.listItems).toHaveLength(2));
+  elements.listItems.forEach((item) => {
+    expect(item).toHaveTextContent("New");
+  });
 });
 
 test("SampleList shows all samples when search is cancelled", async () => {

@@ -41,6 +41,22 @@ const SampleList: React.FC<SampleListProps> = ({
   const [isSearchVisible, setIsSearchVisible] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState<string | null>();
 
+  // Initialize the search index with no documents. The search index will be updated whenever the
+  // submission samples change.
+  const {
+    search,
+    searchResults,
+    removeAll: searchIndexRemoveAll,
+    addAll: searchIndexAddAll,
+  } = useMiniSearch([] as IndexedSampleData[], {
+    fields: ["samp_name"],
+    idField: "_index",
+    searchOptions: {
+      prefix: true,
+      combineWith: "AND",
+    },
+  });
+
   const samples = useMemo(() => {
     return produce(
       getSubmissionSamples(submission) as IndexedSampleData[],
@@ -59,6 +75,15 @@ const SampleList: React.FC<SampleListProps> = ({
     );
   }, [submission]);
 
+  // Whenever the samples change, update the search index.
+  // Instead of attempting to diff the existing index with the new samples, we just remove all and
+  // add all. This should be fine because the index is fairly small and won't change too often.
+  // See also: https://github.com/lucaong/react-minisearch/issues/43#issuecomment-2109657251
+  useEffect(() => {
+    searchIndexRemoveAll();
+    searchIndexAddAll(samples);
+  }, [samples, searchIndexRemoveAll, searchIndexAddAll]);
+
   // Whenever the search field changes from hidden to visible, focus on it.
   // This is done in a useEffect so that it happens after the searchbox is rendered.
   useEffect(() => {
@@ -66,15 +91,6 @@ const SampleList: React.FC<SampleListProps> = ({
       searchElement.current?.setFocus();
     }
   }, [isSearchVisible]);
-
-  const { search, searchResults } = useMiniSearch(samples, {
-    fields: ["samp_name"],
-    idField: "_index",
-    searchOptions: {
-      prefix: true,
-      combineWith: "AND",
-    },
-  });
 
   const handleSearchInput = (
     event: IonSearchbarCustomEvent<SearchbarInputEventDetail>,
