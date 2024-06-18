@@ -2,7 +2,7 @@
 export enum ColorPaletteMode {
   Dark = "Dark",
   Light = "Light",
-  System = "System",
+  System = "System default",
 }
 
 // Get a single reference to the `<html>` element within which the app exists.

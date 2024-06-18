@@ -1,43 +1,28 @@
 import React from "react";
-import {
-  IonBackButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonNote,
-  IonPage,
-  IonTitle,
-} from "@ionic/react";
+import { IonContent, IonHeader, IonPage, IonTitle } from "@ionic/react";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
-import config from "../../config";
-import ColorPaletteModeSelector from "../../components/ColorPaletteModeSelector/ColorPaletteModeSelector";
+import SectionHeader from "../../components/SectionHeader/SectionHeader";
+import SettingsUserList from "../../components/SettingsUserList/SettingsUserList";
+import SettingsAboutList from "../../components/SettingsAboutList/SettingsAboutList";
+import SettingsAppearanceList from "../../components/SettingsAppearanceList/SettingsAppearanceList";
 
 const SettingsPage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
         <ThemedToolbar>
-          <IonButtons slot={"start"}>
-            <IonBackButton defaultHref={"/"}></IonBackButton>
-          </IonButtons>
           <IonTitle>Settings</IonTitle>
         </ThemedToolbar>
       </IonHeader>
       <IonContent>
-        <IonList>
-          <IonItem>
-            <IonLabel>App version</IonLabel>
-            <IonNote color={"medium"} slot={"end"}>
-              {config.APP_VERSION}
-            </IonNote>
-          </IonItem>
-          <IonItem>
-            <ColorPaletteModeSelector />
-          </IonItem>
-        </IonList>
+        <SectionHeader>User</SectionHeader>
+        <SettingsUserList />
+
+        <SectionHeader>Appearance</SectionHeader>
+        <SettingsAppearanceList />
+
+        <SectionHeader>About</SectionHeader>
+        <SettingsAboutList />
       </IonContent>
     </IonPage>
   );

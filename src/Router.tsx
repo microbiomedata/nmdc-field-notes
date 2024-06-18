@@ -2,14 +2,11 @@ import React from "react";
 import { IonReactRouter } from "@ionic/react-router";
 import { IonRouterOutlet } from "@ionic/react";
 import { Redirect, Route } from "react-router-dom";
-import LoginPage from "./pages/LoginPage/LoginPage";
 import TokenPage from "./pages/TokenPage/TokenPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import ChecklistPage from "./pages/ChecklistPage/ChecklistPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import HomePage from "./pages/HomePage/HomePage";
-import { useStore } from "./Store";
-import LogoutPage from "./pages/LogoutPage/LogoutPage";
 import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
 import StudyCreatePage from "./pages/StudyCreatePage/StudyCreatePage";
 import TabNavigator from "./components/TabNavigator/TabNavigator";
@@ -19,20 +16,14 @@ import SamplePage from "./pages/SamplePage/SamplePage";
 import GuidePage from "./pages/GuidePage/GuidePage";
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
+import RootPage from "./pages/RootPage/RootPage";
 import paths, { IN } from "./paths";
 
 const Router: React.FC = () => {
-  const { isLoggedIn } = useStore();
   return (
     <IonReactRouter>
       <AppUrlListener />
       <IonRouterOutlet>
-        <Route exact path={paths.login}>
-          <LoginPage />
-        </Route>
-        <Route exact path={paths.logout}>
-          <LogoutPage />
-        </Route>
         <Route exact path={paths.token}>
           <TokenPage />
         </Route>
@@ -46,48 +37,50 @@ const Router: React.FC = () => {
           <PlaceholderPage title={"Tour"} body={"Take a tour of the app"} />
         </Route>
 
+        {/*
+        TAB ROUTES
+        Be cautious about adding nested routes here. They seem to confuse the Ionic router. And
+        definitely never attempt to route *between* tabs.
+        See also: https://ionicframework.com/docs/react/navigation#switching-between-tabs
+        */}
         <Route path={IN}>
           <TabNavigator>
-            {/* STUDIES TAB ROUTES */}
-            {/* It's unclear why the /create routes need to be listed after the /:id routes. It
-                seems backwards from what the react-router docs suggest, but it's what works. */}
-            <AuthRoute exact path={paths.studyView(":submissionId")}>
-              <StudyViewPage />
-            </AuthRoute>
-            <AuthRoute exact path={paths.studyCreate}>
-              <StudyCreatePage />
-            </AuthRoute>
-            <AuthRoute exact path={paths.studyEdit(":submissionId")}>
-              <StudyEditPage />
-            </AuthRoute>
-            <AuthRoute
-              exact
-              path={paths.sample(":submissionId", ":sampleIndex")}
-            >
-              <SamplePage />
-            </AuthRoute>
-            <AuthRoute exact path={paths.home}>
+            <Route exact path={paths.home}>
               <HomePage />
-            </AuthRoute>
+            </Route>
 
-            {/* GUIDE TAB ROUTES */}
-            <AuthRoute exact path={paths.guide}>
+            <Route exact path={paths.guide}>
               <GuidePage />
-            </AuthRoute>
+            </Route>
 
-            {/* SETTINGS TAB ROUTES */}
-            <AuthRoute exact path={paths.settings}>
+            <Route exact path={paths.settings}>
               <SettingsPage />
-            </AuthRoute>
-
-            {/* Fallback route for when the requested path doesn't match any of the above paths. */}
-            <Redirect to={paths.home} />
+            </Route>
           </TabNavigator>
         </Route>
 
+        {/*
+        STUDIES ROUTES
+        It is unclear why the /create routes need to be listed after the /:id routes. It
+        seems backwards from what the react-router docs suggest, but it's what works.
+        */}
+        <AuthRoute exact path={paths.sample(":submissionId", ":sampleIndex")}>
+          <SamplePage />
+        </AuthRoute>
+        <AuthRoute exact path={paths.studyEdit(":submissionId")}>
+          <StudyEditPage />
+        </AuthRoute>
+        <AuthRoute exact path={paths.studyView(":submissionId")}>
+          <StudyViewPage />
+        </AuthRoute>
+        <AuthRoute exact path={paths.studyCreate}>
+          <StudyCreatePage />
+        </AuthRoute>
+
         <Route exact path={paths.root}>
-          <Redirect to={isLoggedIn ? paths.home : paths.welcome} />
+          <RootPage />
         </Route>
+
         {/* Fallback route for when the requested path doesn't match any of the above paths. */}
         <Redirect to={paths.root} />
       </IonRouterOutlet>

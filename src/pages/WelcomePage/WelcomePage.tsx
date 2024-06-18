@@ -12,6 +12,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonAlert,
+  useIonRouter,
 } from "@ionic/react";
 import { logIn } from "ionicons/icons";
 import Logo from "../../components/Logo/Logo";
@@ -20,6 +21,8 @@ import classes from "./WelcomePage.module.css";
 import { initiateLogin } from "../../auth";
 
 const WelcomePage: React.FC = () => {
+  const router = useIonRouter();
+
   const handleLogin = () => {
     return initiateLogin();
   };
@@ -82,7 +85,7 @@ const WelcomePage: React.FC = () => {
                       aria-hidden={"true"}
                       slot={"start"}
                     ></IonIcon>
-                    Login with ORCiD
+                    Log in with ORCiD
                   </IonButton>
                 </IonCol>
               </IonRow>
@@ -94,15 +97,15 @@ const WelcomePage: React.FC = () => {
                     expand={"block"}
                     className={"ion-margin-horizontal"}
                   >
-                    Continue without Login
+                    Continue without logging in
                   </IonButton>
                 </IonCol>
               </IonRow>
               <IonAlert
                 trigger={"show-alert-for-continue-without-login"}
-                header={"Continue without Login"}
+                header={"Continue without logging in?"}
                 message={
-                  "Only logged-in users can sync their metadata with the NMDC Submission Portal."
+                  "You will need to log in before you can sync metadata with the NMDC Submission Portal."
                 }
                 buttons={[
                   {
@@ -113,8 +116,7 @@ const WelcomePage: React.FC = () => {
                     text: "Continue",
                     role: "confirm",
                     handler: () => {
-                      // TODO: Navigate to the next screen.
-                      console.log("Continue without Login");
+                      router.push(paths.home, "forward");
                     },
                   },
                 ]}
