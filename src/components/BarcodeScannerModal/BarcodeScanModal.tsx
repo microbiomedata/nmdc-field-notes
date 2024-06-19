@@ -1,12 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {
   IonButton,
   IonContent,
   IonModal,
 } from "@ionic/react";
-import { Capacitor } from '@capacitor/core';
 import {
-  BarcodeFormat,
   BarcodeScanner,
 } from '@capacitor-mlkit/barcode-scanning';
 import styles from "./BarcodeScanModal.module.css";
@@ -15,45 +13,52 @@ interface BarcodeScanModalModalProps {
   onCancel: () => void;
   onChange: (value: string) => void;
   isOpen: boolean;
-  formats: BarcodeFormat[];
 }
 
 const BarcodeScanModal: React.FC<BarcodeScanModalModalProps> = ({
-  onCancel, onChange, isOpen, formats
+  onCancel, onChange, isOpen
 }) => {
-  const [isSupported, setIsSupported] = useState<boolean>(false);
-  const [isPermissionGranted, setIsPermissionGranted] = useState<boolean>(false);
-
-  /* Scan a barcode with a ready-to-use interface without WebView customization.
-  On Android, this method is only available on devices with Google Play Services 
-  installed. Therefore, no camera permission is required.
-  Attention: Before using this method on Android, first check if the Google Barcode  
-  Scanner module is available by using isGoogleBarcodeScannerModuleAvailable().
-  */
   const scan = async (): Promise<void> => {
-    const { barcodes } = await BarcodeScanner.scan({
-      formats,
-    });
-    onChange(barcodes[0].rawValue);
-    onCancel();
+    const granted = await requestPermissions();
+    if(! granted) {
+      cancel();
+      return;
+    }
+    // Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#ios
+    // Hide everything except the camera feed.
+    document
+      .querySelector("body")
+      ?.classList.add("barcode-scanner-active");
+
+    // Listen for events named "barcodeScanned".
+    await BarcodeScanner.addListener(
+      "barcodeScanned",
+      async (result) => {
+        // Remove the event listener (any that are attached).
+        // Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#removealllisteners
+        await BarcodeScanner.removeAllListeners();
+        onChange(result.barcode.rawValue);
+
+        // Stop scanning for barcodes.
+        // Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#stopscan
+        await BarcodeScanner.stopScan();
+        onCancel();
+      },
+    );
+
+    // Start scanning for barcodes.
+    // Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#startscan
+    await BarcodeScanner.startScan();
   }
   
-  const installGoogleBarcodeScannerModule = async (): Promise<void> => {
-    await BarcodeScanner.installGoogleBarcodeScannerModule();
+  const cancel = async (): Promise<void> => {
+    onCancel();
   }
 
-  const requestPermissions = async (): Promise<void> => {
-    await BarcodeScanner.requestPermissions();
+  const requestPermissions = async (): Promise<boolean> => {
+    const { camera } = await BarcodeScanner.requestPermissions();
+    return camera === 'granted' || camera === 'limited';
   }
-
-  useEffect(() => {
-    BarcodeScanner.isSupported().then((result) => {
-      setIsSupported(result.supported);
-    });
-    BarcodeScanner.checkPermissions().then((result) => {
-      setIsPermissionGranted(result.camera === 'granted');
-    });
-  }, []);
 
   return (
     <IonModal
@@ -63,39 +68,19 @@ const BarcodeScanModal: React.FC<BarcodeScanModalModalProps> = ({
       isOpen={isOpen}
       onIonModalDidDismiss={onCancel}
     >
-        <IonContent className="ion-padding">
-          <h2>Scan Barcode</h2>
-          <IonButton color="primary" expand="block" onClick={onCancel}>
-            Cancel
-          </IonButton>
-          {isSupported && isPermissionGranted && 
-            <IonButton
-              color="primary"
-              expand="block"
-              onClick={scan}
-            >
-              Scan
-            </IonButton>
-          }
-          {!isSupported && Capacitor.getPlatform() === 'android' &&
-            <IonButton
-              color="primary"
-              expand="block"
-              onClick={installGoogleBarcodeScannerModule}
-            >
-              Install Google Barcode Scanner Module
-            </IonButton>
-          }
-          {!isPermissionGranted && Capacitor.getPlatform() !== 'android' &&
-            <IonButton
-              color="primary"
-              expand="block"
-              onClick={requestPermissions}
-            >
-              Request Permissions
-            </IonButton>
-          }
-        </IonContent>
+      <IonContent className="ion-padding">
+        <h2>Scan Barcode</h2>
+        <IonButton color="primary" expand="block" onClick={onCancel}>
+          Cancel
+        </IonButton>
+        <IonButton
+          color="primary"
+          expand="block"
+          onClick={scan}
+        >
+          Scan
+        </IonButton>
+      </IonContent>
     </IonModal>
   );
 };
