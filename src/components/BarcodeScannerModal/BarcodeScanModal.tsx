@@ -7,7 +7,7 @@ import {
 import {
   BarcodeScanner,
 } from '@capacitor-mlkit/barcode-scanning';
-import styles from "./BarcodeScanModal.module.css";
+import "./BarcodeScanModal.module.css";
 
 interface BarcodeScanModalModalProps {
   onCancel: () => void;
@@ -18,12 +18,26 @@ interface BarcodeScanModalModalProps {
 const BarcodeScanModal: React.FC<BarcodeScanModalModalProps> = ({
   onCancel, onChange, isOpen
 }) => {
+  //   Scan a barcode with a ready-to-use interface without WebView customization.
+  // On Android, this method is only available on devices with Google Play Services installed. Therefore, no camera permission is required.
+  // Attention: Before using this method on Android, first check if the Google Barcode Scanner module is available by using isGoogleBarcodeScannerModuleAvailable().
+  const scanWithoutWebView = async (): Promise<void> => {
+    const { barcodes } = await BarcodeScanner.scan();
+        onChange(barcodes[0].rawValue);
+        onCancel();
+  }
+
+  //WebView customization
+  //https://capawesome.io/plugins/mlkit/barcode-scanning/
+  //Problem:  can't see the camera view
+  //How to make all elements in the DOM are not visible?
   const scan = async (): Promise<void> => {
     const granted = await requestPermissions();
     if(! granted) {
       cancel();
       return;
     }
+   
     // Reference: https://www.npmjs.com/package/@capacitor-mlkit/barcode-scanning#ios
     // Hide everything except the camera feed.
     document
@@ -62,7 +76,7 @@ const BarcodeScanModal: React.FC<BarcodeScanModalModalProps> = ({
 
   return (
     <IonModal
-      className={styles.BarcodeScanModal}
+      className={'BarcodeScanModal'}
       breakpoints={[0, 1]}
       initialBreakpoint={1}
       isOpen={isOpen}
