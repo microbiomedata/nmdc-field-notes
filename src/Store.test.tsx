@@ -7,7 +7,15 @@ import userEvent from "@testing-library/user-event";
 import { server, tokenExchangeError } from "./mocks/server";
 
 const TestStoreConsumer: React.FC = () => {
-  const { login, logout, isLoggedIn, loggedInUser, store } = useStore();
+  const {
+    login,
+    logout,
+    isLoggedIn,
+    loggedInUser,
+    store,
+    getVisibleSlotsForSchemaClass,
+    setVisibleSlotsForSchemaClass,
+  } = useStore();
 
   const handleLoginClick = async () => {
     await login("access-token", "refresh-token");
@@ -17,11 +25,15 @@ const TestStoreConsumer: React.FC = () => {
     await logout();
   };
 
+  const soilVisibleSlots = getVisibleSlotsForSchemaClass("soil");
+  const waterVisibleSlots = getVisibleSlotsForSchemaClass("water");
+
   return (
     <>
       <div data-testid="store-status">
         {store == null ? "waiting for store" : "store created"}
       </div>
+
       <div data-testid="is-logged-in">{isLoggedIn ? "true" : "false"}</div>
       <div data-testid="logged-in-user">{loggedInUser?.name}</div>
       <button data-testid="login-button" onClick={handleLoginClick}>
@@ -29,6 +41,25 @@ const TestStoreConsumer: React.FC = () => {
       </button>
       <button data-testid="logout-button" onClick={handleLogoutClick}>
         Log out
+      </button>
+
+      <div data-testid="visible-slots-soil">
+        {soilVisibleSlots === undefined
+          ? "undefined"
+          : soilVisibleSlots.join(", ")}
+      </div>
+      <div data-testid="visible-slots-water">
+        {waterVisibleSlots === undefined
+          ? "undefined"
+          : waterVisibleSlots.join(", ")}
+      </div>
+      <button
+        data-testid="set-visible-slots-soil"
+        onClick={() =>
+          setVisibleSlotsForSchemaClass("soil", ["slot1", "slot2"])
+        }
+      >
+        Set soil slots
       </button>
     </>
   );
@@ -53,6 +84,9 @@ const renderTestStoreConsumer = () => {
       loggedInUser: screen.getByTestId("logged-in-user"),
       loginButton: screen.getByTestId("login-button"),
       logoutButton: screen.getByTestId("logout-button"),
+      visibleSlotsSoil: screen.getByTestId("visible-slots-soil"),
+      visibleSlotsWater: screen.getByTestId("visible-slots-water"),
+      setVisibleSlotsSoil: screen.getByTestId("set-visible-slots-soil"),
     },
   };
 };
@@ -67,6 +101,9 @@ describe("Store", () => {
     // In normal usage there is no need to call this method, but it is necessary here to ensure
     // that each test starts with a clean slate.
     nmdcServerClient.clearExchangeRefreshTokenCache();
+
+    // Clear the storage after each test
+    window.localStorage.clear();
   });
 
   it("should provide a null refreshToken by default", async () => {
@@ -160,5 +197,48 @@ describe("Store", () => {
     expect(elements.isLoggedIn.textContent).toBe("false");
     expect(elements.loggedInUser.textContent).toBe("");
     expect(setTokensSpy).not.toHaveBeenCalled();
+  });
+
+  it("getVisibleSlotsForSchemaClass should return undefined by default", async () => {
+    const { elements } = renderTestStoreConsumer();
+
+    await waitFor(() =>
+      expect(elements.storeStatus.textContent).toBe("store created"),
+    );
+    expect(elements.visibleSlotsSoil.textContent).toBe("undefined");
+    expect(elements.visibleSlotsWater.textContent).toBe("undefined");
+  });
+
+  it("getVisibleSlotsForSchemaClass should return values from storage if defined", async () => {
+    window.localStorage.setItem(
+      "nmdc_field_notes/app_store/visibleSlots",
+      '{"soil":["slotA","slotB"]}',
+    );
+
+    const { elements } = renderTestStoreConsumer();
+
+    await waitFor(() =>
+      expect(elements.storeStatus.textContent).toBe("store created"),
+    );
+    expect(elements.visibleSlotsSoil.textContent).toBe("slotA, slotB");
+    expect(elements.visibleSlotsWater.textContent).toBe("undefined");
+  });
+
+  it("setVisibleSlotsForSchemaClass should update the store", async () => {
+    const { elements, user } = renderTestStoreConsumer();
+
+    await waitFor(() =>
+      expect(elements.storeStatus.textContent).toBe("store created"),
+    );
+    expect(elements.visibleSlotsSoil.textContent).toBe("undefined");
+    expect(elements.visibleSlotsWater.textContent).toBe("undefined");
+
+    await user.click(elements.setVisibleSlotsSoil);
+
+    expect(elements.visibleSlotsSoil.textContent).toBe("slot1, slot2");
+    expect(elements.visibleSlotsWater.textContent).toBe("undefined");
+    expect(
+      window.localStorage.getItem("nmdc_field_notes/app_store/visibleSlots"),
+    ).toBe('{"soil":["slot1","slot2"]}');
   });
 });
