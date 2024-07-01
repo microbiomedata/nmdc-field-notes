@@ -1,28 +1,12 @@
 import React from "react";
 import { SampleData, SampleDataValue, TEMPLATES } from "../../api";
-import { groupClassSlots, SlotGroup } from "../../utils";
+import { groupClassSlots } from "../../utils";
 import SectionHeader from "../SectionHeader/SectionHeader";
-import SlotSelector from "../SlotSelector/SlotSelector";
-import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonPage,
-  IonText,
-  IonTitle,
-  IonToolbar,
-  useIonModal,
-} from "@ionic/react";
+import { IonButton, IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { SchemaDefinition, SlotDefinition } from "../../linkml-metamodel";
 import { warningOutline } from "ionicons/icons";
 import { useStore } from "../../Store";
-
-import styles from "./SampleView.module.css";
+import SlotSelectorModal from "../SlotSelectorModal/SlotSelectorModal";
 
 function formatSlotValue(value: SampleDataValue) {
   if (value == null) {
@@ -33,66 +17,6 @@ function formatSlotValue(value: SampleDataValue) {
   }
   return value;
 }
-
-interface SlotSelectorModalProps {
-  initialVisibleSlots?: string[];
-  onCancel: () => void;
-  onSave: (visibleSlots: string[]) => void;
-  packageName: string;
-  slotGroups: SlotGroup[];
-}
-const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
-  initialVisibleSlots,
-  onCancel,
-  onSave,
-  packageName,
-  slotGroups,
-}) => {
-  // If initialVisibleSlots is undefined, make the default selection all the slots
-  const [visibleSlots, setVisibleSlots] = React.useState(
-    initialVisibleSlots === undefined
-      ? slotGroups.reduce(
-          (acc, group) => acc.concat(group.slots.map((slot) => slot.name)),
-          [] as string[],
-        )
-      : initialVisibleSlots,
-  );
-  const templateName = TEMPLATES[packageName].displayName;
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton color="medium" onClick={onCancel}>
-              Cancel
-            </IonButton>
-          </IonButtons>
-          <IonTitle>Select Fields</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={() => onSave(visibleSlots)} strong={true}>
-              Save
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <p className="ion-padding">
-          <IonText>
-            Select the fields you would like to see by default when entering
-            metadata in the <b>{templateName} template</b>. These choices can be
-            updated any time in Settings.
-          </IonText>
-        </p>
-        <SlotSelector
-          slotGroups={slotGroups}
-          alwaysVisibleSlots={["samp_name"]}
-          visibleSlots={visibleSlots}
-          onVisibleSlotsChange={setVisibleSlots}
-        />
-      </IonContent>
-    </IonPage>
-  );
-};
 
 interface SampleViewProps {
   onSlotClick: (slot: SlotDefinition) => void;
@@ -108,31 +32,11 @@ const SampleView: React.FC<SampleViewProps> = ({
   schema,
   validationResults,
 }) => {
-  const { getVisibleSlotsForSchemaClass, setVisibleSlotsForSchemaClass } =
-    useStore();
-
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const { getVisibleSlotsForSchemaClass } = useStore();
   const schemaClass = TEMPLATES[packageName].schemaClass;
   const visibleSlots = getVisibleSlotsForSchemaClass(schemaClass);
   const slotGroups = schemaClass ? groupClassSlots(schema, schemaClass) : [];
-
-  const [_presentModal, dismissModal] = useIonModal(
-    <SlotSelectorModal
-      initialVisibleSlots={visibleSlots}
-      onCancel={() => dismissModal()}
-      onSave={(visibleSlots) => {
-        if (schemaClass !== undefined) {
-          setVisibleSlotsForSchemaClass(schemaClass, visibleSlots);
-        }
-        dismissModal();
-      }}
-      packageName={packageName}
-      slotGroups={slotGroups}
-    />,
-  );
-  const presentModal = () =>
-    _presentModal({
-      cssClass: styles.slotSelectorModal,
-    });
 
   if (!sample) {
     return null;
@@ -146,7 +50,7 @@ const SampleView: React.FC<SampleViewProps> = ({
           size="small"
           color="primary"
           className="ion-no-margin"
-          onClick={presentModal}
+          onClick={() => setIsModalOpen(true)}
         >
           Too many fields? Tap to customize list.
         </IonButton>
@@ -187,13 +91,19 @@ const SampleView: React.FC<SampleViewProps> = ({
           fill="clear"
           className="ion-margin-vertical"
           color="medium"
-          onClick={presentModal}
+          onClick={() => setIsModalOpen(true)}
         >
           Not seeing a field you were looking for?
           <br />
           Tap here to update field visibility settings.
         </IonButton>
       )}
+
+      <SlotSelectorModal
+        onDismiss={() => setIsModalOpen(false)}
+        isOpen={isModalOpen}
+        packageName={packageName}
+      />
     </>
   );
 };
