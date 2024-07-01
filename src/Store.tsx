@@ -17,7 +17,7 @@ import { produce } from "immer";
 enum StorageKey {
   REFRESH_TOKEN = "refreshToken",
   COLOR_PALETTE_MODE = "colorPaletteMode",
-  VISIBLE_SLOTS = "visibleSlots",
+  HIDDEN_SLOTS = "hiddenSlots",
 }
 
 interface StoreContextValue {
@@ -31,10 +31,10 @@ interface StoreContextValue {
   colorPaletteMode: ColorPaletteMode | null;
   setColorPaletteMode: (colorPaletteMode: ColorPaletteMode) => void;
 
-  getVisibleSlotsForSchemaClass: (className?: string) => string[] | undefined;
-  setVisibleSlotsForSchemaClass: (
+  getHiddenSlotsForSchemaClass: (className?: string) => string[] | undefined;
+  setHiddenSlotsForSchemaClass: (
     className: string,
-    visibleSlots: string[],
+    hiddenSlots: string[],
   ) => void;
 }
 
@@ -55,11 +55,11 @@ const StoreContext = createContext<StoreContextValue>({
     throw new Error("setColorPaletteMode called outside of provider");
   },
 
-  getVisibleSlotsForSchemaClass: () => {
-    throw new Error("getVisibleSlotsForSchemaClass called outside of provider");
+  getHiddenSlotsForSchemaClass: () => {
+    throw new Error("getHiddenSlotsForSchemaClass called outside of provider");
   },
-  setVisibleSlotsForSchemaClass: () => {
-    throw new Error("setVisibleSlotsForSchemaClass called outside of provider");
+  setHiddenSlotsForSchemaClass: () => {
+    throw new Error("setHiddenSlotsForSchemaClass called outside of provider");
   },
 });
 
@@ -69,9 +69,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
-  const [visibleSlots, setVisibleSlots] = useState<Record<string, string[]>>(
-    {},
-  );
+  const [hiddenSlots, setHiddenSlots] = useState<Record<string, string[]>>({});
 
   // Initialize the store.
   useEffect(() => {
@@ -111,12 +109,10 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setColorPaletteMode(sanitizedColorPaletteMode);
       applyColorPalette(sanitizedColorPaletteMode);
 
-      // If browser storage contains visible slots, load them into the Context.
-      const visibleSlotsFromStorage = await storage.get(
-        StorageKey.VISIBLE_SLOTS,
-      );
-      if (visibleSlotsFromStorage) {
-        setVisibleSlots(visibleSlotsFromStorage);
+      // If browser storage contains hidden slots, load them into the Context.
+      const hiddenSlotsFromStorage = await storage.get(StorageKey.HIDDEN_SLOTS);
+      if (hiddenSlotsFromStorage) {
+        setHiddenSlots(hiddenSlotsFromStorage);
       }
 
       // This should be done last so that we can block rendering until in-memory state is fully
@@ -182,34 +178,34 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   /**
-   * Returns the visible slots for the specified schema class.
+   * Returns the hidden slots for the specified schema class.
    */
-  function getVisibleSlotsForSchemaClass(className?: string) {
+  function getHiddenSlotsForSchemaClass(className?: string) {
     if (className === undefined) {
       return undefined;
     }
-    return visibleSlots[className];
+    return hiddenSlots[className];
   }
 
   /**
-   * Updates the visible slots for the specified schema class in the Context and the store.
+   * Updates the hidden slots for the specified schema class in the Context and the store.
    */
-  async function setVisibleSlotsForSchemaClass(
+  async function setHiddenSlotsForSchemaClass(
     className: string,
     slotNames: string[],
   ) {
-    const updatedVisibleSlots = produce(visibleSlots, (draft) => {
+    const updatedHiddenSlots = produce(hiddenSlots, (draft) => {
       draft[className] = slotNames;
     });
 
-    setVisibleSlots(updatedVisibleSlots);
+    setHiddenSlots(updatedHiddenSlots);
     if (store === null) {
       console.warn(
-        "setVisibleSlotsForSchemaClass called before storage initialization",
+        "setHiddenSlotsForSchemaClass called before storage initialization",
       );
       return;
     } else {
-      return store.set(StorageKey.VISIBLE_SLOTS, updatedVisibleSlots);
+      return store.set(StorageKey.HIDDEN_SLOTS, updatedHiddenSlots);
     }
   }
 
@@ -226,8 +222,8 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         colorPaletteMode: colorPaletteMode,
         setColorPaletteMode: _setColorPaletteMode,
 
-        getVisibleSlotsForSchemaClass,
-        setVisibleSlotsForSchemaClass,
+        getHiddenSlotsForSchemaClass,
+        setHiddenSlotsForSchemaClass,
       }}
     >
       {children}

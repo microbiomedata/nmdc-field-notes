@@ -33,9 +33,9 @@ const SampleView: React.FC<SampleViewProps> = ({
   validationResults,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const { getVisibleSlotsForSchemaClass } = useStore();
+  const { getHiddenSlotsForSchemaClass } = useStore();
   const schemaClass = TEMPLATES[packageName].schemaClass;
-  const visibleSlots = getVisibleSlotsForSchemaClass(schemaClass);
+  const hiddenSlots = getHiddenSlotsForSchemaClass(schemaClass);
   const slotGroups = schemaClass ? groupClassSlots(schema, schemaClass) : [];
 
   if (!sample) {
@@ -44,7 +44,7 @@ const SampleView: React.FC<SampleViewProps> = ({
 
   return (
     <>
-      {visibleSlots === undefined && (
+      {hiddenSlots === undefined && (
         <IonButton
           expand="full"
           size="small"
@@ -62,8 +62,8 @@ const SampleView: React.FC<SampleViewProps> = ({
           <IonList className="ion-padding-bottom">
             {group.slots.map(
               (slot) =>
-                (visibleSlots === undefined ||
-                  visibleSlots.includes(slot.name)) && (
+                (hiddenSlots === undefined ||
+                  !hiddenSlots.includes(slot.name)) && (
                   <IonItem key={slot.name} onClick={() => onSlotClick(slot)}>
                     {validationResults?.[slot.name] && (
                       <IonIcon
@@ -84,7 +84,7 @@ const SampleView: React.FC<SampleViewProps> = ({
         </React.Fragment>
       ))}
 
-      {visibleSlots !== undefined && (
+      {hiddenSlots !== undefined && (
         <IonButton
           expand="full"
           size="small"

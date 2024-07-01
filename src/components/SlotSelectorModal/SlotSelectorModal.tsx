@@ -27,9 +27,9 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
   isOpen,
   packageName,
 }) => {
-  const [visibleSlots, setVisibleSlots] = React.useState<string[]>([]);
+  const [selectedSlots, setSelectedSlots] = React.useState<string[]>([]);
   const schema = useSubmissionSchema();
-  const { getVisibleSlotsForSchemaClass, setVisibleSlotsForSchemaClass } =
+  const { getHiddenSlotsForSchemaClass, setHiddenSlotsForSchemaClass } =
     useStore();
 
   const schemaClassName = packageName && TEMPLATES[packageName].schemaClass;
@@ -42,29 +42,33 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
         : [],
     [schema.data, schemaClassName],
   );
+  const allSlotNames = useMemo(
+    () => slotGroups.flatMap((group) => group.slots.map((s) => s.name)),
+    [slotGroups],
+  );
 
   useEffect(() => {
     if (isOpen) {
-      const visibleSlotsFromStore =
-        getVisibleSlotsForSchemaClass(schemaClassName);
-      if (visibleSlotsFromStore === undefined) {
-        setVisibleSlots(
-          slotGroups.reduce(
-            (acc, group) => acc.concat(group.slots.map((slot) => slot.name)),
-            [] as string[],
-          ),
-        );
+      const hiddenSlotsFromStore =
+        getHiddenSlotsForSchemaClass(schemaClassName);
+      if (hiddenSlotsFromStore === undefined) {
+        setSelectedSlots(allSlotNames);
       } else {
-        setVisibleSlots(visibleSlotsFromStore);
+        setSelectedSlots(
+          allSlotNames.filter((s) => !hiddenSlotsFromStore.includes(s)),
+        );
       }
     } else {
-      setVisibleSlots([]);
+      setSelectedSlots([]);
     }
-  }, [getVisibleSlotsForSchemaClass, isOpen, schemaClassName, slotGroups]);
+  }, [getHiddenSlotsForSchemaClass, isOpen, schemaClassName, allSlotNames]);
 
   const handleSave = () => {
     if (schemaClassName !== undefined) {
-      setVisibleSlotsForSchemaClass(schemaClassName, visibleSlots);
+      const hiddenSlots = allSlotNames.filter(
+        (s) => !selectedSlots.includes(s),
+      );
+      setHiddenSlotsForSchemaClass(schemaClassName, hiddenSlots);
     }
     onDismiss();
   };
@@ -100,9 +104,9 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
         </p>
         <SlotSelector
           slotGroups={slotGroups}
-          alwaysVisibleSlots={["samp_name"]}
-          visibleSlots={visibleSlots}
-          onVisibleSlotsChange={setVisibleSlots}
+          alwaysSelectedSlots={["samp_name"]}
+          selectedSlots={selectedSlots}
+          onSelectedSlotsChange={setSelectedSlots}
         />
       </IonContent>
     </IonModal>

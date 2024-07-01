@@ -8,23 +8,23 @@ import styles from "./SlotSelector.module.css";
 
 export interface SlotSelectorProps {
   slotGroups: SlotGroup[];
-  alwaysVisibleSlots?: string[];
-  visibleSlots: string[];
-  onVisibleSlotsChange?: (visibleSlots: string[]) => void;
+  alwaysSelectedSlots?: string[];
+  selectedSlots: string[];
+  onSelectedSlotsChange?: (selectedSlots: string[]) => void;
 }
 
 const SlotSelector: React.FC<SlotSelectorProps> = ({
   slotGroups,
-  alwaysVisibleSlots,
-  visibleSlots,
-  onVisibleSlotsChange,
+  alwaysSelectedSlots,
+  selectedSlots,
+  onSelectedSlotsChange,
 }) => {
   const handleSlotChange = (slotName: string, include: boolean) => {
-    if (typeof onVisibleSlotsChange !== "function") {
+    if (typeof onSelectedSlotsChange !== "function") {
       return;
     }
-    onVisibleSlotsChange(
-      produce(visibleSlots, (draft) => {
+    onSelectedSlotsChange(
+      produce(selectedSlots, (draft) => {
         if (include) {
           draft.push(slotName);
         } else {
@@ -35,11 +35,11 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
   };
 
   const handleGroupChange = (group: SlotGroup, include: boolean) => {
-    if (typeof onVisibleSlotsChange !== "function") {
+    if (typeof onSelectedSlotsChange !== "function") {
       return;
     }
-    onVisibleSlotsChange(
-      produce(visibleSlots, (draft) => {
+    onSelectedSlotsChange(
+      produce(selectedSlots, (draft) => {
         if (include) {
           group.slots.forEach((slot) => {
             if (!draft.includes(slot.name)) {
@@ -49,8 +49,8 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
         } else {
           group.slots.forEach((slot) => {
             const index = draft.indexOf(slot.name);
-            const alwaysVisible = alwaysVisibleSlots?.includes(slot.name);
-            if (index >= 0 && !alwaysVisible) {
+            const alwaysSelected = alwaysSelectedSlots?.includes(slot.name);
+            if (index >= 0 && !alwaysSelected) {
               draft.splice(index, 1);
             }
           });
@@ -61,10 +61,10 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
 
   const groupState = (slotGroup: SlotGroup) => {
     const state = { checked: false, indeterminate: false };
-    if (slotGroup.slots.every((slot) => visibleSlots.includes(slot.name))) {
+    if (slotGroup.slots.every((slot) => selectedSlots.includes(slot.name))) {
       state.checked = true;
     } else if (
-      slotGroup.slots.every((slot) => !visibleSlots.includes(slot.name))
+      slotGroup.slots.every((slot) => !selectedSlots.includes(slot.name))
     ) {
       state.checked = false;
     } else {
@@ -96,9 +96,9 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
               justify="start"
               role="checkbox"
               aria-label={`Slot/${slot.name}`}
-              checked={visibleSlots.includes(slot.name)}
+              checked={selectedSlots.includes(slot.name)}
               onIonChange={(e) => handleSlotChange(slot.name, e.detail.checked)}
-              disabled={alwaysVisibleSlots?.includes(slot.name)}
+              disabled={alwaysSelectedSlots?.includes(slot.name)}
             >
               <IonLabel>
                 <h3>{slot.title || slot.name}</h3>

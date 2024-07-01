@@ -16,34 +16,34 @@ type Story = StoryObj<typeof SlotSelector>;
 export const Default: Story = {
   args: {
     slotGroups,
-    visibleSlots: ["slot1", "slot3", "slot7", "slot8", "slot9"],
+    selectedSlots: ["slot1", "slot3", "slot7", "slot8", "slot9"],
   },
   render: function Render(args) {
     const [, updateArgs] = useArgs();
     return (
       <SlotSelector
         {...args}
-        onVisibleSlotsChange={(visibleSlots) => {
-          updateArgs({ visibleSlots });
+        onSelectedSlotsChange={(selectedSlots) => {
+          updateArgs({ selectedSlots });
         }}
       />
     );
   },
 };
 
-export const WithAlwaysVisibleSlot: Story = {
+export const WithAlwaysSelectedSlot: Story = {
   args: {
     slotGroups,
-    alwaysVisibleSlots: ["slot1"],
-    visibleSlots: ["slot1", "slot3", "slot7", "slot8", "slot9"],
+    alwaysSelectedSlots: ["slot1"],
+    selectedSlots: ["slot1", "slot3", "slot7", "slot8", "slot9"],
   },
   render: function Render(args) {
     const [, updateArgs] = useArgs();
     return (
       <SlotSelector
         {...args}
-        onVisibleSlotsChange={(visibleSlots) => {
-          updateArgs({ visibleSlots });
+        onSelectedSlotsChange={(selectedSlots) => {
+          updateArgs({ selectedSlots });
         }}
       />
     );

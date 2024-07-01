@@ -13,8 +13,8 @@ const TestStoreConsumer: React.FC = () => {
     isLoggedIn,
     loggedInUser,
     store,
-    getVisibleSlotsForSchemaClass,
-    setVisibleSlotsForSchemaClass,
+    getHiddenSlotsForSchemaClass,
+    setHiddenSlotsForSchemaClass,
   } = useStore();
 
   const handleLoginClick = async () => {
@@ -25,8 +25,8 @@ const TestStoreConsumer: React.FC = () => {
     await logout();
   };
 
-  const soilVisibleSlots = getVisibleSlotsForSchemaClass("soil");
-  const waterVisibleSlots = getVisibleSlotsForSchemaClass("water");
+  const soilHiddenSlots = getHiddenSlotsForSchemaClass("soil");
+  const waterHiddenSlots = getHiddenSlotsForSchemaClass("water");
 
   return (
     <>
@@ -43,21 +43,19 @@ const TestStoreConsumer: React.FC = () => {
         Log out
       </button>
 
-      <div data-testid="visible-slots-soil">
-        {soilVisibleSlots === undefined
+      <div data-testid="hidden-slots-soil">
+        {soilHiddenSlots === undefined
           ? "undefined"
-          : soilVisibleSlots.join(", ")}
+          : soilHiddenSlots.join(", ")}
       </div>
-      <div data-testid="visible-slots-water">
-        {waterVisibleSlots === undefined
+      <div data-testid="hidden-slots-water">
+        {waterHiddenSlots === undefined
           ? "undefined"
-          : waterVisibleSlots.join(", ")}
+          : waterHiddenSlots.join(", ")}
       </div>
       <button
-        data-testid="set-visible-slots-soil"
-        onClick={() =>
-          setVisibleSlotsForSchemaClass("soil", ["slot1", "slot2"])
-        }
+        data-testid="set-hidden-slots-soil"
+        onClick={() => setHiddenSlotsForSchemaClass("soil", ["slot1", "slot2"])}
       >
         Set soil slots
       </button>
@@ -84,9 +82,9 @@ const renderTestStoreConsumer = () => {
       loggedInUser: screen.getByTestId("logged-in-user"),
       loginButton: screen.getByTestId("login-button"),
       logoutButton: screen.getByTestId("logout-button"),
-      visibleSlotsSoil: screen.getByTestId("visible-slots-soil"),
-      visibleSlotsWater: screen.getByTestId("visible-slots-water"),
-      setVisibleSlotsSoil: screen.getByTestId("set-visible-slots-soil"),
+      hiddenSlotsSoil: screen.getByTestId("hidden-slots-soil"),
+      hiddenSlotsWater: screen.getByTestId("hidden-slots-water"),
+      setHiddenSlotsSoil: screen.getByTestId("set-hidden-slots-soil"),
     },
   };
 };
@@ -199,19 +197,19 @@ describe("Store", () => {
     expect(setTokensSpy).not.toHaveBeenCalled();
   });
 
-  it("getVisibleSlotsForSchemaClass should return undefined by default", async () => {
+  it("getHiddenSlotsForSchemaClass should return undefined by default", async () => {
     const { elements } = renderTestStoreConsumer();
 
     await waitFor(() =>
       expect(elements.storeStatus.textContent).toBe("store created"),
     );
-    expect(elements.visibleSlotsSoil.textContent).toBe("undefined");
-    expect(elements.visibleSlotsWater.textContent).toBe("undefined");
+    expect(elements.hiddenSlotsWater.textContent).toBe("undefined");
+    expect(elements.hiddenSlotsSoil.textContent).toBe("undefined");
   });
 
-  it("getVisibleSlotsForSchemaClass should return values from storage if defined", async () => {
+  it("getHiddenSlotsForSchemaClass should return values from storage if defined", async () => {
     window.localStorage.setItem(
-      "nmdc_field_notes/app_store/visibleSlots",
+      "nmdc_field_notes/app_store/hiddenSlots",
       '{"soil":["slotA","slotB"]}',
     );
 
@@ -220,25 +218,25 @@ describe("Store", () => {
     await waitFor(() =>
       expect(elements.storeStatus.textContent).toBe("store created"),
     );
-    expect(elements.visibleSlotsSoil.textContent).toBe("slotA, slotB");
-    expect(elements.visibleSlotsWater.textContent).toBe("undefined");
+    expect(elements.hiddenSlotsSoil.textContent).toBe("slotA, slotB");
+    expect(elements.hiddenSlotsWater.textContent).toBe("undefined");
   });
 
-  it("setVisibleSlotsForSchemaClass should update the store", async () => {
+  it("setHiddenSlotsForSchemaClass should update the store", async () => {
     const { elements, user } = renderTestStoreConsumer();
 
     await waitFor(() =>
       expect(elements.storeStatus.textContent).toBe("store created"),
     );
-    expect(elements.visibleSlotsSoil.textContent).toBe("undefined");
-    expect(elements.visibleSlotsWater.textContent).toBe("undefined");
+    expect(elements.hiddenSlotsSoil.textContent).toBe("undefined");
+    expect(elements.hiddenSlotsWater.textContent).toBe("undefined");
 
-    await user.click(elements.setVisibleSlotsSoil);
+    await user.click(elements.setHiddenSlotsSoil);
 
-    expect(elements.visibleSlotsSoil.textContent).toBe("slot1, slot2");
-    expect(elements.visibleSlotsWater.textContent).toBe("undefined");
+    expect(elements.hiddenSlotsSoil.textContent).toBe("slot1, slot2");
+    expect(elements.hiddenSlotsWater.textContent).toBe("undefined");
     expect(
-      window.localStorage.getItem("nmdc_field_notes/app_store/visibleSlots"),
+      window.localStorage.getItem("nmdc_field_notes/app_store/hiddenSlots"),
     ).toBe('{"soil":["slot1","slot2"]}');
   });
 });

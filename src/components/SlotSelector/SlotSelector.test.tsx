@@ -6,17 +6,17 @@ import { vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 
 function renderSlotSelector(
-  visibleSlots: string[],
-  alwaysVisibleSlots: string[] = [],
+  selectedSlots: string[],
+  alwaysSelectedSlots: string[] = [],
 ) {
   const user = userEvent.setup();
-  const handleVisibleSlotsChange = vi.fn();
+  const handleSelectedSlotsChange = vi.fn();
   render(
     <SlotSelector
       slotGroups={slotGroups}
-      visibleSlots={visibleSlots}
-      alwaysVisibleSlots={alwaysVisibleSlots}
-      onVisibleSlotsChange={handleVisibleSlotsChange}
+      selectedSlots={selectedSlots}
+      alwaysSelectedSlots={alwaysSelectedSlots}
+      onSelectedSlotsChange={handleSelectedSlotsChange}
     />,
   );
 
@@ -29,7 +29,7 @@ function renderSlotSelector(
     });
   });
 
-  return { user, handleVisibleSlotsChange, groupCheckboxes, slotCheckboxes };
+  return { user, handleSelectedSlotsChange, groupCheckboxes, slotCheckboxes };
 }
 
 describe("SlotSelector", () => {
@@ -52,10 +52,10 @@ describe("SlotSelector", () => {
     });
   });
 
-  it("marks group as checked if all slots are visible", () => {
-    const visibleSlots = ["slot1", "slot2", "slot3"];
+  it("marks group as checked if all slots are selected", () => {
+    const selectedSlots = ["slot1", "slot2", "slot3"];
     const { groupCheckboxes, slotCheckboxes } =
-      renderSlotSelector(visibleSlots);
+      renderSlotSelector(selectedSlots);
 
     // The first group should be checked
     expect(groupCheckboxes[0].getAttribute("checked")).toBe("true");
@@ -67,7 +67,7 @@ describe("SlotSelector", () => {
     });
   });
 
-  it("marks group as indeterminate if some slots are visible", () => {
+  it("marks group as indeterminate if some slots are selected", () => {
     const { groupCheckboxes } = renderSlotSelector(["slot1", "slot3"]);
 
     // The first group should be indeterminate
@@ -75,15 +75,15 @@ describe("SlotSelector", () => {
     expect(groupCheckboxes[0].getAttribute("indeterminate")).toBe("true");
   });
 
-  it("calls onVisibleSlotsChange when an unchecked slot is checked", async () => {
-    const { user, handleVisibleSlotsChange, slotCheckboxes } =
+  it("calls onSelectedSlotsChange when an unchecked slot is checked", async () => {
+    const { user, handleSelectedSlotsChange, slotCheckboxes } =
       renderSlotSelector(["slot1", "slot3"]);
 
     // click the slot2 checkbox
     await user.click(slotCheckboxes[1]);
 
     await waitFor(() =>
-      expect(handleVisibleSlotsChange).toHaveBeenCalledWith([
+      expect(handleSelectedSlotsChange).toHaveBeenCalledWith([
         "slot1",
         "slot3",
         "slot2",
@@ -91,27 +91,27 @@ describe("SlotSelector", () => {
     );
   });
 
-  it("calls onVisibleSlotsChange when a checked slot is unchecked", async () => {
-    const { user, handleVisibleSlotsChange, slotCheckboxes } =
+  it("calls onSelectedSlotsChange when a checked slot is unchecked", async () => {
+    const { user, handleSelectedSlotsChange, slotCheckboxes } =
       renderSlotSelector(["slot1", "slot3"]);
 
     // check the slot1 checkbox
     await user.click(slotCheckboxes[0]);
 
     await waitFor(() =>
-      expect(handleVisibleSlotsChange).toHaveBeenCalledWith(["slot3"]),
+      expect(handleSelectedSlotsChange).toHaveBeenCalledWith(["slot3"]),
     );
   });
 
-  it("calls onVisibleSlotsChange when an unchecked group is checked", async () => {
-    const { user, handleVisibleSlotsChange, groupCheckboxes } =
+  it("calls onSelectedSlotsChange when an unchecked group is checked", async () => {
+    const { user, handleSelectedSlotsChange, groupCheckboxes } =
       renderSlotSelector([]);
 
     // Check the first group
     await user.click(groupCheckboxes[0]);
 
     await waitFor(() =>
-      expect(handleVisibleSlotsChange).toHaveBeenCalledWith([
+      expect(handleSelectedSlotsChange).toHaveBeenCalledWith([
         "slot1",
         "slot2",
         "slot3",
@@ -119,27 +119,27 @@ describe("SlotSelector", () => {
     );
   });
 
-  it("calls onVisibleSlotsChange when an checked group is unchecked", async () => {
-    const { user, handleVisibleSlotsChange, groupCheckboxes } =
+  it("calls onSelectedSlotsChange when an checked group is unchecked", async () => {
+    const { user, handleSelectedSlotsChange, groupCheckboxes } =
       renderSlotSelector(["slot1", "slot2", "slot3"]);
 
     // Uncheck the first group
     await user.click(groupCheckboxes[0]);
 
     await waitFor(() =>
-      expect(handleVisibleSlotsChange).toHaveBeenCalledWith([]),
+      expect(handleSelectedSlotsChange).toHaveBeenCalledWith([]),
     );
   });
 
-  it("calls onVisibleSlotsChange when an indeterminate group is checked", async () => {
-    const { user, handleVisibleSlotsChange, groupCheckboxes } =
+  it("calls onSelectedSlotsChange when an indeterminate group is checked", async () => {
+    const { user, handleSelectedSlotsChange, groupCheckboxes } =
       renderSlotSelector(["slot1", "slot3"]);
 
     // Check the first group
     await user.click(groupCheckboxes[0]);
 
     await waitFor(() =>
-      expect(handleVisibleSlotsChange).toHaveBeenCalledWith([
+      expect(handleSelectedSlotsChange).toHaveBeenCalledWith([
         "slot1",
         "slot3",
         "slot2",
@@ -147,7 +147,7 @@ describe("SlotSelector", () => {
     );
   });
 
-  it("marks always visible slots as disabled", () => {
+  it("marks always selected slots as disabled", () => {
     const { slotCheckboxes } = renderSlotSelector(
       ["slot1", "slot2"],
       ["slot1"],
@@ -158,8 +158,8 @@ describe("SlotSelector", () => {
     expect(slotCheckboxes[0].getAttribute("disabled")).toBe("true");
   });
 
-  it("includes always visible slots in onVisibleSlotsChange call when toggling group", async () => {
-    const { user, handleVisibleSlotsChange, groupCheckboxes } =
+  it("includes always selected slots in onSelectedSlotsChange call when toggling group", async () => {
+    const { user, handleSelectedSlotsChange, groupCheckboxes } =
       renderSlotSelector(["slot1", "slot2", "slot3"], ["slot1"]);
 
     expect(groupCheckboxes[0].getAttribute("checked")).toBe("true");
@@ -168,7 +168,7 @@ describe("SlotSelector", () => {
     await user.click(groupCheckboxes[0]);
 
     await waitFor(() =>
-      expect(handleVisibleSlotsChange).toHaveBeenCalledWith(["slot1"]),
+      expect(handleSelectedSlotsChange).toHaveBeenCalledWith(["slot1"]),
     );
   });
 });
