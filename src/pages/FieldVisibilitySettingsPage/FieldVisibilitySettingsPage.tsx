@@ -14,6 +14,26 @@ import paths from "../../paths";
 import { TEMPLATES } from "../../api";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import SlotSelectorModal from "../../components/SlotSelectorModal/SlotSelectorModal";
+import { useStore } from "../../Store";
+
+interface TemplateItemLabelProps {
+  template: string;
+}
+const TemplateItemLabel: React.FC<TemplateItemLabelProps> = ({ template }) => {
+  const { getHiddenSlotsForSchemaClass } = useStore();
+  const templateInfo = TEMPLATES[template];
+  const hiddenSlots = getHiddenSlotsForSchemaClass(templateInfo.schemaClass);
+  return (
+    <IonLabel>
+      <h3>{templateInfo.displayName}</h3>
+      <p>
+        {hiddenSlots === undefined
+          ? "Not customized"
+          : `${hiddenSlots.length} fields hidden`}
+      </p>
+    </IonLabel>
+  );
+};
 
 const FieldVisibilitySettingsPage: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = React.useState<
@@ -35,11 +55,12 @@ const FieldVisibilitySettingsPage: React.FC = () => {
           Select a template to customize which fields are visible by default.
         </p>
         <IonList className="ion-padding-bottom">
-          {Object.entries(TEMPLATES).map(([key, template]) => (
-            <IonItem key={key} onClick={() => setSelectedTemplate(key)}>
-              <IonLabel>
-                <h3>{template.displayName}</h3>
-              </IonLabel>
+          {Object.keys(TEMPLATES).map((template) => (
+            <IonItem
+              key={template}
+              onClick={() => setSelectedTemplate(template)}
+            >
+              <TemplateItemLabel template={template} />
             </IonItem>
           ))}
         </IonList>
