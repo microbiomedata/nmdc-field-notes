@@ -8,6 +8,8 @@ import { warningOutline } from "ionicons/icons";
 import { useStore } from "../../Store";
 import SlotSelectorModal from "../SlotSelectorModal/SlotSelectorModal";
 
+import styles from "./SampleView.module.css";
+
 function formatSlotValue(value: SampleDataValue) {
   if (value == null) {
     return null;
@@ -33,10 +35,16 @@ const SampleView: React.FC<SampleViewProps> = ({
   validationResults,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const { getHiddenSlotsForSchemaClass } = useStore();
+  const { getHiddenSlotsForSchemaClass, setHiddenSlotsForSchemaClass } =
+    useStore();
+
   const schemaClass = TEMPLATES[packageName].schemaClass;
   const hiddenSlots = getHiddenSlotsForSchemaClass(schemaClass);
   const slotGroups = schemaClass ? groupClassSlots(schema, schemaClass) : [];
+
+  const handleDismiss = () => {
+    setHiddenSlotsForSchemaClass(schemaClass, []);
+  };
 
   if (!sample) {
     return null;
@@ -45,15 +53,21 @@ const SampleView: React.FC<SampleViewProps> = ({
   return (
     <>
       {hiddenSlots === undefined && (
-        <IonButton
-          expand="full"
-          size="small"
-          color="primary"
-          className="ion-no-margin"
-          onClick={() => setIsModalOpen(true)}
-        >
-          Too many fields? Tap to customize list.
-        </IonButton>
+        <IonList className={styles.slotSelectorBanner}>
+          <IonItem lines="none">
+            <IonLabel>Too many fields?</IonLabel>
+            <IonButton
+              slot="end"
+              fill="clear"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Customize List
+            </IonButton>
+            <IonButton slot="end" fill="clear" onClick={handleDismiss}>
+              Dismiss
+            </IonButton>
+          </IonItem>
+        </IonList>
       )}
 
       {slotGroups.map((group) => (
@@ -85,18 +99,16 @@ const SampleView: React.FC<SampleViewProps> = ({
       ))}
 
       {hiddenSlots !== undefined && (
-        <IonButton
-          expand="full"
-          size="small"
-          fill="clear"
-          className="ion-margin-vertical"
-          color="medium"
-          onClick={() => setIsModalOpen(true)}
-        >
-          Not seeing a field you were looking for?
-          <br />
-          Tap here to update field visibility settings.
-        </IonButton>
+        <IonList className="ion-padding-bottom">
+          <IonItem lines="none" onClick={() => setIsModalOpen(true)}>
+            <IonLabel class="ion-text-wrap">
+              <p>
+                Not seeing a field you were looking for? Tap here to update
+                field visibility settings.
+              </p>
+            </IonLabel>
+          </IonItem>
+        </IonList>
       )}
 
       <SlotSelectorModal

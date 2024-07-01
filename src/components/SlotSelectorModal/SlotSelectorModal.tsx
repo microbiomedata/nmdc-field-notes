@@ -15,7 +15,7 @@ import { groupClassSlots } from "../../utils";
 import { TEMPLATES } from "../../api";
 import { useStore } from "../../Store";
 
-import style from "./SlotSelectorModal.module.css";
+import styles from "./SlotSelectorModal.module.css";
 
 export interface SlotSelectorModalProps {
   onDismiss: () => void;
@@ -77,7 +77,7 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
     <IonModal
       isOpen={isOpen}
       onIonModalWillDismiss={onDismiss}
-      className={style.slotSelectorModal}
+      className={styles.slotSelectorModal}
     >
       <IonHeader>
         <IonToolbar>
