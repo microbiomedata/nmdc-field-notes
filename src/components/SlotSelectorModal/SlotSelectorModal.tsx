@@ -5,10 +5,10 @@ import {
   IonContent,
   IonHeader,
   IonModal,
-  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import RequiredMark from "../RequiredMark/RequiredMark";
 import SlotSelector from "../SlotSelector/SlotSelector";
 import { useSubmissionSchema } from "../../queries";
 import { groupClassSlots } from "../../utils";
@@ -95,13 +95,17 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <p className="ion-padding">
-          <IonText>
+        <div className="ion-padding">
+          <p>
             Select the fields you would like to see by default when entering
             metadata in the <b>{templateName} template</b>. These choices can be
             updated any time in Settings.
-          </IonText>
-        </p>
+          </p>
+          <p>
+            <RequiredMark /> fields are required before finalizing a submission
+            with NMDC. Be careful about hiding them here.
+          </p>
+        </div>
         <SlotSelector
           slotGroups={slotGroups}
           alwaysSelectedSlots={["samp_name"]}

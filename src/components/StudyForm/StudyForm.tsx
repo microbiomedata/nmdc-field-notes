@@ -7,6 +7,7 @@ import {
   IonText,
   IonTextarea,
 } from "@ionic/react";
+import RequiredMark from "../RequiredMark/RequiredMark";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import { SubmissionMetadataCreate, TEMPLATES } from "../../api";
 import { Controller, useForm } from "react-hook-form";
@@ -60,7 +61,8 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
                 {...field}
               >
                 <div slot="label">
-                  Name<IonText color="danger">*</IonText>
+                  Name
+                  <RequiredMark />
                 </div>
               </IonInput>
             );
@@ -144,7 +146,8 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
               {...field}
             >
               <div slot="label">
-                Email<IonText color="danger">*</IonText>
+                Email
+                <RequiredMark />
               </div>
             </IonInput>
           )}
@@ -189,7 +192,8 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
                 {...field}
               >
                 <div slot="label">
-                  Template<IonText color="danger">*</IonText>
+                  Template
+                  <RequiredMark />
                 </div>
                 {Object.entries(TEMPLATES).map(([key, template]) => (
                   <IonSelectOption value={key} key={key}>

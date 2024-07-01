@@ -1,5 +1,6 @@
 import React from "react";
 import { SlotGroup } from "../../utils";
+import RequiredMark from "../RequiredMark/RequiredMark";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import { IonCheckbox, IonItem, IonLabel, IonList } from "@ionic/react";
 import { produce } from "immer";
@@ -101,7 +102,10 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
               disabled={alwaysSelectedSlots?.includes(slot.name)}
             >
               <IonLabel>
-                <h3>{slot.title || slot.name}</h3>
+                <h3>
+                  {slot.title || slot.name}
+                  {(slot.required || slot.key) && <RequiredMark />}
+                </h3>
                 <p>{slot.description}</p>
               </IonLabel>
             </IonCheckbox>
