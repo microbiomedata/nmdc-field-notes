@@ -89,8 +89,8 @@ export interface IndexedSampleData extends SampleData {
 // See: https://github.com/microbiomedata/submission-schema/issues/186
 export interface TemplateInfo {
   displayName: string;
-  schemaClass?: string;
-  sampleDataSlot?: string;
+  schemaClass: string;
+  sampleDataSlot: string;
 }
 export const TEMPLATES: Record<string, TemplateInfo> = {
   air: {
