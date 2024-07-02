@@ -9,14 +9,14 @@ import styles from "./SlotSelector.module.css";
 
 export interface SlotSelectorProps {
   slotGroups: SlotGroup[];
-  alwaysSelectedSlots?: string[];
+  disabledSlots?: string[];
   selectedSlots: string[];
   onSelectedSlotsChange?: (selectedSlots: string[]) => void;
 }
 
 const SlotSelector: React.FC<SlotSelectorProps> = ({
   slotGroups,
-  alwaysSelectedSlots,
+  disabledSlots,
   selectedSlots,
   onSelectedSlotsChange,
 }) => {
@@ -43,15 +43,16 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
       produce(selectedSlots, (draft) => {
         if (include) {
           group.slots.forEach((slot) => {
-            if (!draft.includes(slot.name)) {
+            const disabled = disabledSlots?.includes(slot.name);
+            if (!draft.includes(slot.name) && !disabled) {
               draft.push(slot.name);
             }
           });
         } else {
           group.slots.forEach((slot) => {
             const index = draft.indexOf(slot.name);
-            const alwaysSelected = alwaysSelectedSlots?.includes(slot.name);
-            if (index >= 0 && !alwaysSelected) {
+            const disabled = disabledSlots?.includes(slot.name);
+            if (index >= 0 && !disabled) {
               draft.splice(index, 1);
             }
           });
@@ -61,17 +62,25 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
   };
 
   const groupState = (slotGroup: SlotGroup) => {
-    const state = { checked: false, indeterminate: false };
-    if (slotGroup.slots.every((slot) => selectedSlots.includes(slot.name))) {
-      state.checked = true;
-    } else if (
-      slotGroup.slots.every((slot) => !selectedSlots.includes(slot.name))
-    ) {
-      state.checked = false;
-    } else {
-      state.indeterminate = true;
-    }
-    return state;
+    // The group is checked if all the non-disabled slots are selected
+    const checked = slotGroup.slots.every(
+      (slot) =>
+        selectedSlots.includes(slot.name) || disabledSlots?.includes(slot.name),
+    );
+    // These are the slots that are selected, whether they are disabled or not
+    const selectedInGroup = slotGroup.slots.filter((slot) =>
+      selectedSlots.includes(slot.name),
+    );
+    // The group is indeterminate if some but not all slots are selected, regardless
+    // of disabled status
+    const indeterminate =
+      selectedInGroup.length > 0 &&
+      selectedInGroup.length < slotGroup.slots.length;
+
+    return {
+      checked,
+      indeterminate,
+    };
   };
 
   return slotGroups.map((group) => (
@@ -99,7 +108,7 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
               aria-label={`Slot/${slot.name}`}
               checked={selectedSlots.includes(slot.name)}
               onIonChange={(e) => handleSlotChange(slot.name, e.detail.checked)}
-              disabled={alwaysSelectedSlots?.includes(slot.name)}
+              disabled={disabledSlots?.includes(slot.name)}
             >
               <IonLabel>
                 <h3>

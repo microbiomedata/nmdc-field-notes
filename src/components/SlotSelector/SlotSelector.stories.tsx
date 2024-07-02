@@ -31,10 +31,10 @@ export const Default: Story = {
   },
 };
 
-export const WithAlwaysSelectedSlot: Story = {
+export const WithDisabledSlots: Story = {
   args: {
     slotGroups,
-    alwaysSelectedSlots: ["slot1"],
+    disabledSlots: ["slot1", "slot4"],
     selectedSlots: ["slot1", "slot3", "slot7", "slot8", "slot9"],
   },
   render: function Render(args) {

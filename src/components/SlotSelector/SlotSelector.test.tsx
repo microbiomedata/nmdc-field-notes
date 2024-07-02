@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event";
 
 function renderSlotSelector(
   selectedSlots: string[],
-  alwaysSelectedSlots: string[] = [],
+  disabledSlots: string[] = [],
 ) {
   const user = userEvent.setup();
   const handleSelectedSlotsChange = vi.fn();
@@ -15,7 +15,7 @@ function renderSlotSelector(
     <SlotSelector
       slotGroups={slotGroups}
       selectedSlots={selectedSlots}
-      alwaysSelectedSlots={alwaysSelectedSlots}
+      disabledSlots={disabledSlots}
       onSelectedSlotsChange={handleSelectedSlotsChange}
     />,
   );
@@ -147,18 +147,18 @@ describe("SlotSelector", () => {
     );
   });
 
-  it("marks always selected slots as disabled", () => {
+  it("marks disabled slots as disabled", () => {
     const { slotCheckboxes } = renderSlotSelector(
       ["slot1", "slot2"],
       ["slot1"],
     );
 
-    // The first slot checkbox should be disabled
+    // The first slot checkbox should be checked and disabled
     expect(slotCheckboxes[0].getAttribute("checked")).toBe("true");
     expect(slotCheckboxes[0].getAttribute("disabled")).toBe("true");
   });
 
-  it("includes always selected slots in onSelectedSlotsChange call when toggling group", async () => {
+  it("includes checked disabled slots in onSelectedSlotsChange call when toggling group", async () => {
     const { user, handleSelectedSlotsChange, groupCheckboxes } =
       renderSlotSelector(["slot1", "slot2", "slot3"], ["slot1"]);
 
@@ -169,6 +169,23 @@ describe("SlotSelector", () => {
 
     await waitFor(() =>
       expect(handleSelectedSlotsChange).toHaveBeenCalledWith(["slot1"]),
+    );
+  });
+
+  it("does not include un-checked disabled slots in onSelectedSlotsChange call when toggling group", async () => {
+    const { user, handleSelectedSlotsChange, groupCheckboxes } =
+      renderSlotSelector([], ["slot1"]);
+
+    expect(groupCheckboxes[0].getAttribute("checked")).toBe("false");
+
+    // Uncheck the first group checkbox
+    await user.click(groupCheckboxes[0]);
+
+    await waitFor(() =>
+      expect(handleSelectedSlotsChange).toHaveBeenCalledWith([
+        "slot2",
+        "slot3",
+      ]),
     );
   });
 });

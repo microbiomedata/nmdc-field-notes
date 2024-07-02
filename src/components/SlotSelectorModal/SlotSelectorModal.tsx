@@ -108,7 +108,7 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
         </div>
         <SlotSelector
           slotGroups={slotGroups}
-          alwaysSelectedSlots={["samp_name"]}
+          disabledSlots={["samp_name"]}
           selectedSlots={selectedSlots}
           onSelectedSlotsChange={setSelectedSlots}
         />
