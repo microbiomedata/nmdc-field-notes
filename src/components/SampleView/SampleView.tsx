@@ -98,7 +98,7 @@ const SampleView: React.FC<SampleViewProps> = ({
         </React.Fragment>
       ))}
 
-      {hiddenSlots !== undefined && (
+      {hiddenSlots !== undefined && hiddenSlots.length > 0 && (
         <IonList className="ion-padding-bottom">
           <IonItem lines="none" onClick={() => setIsModalOpen(true)}>
             <IonLabel class="ion-text-wrap">
