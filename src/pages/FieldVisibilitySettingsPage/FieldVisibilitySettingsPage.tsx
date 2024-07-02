@@ -15,6 +15,7 @@ import { TEMPLATES } from "../../api";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import SlotSelectorModal from "../../components/SlotSelectorModal/SlotSelectorModal";
 import { useStore } from "../../Store";
+import Pluralize from "../../components/Pluralize/Pluralize";
 
 interface TemplateItemLabelProps {
   template: string;
@@ -27,9 +28,14 @@ const TemplateItemLabel: React.FC<TemplateItemLabelProps> = ({ template }) => {
     <IonLabel>
       <h3>{templateInfo.displayName}</h3>
       <p>
-        {hiddenSlots === undefined
-          ? "Not customized"
-          : `${hiddenSlots.length} fields hidden`}
+        {hiddenSlots === undefined ? (
+          "Not customized"
+        ) : (
+          <>
+            <Pluralize count={hiddenSlots.length} singular="field" showCount />{" "}
+            hidden
+          </>
+        )}
       </p>
     </IonLabel>
   );
