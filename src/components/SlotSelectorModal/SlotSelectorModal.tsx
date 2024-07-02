@@ -47,6 +47,10 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
     [slotGroups],
   );
 
+  // This translates a list of hidden slots from the store into a list of selected slots for the
+  // SlotSelector component. If there are no hidden slots, all slots are selected by default. The
+  // isOpen state is used to reset the selected slots when the modal is closed (i.e. don't keep
+  // changes if the user cancels out of the modal).
   useEffect(() => {
     if (isOpen) {
       const hiddenSlotsFromStore =
@@ -63,6 +67,8 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
     }
   }, [getHiddenSlotsForSchemaClass, isOpen, schemaClassName, allSlotNames]);
 
+  // When the user taps the Save button, translate the selected slots back into a list of hidden
+  // slots and save them to the store. Then close the modal.
   const handleSave = () => {
     if (schemaClassName !== undefined) {
       const hiddenSlots = allSlotNames.filter(

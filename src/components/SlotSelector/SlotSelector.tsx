@@ -20,13 +20,15 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
   selectedSlots,
   onSelectedSlotsChange,
 }) => {
-  const handleSlotChange = (slotName: string, include: boolean) => {
+  const handleSlotChange = (slotName: string, checked: boolean) => {
     if (typeof onSelectedSlotsChange !== "function") {
       return;
     }
+    // When an individual slot is toggled, produce a new list of selected slots by either adding
+    // or removing the slot name from the existing list and call the onSelectedSlotsChange callback
     onSelectedSlotsChange(
       produce(selectedSlots, (draft) => {
-        if (include) {
+        if (checked) {
           draft.push(slotName);
         } else {
           draft.splice(draft.indexOf(slotName), 1);
@@ -35,13 +37,18 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
     );
   };
 
-  const handleGroupChange = (group: SlotGroup, include: boolean) => {
+  const handleGroupChange = (group: SlotGroup, checked: boolean) => {
     if (typeof onSelectedSlotsChange !== "function") {
       return;
     }
+    // When a group is toggled, produce a new list of selected slots by either adding or removing
+    // all slots in the group from the existing list. Only slots that are not already included in
+    // the list are added, and only slots that are included are removed. Disabled slots are never
+    // added or removed. Call the onSelectedSlotsChange callback with the new list of selected
+    // slots.
     onSelectedSlotsChange(
       produce(selectedSlots, (draft) => {
-        if (include) {
+        if (checked) {
           group.slots.forEach((slot) => {
             const disabled = disabledSlots?.includes(slot.name);
             if (!draft.includes(slot.name) && !disabled) {
