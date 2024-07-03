@@ -52,7 +52,7 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
   // isOpen state is used to reset the selected slots when the modal is closed (i.e. don't keep
   // changes if the user cancels out of the modal).
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && schemaClassName !== undefined) {
       const hiddenSlotsFromStore =
         getHiddenSlotsForSchemaClass(schemaClassName);
       if (hiddenSlotsFromStore === undefined) {

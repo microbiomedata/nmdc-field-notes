@@ -31,7 +31,7 @@ interface StoreContextValue {
   colorPaletteMode: ColorPaletteMode | null;
   setColorPaletteMode: (colorPaletteMode: ColorPaletteMode) => void;
 
-  getHiddenSlotsForSchemaClass: (className?: string) => string[] | undefined;
+  getHiddenSlotsForSchemaClass: (className: string) => string[] | undefined;
   setHiddenSlotsForSchemaClass: (
     className: string,
     hiddenSlots: string[],
@@ -178,12 +178,14 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   /**
-   * Returns the hidden slots for the specified schema class.
+   * Returns a list of hidden slot names for the specified schema class or undefined if the given
+   * class name is not in the hidden slots map yet. The implication is that `undefined` means the
+   * user has not made any choice about which slots to hide for this schema class yet. Whereas an
+   * empty array means the user has made a choice to hide no slots for this schema class.
    */
-  function getHiddenSlotsForSchemaClass(className?: string) {
-    if (className === undefined) {
-      return undefined;
-    }
+  function getHiddenSlotsForSchemaClass(
+    className: string,
+  ): string[] | undefined {
     return hiddenSlots[className];
   }
 
