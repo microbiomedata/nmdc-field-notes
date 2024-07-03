@@ -58,7 +58,8 @@ const FieldVisibilitySettingsPage: React.FC = () => {
       </IonHeader>
       <IonContent>
         <p className="ion-padding">
-          Select a template to customize which fields are visible by default.
+          Select a template to customize which fields are visible when viewing
+          and editing sample metadata for that template.
         </p>
         <IonList className="ion-padding-bottom">
           {Object.keys(TEMPLATES).map((template) => (

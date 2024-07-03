@@ -103,9 +103,9 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
       <IonContent>
         <div className="ion-padding">
           <p>
-            Select the fields you would like to see by default when entering
-            metadata in the <b>{templateName} template</b>. These choices can be
-            updated any time in Settings.
+            Select the fields you would like to see when viewing and editing
+            sample metadata for the <b>{templateName} template</b>. These
+            choices can be updated any time in Settings.
           </p>
           <p>
             <RequiredMark /> fields are required before finalizing a submission
