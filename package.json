@@ -81,6 +81,7 @@
     "jsdom": "^22.1.0",
     "madge": "^7.0.0",
     "msw": "^2.1.5",
+    "postcss-nesting": "^12.1.5",
     "prettier": "3.2.1",
     "storybook": "^7.6.8",
     "terser": "^5.4.0",

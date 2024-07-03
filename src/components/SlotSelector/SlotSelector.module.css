@@ -1,0 +1,7 @@
+ion-checkbox.slotCheckbox::part(label) {
+  display: -webkit-box;
+  line-clamp: 5;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}

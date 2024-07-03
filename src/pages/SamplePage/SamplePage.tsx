@@ -196,9 +196,9 @@ const SamplePage: React.FC = () => {
           <>
             <SampleView
               onSlotClick={handleSlotClick}
+              packageName={packageName!}
               sample={sample}
               schema={schema.data.schema}
-              schemaClass={schemaClassName}
               validationResults={validationResults?.[sampleIndexInt]}
             />
             <SampleSlotEditModal

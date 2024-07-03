@@ -12,24 +12,35 @@ import {
   ColorPaletteMode,
   isValidColorPaletteMode,
 } from "./theme/colorPalette";
+import { produce } from "immer";
 
 enum StorageKey {
   REFRESH_TOKEN = "refreshToken",
   COLOR_PALETTE_MODE = "colorPaletteMode",
+  HIDDEN_SLOTS = "hiddenSlots",
 }
 
 interface StoreContextValue {
   store: Storage | null;
+
   isLoggedIn: boolean;
   loggedInUser: User | null;
   login: (accessToken: string, refreshToken: string) => Promise<void>;
   logout: () => Promise<void>;
+
   colorPaletteMode: ColorPaletteMode | null;
   setColorPaletteMode: (colorPaletteMode: ColorPaletteMode) => void;
+
+  getHiddenSlotsForSchemaClass: (className: string) => string[] | undefined;
+  setHiddenSlotsForSchemaClass: (
+    className: string,
+    hiddenSlots: string[],
+  ) => void;
 }
 
 const StoreContext = createContext<StoreContextValue>({
   store: null,
+
   isLoggedIn: false,
   loggedInUser: null,
   login: () => {
@@ -38,9 +49,17 @@ const StoreContext = createContext<StoreContextValue>({
   logout: () => {
     throw new Error("logout called outside of provider");
   },
+
   colorPaletteMode: null,
   setColorPaletteMode: () => {
     throw new Error("setColorPaletteMode called outside of provider");
+  },
+
+  getHiddenSlotsForSchemaClass: () => {
+    throw new Error("getHiddenSlotsForSchemaClass called outside of provider");
+  },
+  setHiddenSlotsForSchemaClass: () => {
+    throw new Error("setHiddenSlotsForSchemaClass called outside of provider");
   },
 });
 
@@ -50,6 +69,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
+  const [hiddenSlots, setHiddenSlots] = useState<Record<string, string[]>>({});
 
   // Initialize the store.
   useEffect(() => {
@@ -88,6 +108,12 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         : ColorPaletteMode.System;
       setColorPaletteMode(sanitizedColorPaletteMode);
       applyColorPalette(sanitizedColorPaletteMode);
+
+      // If browser storage contains hidden slots, load them into the Context.
+      const hiddenSlotsFromStorage = await storage.get(StorageKey.HIDDEN_SLOTS);
+      if (hiddenSlotsFromStorage) {
+        setHiddenSlots(hiddenSlotsFromStorage);
+      }
 
       // This should be done last so that we can block rendering until in-memory state is fully
       // hydrated from the store
@@ -151,16 +177,55 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   }
 
+  /**
+   * Returns a list of hidden slot names for the specified schema class or undefined if the given
+   * class name is not in the hidden slots map yet. The implication is that `undefined` means the
+   * user has not made any choice about which slots to hide for this schema class yet. Whereas an
+   * empty array means the user has made a choice to hide no slots for this schema class.
+   */
+  function getHiddenSlotsForSchemaClass(
+    className: string,
+  ): string[] | undefined {
+    return hiddenSlots[className];
+  }
+
+  /**
+   * Updates the hidden slots for the specified schema class in the Context and the store.
+   */
+  async function setHiddenSlotsForSchemaClass(
+    className: string,
+    slotNames: string[],
+  ) {
+    const updatedHiddenSlots = produce(hiddenSlots, (draft) => {
+      draft[className] = slotNames;
+    });
+
+    setHiddenSlots(updatedHiddenSlots);
+    if (store === null) {
+      console.warn(
+        "setHiddenSlotsForSchemaClass called before storage initialization",
+      );
+      return;
+    } else {
+      return store.set(StorageKey.HIDDEN_SLOTS, updatedHiddenSlots);
+    }
+  }
+
   return (
     <StoreContext.Provider
       value={{
         store,
+
         isLoggedIn,
         loggedInUser,
         login,
         logout,
+
         colorPaletteMode: colorPaletteMode,
         setColorPaletteMode: _setColorPaletteMode,
+
+        getHiddenSlotsForSchemaClass,
+        setHiddenSlotsForSchemaClass,
       }}
     >
       {children}
