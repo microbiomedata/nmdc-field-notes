@@ -100,7 +100,12 @@ const SampleView: React.FC<SampleViewProps> = ({
 
       {hiddenSlots !== undefined && hiddenSlots.length > 0 && (
         <IonList className="ion-padding-bottom">
-          <IonItem lines="none" onClick={() => setIsModalOpen(true)}>
+          <IonItem
+            lines="none"
+            button
+            detail={false}
+            onClick={() => setIsModalOpen(true)}
+          >
             <IonLabel class="ion-text-wrap">
               <p>
                 Not seeing a field you were looking for? Tap here to update
