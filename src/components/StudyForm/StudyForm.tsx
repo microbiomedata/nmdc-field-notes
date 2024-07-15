@@ -134,6 +134,7 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
                   title={"Use my name"}
                   aria-label={"Use my name"}
                   onClick={() => field.onChange(loggedInUser.name)}
+                  disabled={field.value === loggedInUser.name}
                 >
                   <IonIcon
                     slot={"icon-only"}
@@ -198,6 +199,7 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
                   title={"Use my ORCID iD"}
                   aria-label={"Use my ORCID iD"}
                   onClick={() => field.onChange(loggedInUser.orcid)}
+                  disabled={field.value === loggedInUser.orcid}
                 >
                   <IonIcon
                     slot={"icon-only"}
