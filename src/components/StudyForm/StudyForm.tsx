@@ -133,11 +133,7 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
                   slot={"end"}
                   title={"Use my name"}
                   aria-label={"Use my name"}
-                  onClick={() => {
-                    // TODO: Populate the field with the logged-in user's name.
-                    const { name } = loggedInUser;
-                    alert(`TODO: Populate field with ${name}`);
-                  }}
+                  onClick={() => field.onChange(loggedInUser.name)}
                 >
                   <IonIcon
                     slot={"icon-only"}
@@ -201,11 +197,7 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
                   slot={"end"}
                   title={"Use my ORCID iD"}
                   aria-label={"Use my ORCID iD"}
-                  onClick={() => {
-                    // TODO: Populate the field with the logged-in user's ORCID iD.
-                    const { orcid } = loggedInUser;
-                    alert(`TODO: Populate field with ${orcid}`);
-                  }}
+                  onClick={() => field.onChange(loggedInUser.orcid)}
                 >
                   <IonIcon
                     slot={"icon-only"}
