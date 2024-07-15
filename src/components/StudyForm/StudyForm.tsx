@@ -1,6 +1,7 @@
 import React from "react";
 import {
   IonButton,
+  IonIcon,
   IonInput,
   IonSelect,
   IonSelectOption,
@@ -11,6 +12,8 @@ import RequiredMark from "../RequiredMark/RequiredMark";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import { SubmissionMetadataCreate, TEMPLATES } from "../../api";
 import { Controller, useForm } from "react-hook-form";
+import { useStore } from "../../Store";
+import { colorWand as autoFill } from "ionicons/icons";
 
 import styles from "./StudyForm.module.css";
 
@@ -34,6 +37,8 @@ const EMAIL_REGEX =
   /^(?!\.)(?!.*\.\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
 
 const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
+  const { loggedInUser } = useStore();
+
   const { handleSubmit, control, formState, setValue } =
     useForm<SubmissionMetadataCreate>({
       defaultValues: submission,
@@ -120,7 +125,26 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
               onIonBlur={field.onBlur}
               onIonInput={field.onChange}
               {...field}
-            />
+            >
+              {/* If the user is logged in, show a button they can press to use their name. */}
+              {loggedInUser !== null ? (
+                <IonButton
+                  fill={"clear"}
+                  slot={"end"}
+                  title={"Use my name"}
+                  aria-label={"Use my name"}
+                  onClick={() => setValue(field.name, loggedInUser.name)}
+                  disabled={field.value === loggedInUser.name}
+                >
+                  <IonIcon
+                    slot={"icon-only"}
+                    icon={autoFill}
+                    color={"primary"}
+                    aria-hidden={"true"}
+                  />
+                </IonButton>
+              ) : null}
+            </IonInput>
           )}
         />
 
@@ -166,7 +190,26 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
               onIonBlur={field.onBlur}
               onIonInput={field.onChange}
               {...field}
-            />
+            >
+              {/* If the user is logged in, show a button they can press to use their ORCID iD. */}
+              {loggedInUser !== null ? (
+                <IonButton
+                  fill={"clear"}
+                  slot={"end"}
+                  title={"Use my ORCID iD"}
+                  aria-label={"Use my ORCID iD"}
+                  onClick={() => setValue(field.name, loggedInUser.orcid)}
+                  disabled={field.value === loggedInUser.orcid}
+                >
+                  <IonIcon
+                    slot={"icon-only"}
+                    icon={autoFill}
+                    color={"primary"}
+                    aria-hidden={"true"}
+                  />
+                </IonButton>
+              ) : null}
+            </IonInput>
           )}
         />
       </div>
