@@ -200,7 +200,14 @@ export interface TokenResponse {
   expires: number;
 }
 
-class ApiError extends Error {
+export interface LockOperationResult {
+  success: boolean;
+  message: string;
+  locked_by?: User | null;
+  lock_updated?: string | null;
+}
+
+export class ApiError extends Error {
   public readonly response: Response;
 
   constructor(message: string, response: Response) {
@@ -345,6 +352,24 @@ class NmdcServerClient extends FetchClient {
     return this.fetch(`/api/metadata_submission/${id}`, {
       method: "DELETE",
     });
+  }
+
+  async getSubmissionLock(id: string) {
+    return this.fetchJson<LockOperationResult>(
+      `/api/metadata_submission/${id}/lock`,
+      {
+        method: "PUT",
+      },
+    );
+  }
+
+  async releaseSubmissionLock(id: string) {
+    return this.fetchJson<LockOperationResult>(
+      `/api/metadata_submission/${id}/unlock`,
+      {
+        method: "PUT",
+      },
+    );
   }
 
   async getCurrentUser() {

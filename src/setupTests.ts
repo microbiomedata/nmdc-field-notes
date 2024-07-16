@@ -3,7 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom/extend-expect";
-import { server } from "./mocks/server";
+import { resetFixtureData, server } from "./mocks/server";
 import { setupIonicReact } from "@ionic/react";
 
 setupIonicReact();
@@ -24,5 +24,8 @@ beforeAll(() =>
     onUnhandledRequest: "error",
   }),
 );
-afterEach(() => server.resetHandlers());
+afterEach(() => {
+  server.resetHandlers();
+  resetFixtureData();
+});
 afterAll(() => server.close());

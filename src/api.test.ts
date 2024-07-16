@@ -44,6 +44,18 @@ test("deleteSubmission", async () => {
   // Nothing to explicitly test here, just that it doesn't throw an error
 });
 
+test("getSubmissionLock", async () => {
+  const submissionId = "00000000-0000-0000-0000-000000000001";
+  const lock = await nmdcServerClient.getSubmissionLock(submissionId);
+  expect(lock.success).toBeTruthy();
+});
+
+test("releaseSubmissionLock", async () => {
+  const submissionId = "00000000-0000-0000-0000-000000000001";
+  const lock = await nmdcServerClient.releaseSubmissionLock(submissionId);
+  expect(lock.success).toBeTruthy();
+});
+
 test("getCurrentUser", async () => {
   const user = await nmdcServerClient.getCurrentUser();
   expect(user.name).toEqual("Test Testerson");
