@@ -7,12 +7,15 @@ import {
   IonHeader,
   IonIcon,
   IonItem,
+  IonLabel,
   IonList,
   IonPage,
   IonPopover,
   IonTitle,
   useIonAlert,
   useIonRouter,
+  useIonViewDidLeave,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { useParams } from "react-router";
 import paths from "../../paths";
@@ -26,6 +29,8 @@ import { produce } from "immer";
 import Validator, { ValidationResults } from "../../Validator";
 import { ellipsisHorizontal, ellipsisVertical } from "ionicons/icons";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
+import { useStore } from "../../Store";
+import Banner from "../../components/Banner/Banner";
 
 interface SamplePageParams {
   submissionId: string;
@@ -33,6 +38,7 @@ interface SamplePageParams {
 }
 
 const SamplePage: React.FC = () => {
+  const { loggedInUser } = useStore();
   const schema = useSubmissionSchema();
   const router = useIonRouter();
   const [presentAlert] = useIonAlert();
@@ -41,7 +47,12 @@ const SamplePage: React.FC = () => {
     React.useState<ValidationResults>();
   const { submissionId, sampleIndex } = useParams<SamplePageParams>();
   const sampleIndexInt = parseInt(sampleIndex);
-  const { query: submission, updateMutation } = useSubmission(submissionId);
+  const {
+    query: submission,
+    updateMutation,
+    lockMutation,
+    unlockMutation,
+  } = useSubmission(submissionId);
   const sample = useMemo(
     () => getSubmissionSample(submission.data, sampleIndexInt),
     [submission.data, sampleIndexInt],
@@ -64,6 +75,11 @@ const SamplePage: React.FC = () => {
     validator.useTargetClass(schemaClassName);
     return validator;
   }, [schema.data?.schema, schemaClassName]);
+
+  const loggedInUserCanEdit =
+    loggedInUser &&
+    (submission.data?.locked_by === null ||
+      submission.data?.locked_by?.id === loggedInUser.id);
 
   const handleSlotClick = (slot: SlotDefinition) => {
     setModalSlot(slot);
@@ -121,6 +137,16 @@ const SamplePage: React.FC = () => {
       }),
     );
   };
+
+  useIonViewWillEnter(() => {
+    lockMutation.mutate(submissionId);
+  });
+
+  useIonViewDidLeave(() => {
+    if (loggedInUserCanEdit) {
+      unlockMutation.mutate(submissionId);
+    }
+  });
 
   useEffect(() => {
     if (!validator || !submission.data) {
@@ -186,12 +212,27 @@ const SamplePage: React.FC = () => {
         >
           <IonContent>
             <IonList lines="none">
-              <IonItem button detail={false} onClick={handleDeleteInitiate}>
+              <IonItem
+                button
+                detail={false}
+                disabled={!loggedInUserCanEdit}
+                onClick={handleDeleteInitiate}
+              >
                 Delete Sample
               </IonItem>
             </IonList>
           </IonContent>
         </IonPopover>
+
+        {!loggedInUserCanEdit && (
+          <Banner color="warning">
+            <IonLabel>
+              Editing is disabled because this sample is currently being edited
+              by {submission.data?.locked_by?.name || "unknown user"}
+            </IonLabel>
+          </Banner>
+        )}
+
         {schema.data && (
           <>
             <SampleView
@@ -203,6 +244,7 @@ const SamplePage: React.FC = () => {
             />
             <SampleSlotEditModal
               defaultValue={modalSlot && sample?.[modalSlot.name]}
+              disabled={!loggedInUserCanEdit}
               getSlotValue={getSlotValue}
               goldEcosystemTree={schema.data.goldEcosystemTree}
               onCancel={() => setModalSlot(null)}
