@@ -13,6 +13,8 @@ import {
   SubmissionMetadata,
   nmdcServerClient,
   SubmissionMetadataCreate,
+  LockOperationResult,
+  ApiError,
 } from "./api";
 import { produce } from "immer";
 
@@ -28,6 +30,10 @@ export const submissionKeys = {
   detail: (id: string) => [...submissionKeys.details(), id],
   deletes: () => [...submissionKeys.details(), "delete"],
   delete: (id: string) => [...submissionKeys.deletes(), id],
+  locks: () => [...submissionKeys.details(), "lock"],
+  lock: (id: string) => [...submissionKeys.locks(), id],
+  unlocks: () => [...submissionKeys.details(), "unlock"],
+  unlock: (id: string) => [...submissionKeys.unlocks(), id],
   schemas: () => ["schemas"],
   submissionSchema: () => [...submissionKeys.schemas(), "submission_schema"],
 };
@@ -55,6 +61,22 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
         queryKey: submissionKeys.delete(id),
       });
       return nmdcServerClient.deleteSubmission(id);
+    },
+  });
+  queryClient.setMutationDefaults(submissionKeys.locks(), {
+    mutationFn: async (id: string) => {
+      await queryClient.cancelQueries({
+        queryKey: submissionKeys.lock(id),
+      });
+      return nmdcServerClient.getSubmissionLock(id);
+    },
+  });
+  queryClient.setMutationDefaults(submissionKeys.unlocks(), {
+    mutationFn: async (id: string) => {
+      await queryClient.cancelQueries({
+        queryKey: submissionKeys.unlock(id),
+      });
+      return nmdcServerClient.releaseSubmissionLock(id);
     },
   });
 }
@@ -117,6 +139,23 @@ export function useSubmission(id: string) {
         }
       }),
     );
+  };
+
+  const updateLockStatusForSubmission = (
+    id: string,
+    lock: Partial<LockOperationResult>,
+  ) => {
+    const submission = queryClient.getQueryData<SubmissionMetadata>(
+      submissionKeys.detail(id),
+    );
+    if (!submission) {
+      return;
+    }
+    const updated = produce(submission, (draft) => {
+      draft.locked_by = lock.locked_by;
+      draft.lock_updated = lock.lock_updated || undefined;
+    });
+    updateSubmissionInQueryData(updated);
   };
 
   const query = useQuery({
@@ -189,10 +228,49 @@ export function useSubmission(id: string) {
     },
   });
 
+  // The lock mutation is used to acquire a lock on a submission. This should be done before
+  // updates to a submission. If a lock is not acquired before updating, the subsequent updates
+  // may fail.
+  const lockMutation = useMutation<LockOperationResult, DefaultError, string>({
+    mutationKey: submissionKeys.lock(id),
+    onSuccess: (data) => {
+      // If the lock operation was successful, update the submission data in the cache
+      // with the new lock information.
+      if (!data.success) {
+        return;
+      }
+      updateLockStatusForSubmission(id, data);
+    },
+    onError: async (error) => {
+      if (error instanceof ApiError && error.response.status === 409) {
+        // If the lock operation failed due to a conflict, the submission is already locked.
+        // The lock information is included in the error response, so update the submission
+        // data in the cache with the lock information.
+        const body = (await error.response.json()) as LockOperationResult;
+        updateLockStatusForSubmission(id, body);
+      }
+    },
+  });
+
+  // The unlock mutation is used to release a lock on a submission.
+  const unlockMutation = useMutation<LockOperationResult, DefaultError, string>(
+    {
+      mutationKey: submissionKeys.unlock(id),
+      onSettled: () => {
+        updateLockStatusForSubmission(id, {
+          locked_by: null,
+          lock_updated: null,
+        });
+      },
+    },
+  );
+
   return {
     query,
     updateMutation,
     deleteMutation,
+    lockMutation,
+    unlockMutation,
   };
 }
 

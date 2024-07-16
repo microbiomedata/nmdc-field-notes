@@ -13,7 +13,12 @@ import {
   useSubmissionList,
 } from "./queries";
 import { produce } from "immer";
-import { patchMetadataSubmissionError, server, delay } from "./mocks/server";
+import {
+  patchMetadataSubmissionError,
+  server,
+  delay,
+  acquireLockConflict,
+} from "./mocks/server";
 import { initSubmission } from "./data";
 
 interface TestWrapperProps {
@@ -38,6 +43,7 @@ const createWrapper = () => {
 };
 
 const TEST_ID_1 = "00000000-0000-0000-0000-000000000001";
+const TEST_ID_2 = "00000000-0000-0000-0000-000000000002";
 
 test("useCurrentUser should return data from the query", async () => {
   const wrapper = createWrapper();
@@ -272,6 +278,63 @@ test("useSubmission should delete submission", async () => {
       (submission) => submission.id === TEST_ID_1,
     ),
   ).toBeUndefined();
+});
+
+test("useSubmission should update lock status on successful lock acquisition", async () => {
+  const wrapper = createWrapper();
+
+  const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
+  await waitFor(() => expect(result.current.query.isFetching).toBe(false));
+
+  // Ensure that the submission is not already locked
+  expect(result.current.query.data?.locked_by).toBeNull();
+
+  // Attempt to acquire a lock on the submission
+  act(() => result.current.lockMutation.mutate(TEST_ID_1));
+
+  // Verify that the mutation completes successfully and that the lock information is updated
+  await waitFor(() => expect(result.current.lockMutation.isSuccess).toBe(true));
+  expect(result.current.query.data?.locked_by).toBeDefined();
+  expect(result.current.query.data?.locked_by?.name).toBe("Test Testerson");
+});
+
+test("useSubmission should update lock status on lock conflict", async () => {
+  server.use(acquireLockConflict);
+
+  const wrapper = createWrapper();
+
+  const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
+  await waitFor(() => expect(result.current.query.isFetching).toBe(false));
+
+  // Ensure that the submission is not already locked
+  expect(result.current.query.data?.locked_by).toBeNull();
+
+  // Attempt to acquire a lock on the submission
+  act(() => result.current.lockMutation.mutate(TEST_ID_1));
+
+  // Verify that the request failed due to a lock conflict and that the lock information is updated
+  await waitFor(() => expect(result.current.lockMutation.isError).toBe(true));
+  expect(result.current.query.data?.locked_by).toBeDefined();
+  expect(result.current.query.data?.locked_by?.name).toBe("Lock Lockerson");
+});
+
+test("useSubmission should release a lock", async () => {
+  const wrapper = createWrapper();
+
+  const { result } = renderHook(() => useSubmission(TEST_ID_2), { wrapper });
+  await waitFor(() => expect(result.current.query.isFetching).toBe(false));
+
+  // Ensure that the submission is already locked
+  expect(result.current.query.data?.locked_by).toBeDefined();
+
+  // Attempt to release the lock on the submission
+  act(() => result.current.unlockMutation.mutate(TEST_ID_2));
+
+  // Verify that the mutation completes successfully and that the lock information is updated
+  await waitFor(() =>
+    expect(result.current.unlockMutation.isSuccess).toBe(true),
+  );
+  expect(result.current.query.data?.locked_by).toBeNull();
 });
 
 test("useSubmissionCreate should create submission", async () => {
