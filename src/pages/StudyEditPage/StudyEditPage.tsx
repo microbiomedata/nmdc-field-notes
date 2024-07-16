@@ -141,8 +141,8 @@ const StudyEditPage: React.FC = () => {
         {!lockMutation.isPending && !loggedInUserCanEdit && (
           <Banner color="warning">
             <IonLabel>
-              Editing is disabled because study is currently being edited by{" "}
-              {submission.data?.locked_by?.name || "unknown user"}
+              Editing is disabled because this study is currently being edited
+              by {submission.data?.locked_by?.name || "unknown user"}
             </IonLabel>
           </Banner>
         )}
