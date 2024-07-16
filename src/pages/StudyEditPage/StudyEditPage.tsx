@@ -7,6 +7,7 @@ import {
   IonHeader,
   IonIcon,
   IonItem,
+  IonLabel,
   IonList,
   IonPage,
   IonPopover,
@@ -15,6 +16,8 @@ import {
   useIonAlert,
   useIonRouter,
   useIonToast,
+  useIonViewDidLeave,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { useParams } from "react-router";
 import paths from "../../paths";
@@ -27,6 +30,8 @@ import {
   ellipsisVertical,
 } from "ionicons/icons";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
+import { useStore } from "../../Store";
+import Banner from "../../components/Banner/Banner";
 
 interface StudyEditPageParams {
   submissionId: string;
@@ -41,7 +46,25 @@ const StudyEditPage: React.FC = () => {
     query: submission,
     updateMutation,
     deleteMutation,
+    lockMutation,
+    unlockMutation,
   } = useSubmission(submissionId);
+  const { loggedInUser } = useStore();
+
+  const loggedInUserCanEdit =
+    loggedInUser &&
+    (submission.data?.locked_by === null ||
+      submission.data?.locked_by?.id === loggedInUser.id);
+
+  useIonViewWillEnter(() => {
+    lockMutation.mutate(submissionId);
+  });
+
+  useIonViewDidLeave(() => {
+    if (loggedInUserCanEdit) {
+      unlockMutation.mutate(submissionId);
+    }
+  });
 
   const handleSave = async (submission: SubmissionMetadataCreate) => {
     updateMutation.mutate(submission as SubmissionMetadata, {
@@ -103,24 +126,45 @@ const StudyEditPage: React.FC = () => {
         >
           <IonContent>
             <IonList lines="none">
-              <IonItem button detail={false} onClick={handleDeleteInitiate}>
+              <IonItem
+                button
+                detail={false}
+                onClick={handleDeleteInitiate}
+                disabled={!loggedInUserCanEdit}
+              >
                 Delete Study
               </IonItem>
             </IonList>
           </IonContent>
         </IonPopover>
 
+        {!lockMutation.isPending && !loggedInUserCanEdit && (
+          <Banner color="warning">
+            <IonLabel>
+              Editing is disabled because study is currently being edited by{" "}
+              {submission.data?.locked_by?.name || "unknown user"}
+            </IonLabel>
+          </Banner>
+        )}
+
         <IonProgressBar
           type="indeterminate"
           style={{
             visibility:
-              submission.isFetching || submission.isLoading
+              submission.isFetching ||
+              submission.isLoading ||
+              lockMutation.isPending
                 ? "visible"
                 : "hidden",
           }}
         />
+
         {submission.data && (
-          <StudyForm submission={submission.data} onSave={handleSave} />
+          <StudyForm
+            disabled={!loggedInUserCanEdit}
+            submission={submission.data}
+            onSave={handleSave}
+          />
         )}
       </IonContent>
     </IonPage>
