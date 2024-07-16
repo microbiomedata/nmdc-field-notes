@@ -1,14 +1,13 @@
 import React from "react";
 import { SampleData, SampleDataValue, TEMPLATES } from "../../api";
 import { groupClassSlots } from "../../utils";
+import Banner from "../Banner/Banner";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import { IonButton, IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { SchemaDefinition, SlotDefinition } from "../../linkml-metamodel";
 import { warningOutline } from "ionicons/icons";
 import { useStore } from "../../Store";
 import SlotSelectorModal from "../SlotSelectorModal/SlotSelectorModal";
-
-import styles from "./SampleView.module.css";
 
 function formatSlotValue(value: SampleDataValue) {
   if (value == null) {
@@ -53,21 +52,19 @@ const SampleView: React.FC<SampleViewProps> = ({
   return (
     <>
       {hiddenSlots === undefined && (
-        <IonList className={styles.slotSelectorBanner}>
-          <IonItem lines="none">
-            <IonLabel>Too many fields?</IonLabel>
-            <IonButton
-              slot="end"
-              fill="clear"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Customize List
-            </IonButton>
-            <IonButton slot="end" fill="clear" onClick={handleDismiss}>
-              Dismiss
-            </IonButton>
-          </IonItem>
-        </IonList>
+        <Banner color="primary">
+          <IonLabel>Too many fields?</IonLabel>
+          <IonButton
+            slot="end"
+            fill="clear"
+            onClick={() => setIsModalOpen(true)}
+          >
+            Customize List
+          </IonButton>
+          <IonButton slot="end" fill="clear" onClick={handleDismiss}>
+            Dismiss
+          </IonButton>
+        </Banner>
       )}
 
       {slotGroups.map((group) => (
