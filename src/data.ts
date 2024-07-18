@@ -76,4 +76,5 @@ export const initMetadataSubmission = (): MetadataSubmission => ({
 
 export const initSubmission = (): SubmissionMetadataCreate => ({
   metadata_submission: initMetadataSubmission(),
+  source_client: "field_notes",
 });
