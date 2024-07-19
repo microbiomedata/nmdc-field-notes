@@ -20,6 +20,7 @@ import {
   acquireLockConflict,
 } from "./mocks/server";
 import { initSubmission } from "./data";
+import { SubmissionMetadataUpdate } from "./api";
 
 interface TestWrapperProps {
   children: ReactNode;
@@ -338,6 +339,24 @@ test("useSubmission should release a lock", async () => {
 });
 
 test("useSubmissionCreate should create submission", async () => {
+  // When SubmissionMetadata objects are returned they do not contain a full list of people who
+  // have permission roles on the submission. So to verify that the PI (not the same as the logged
+  // in user) was added as an owner, we listen for PATCH requests to the submission and check that
+  // the correct `permissions` field was sent.
+  let piOwnerUpdated = false;
+  const piOrcid = "0000-0000-0000-1234";
+  server.events.on("request:start", async ({ request }) => {
+    if (
+      request.method === "PATCH" &&
+      request.url.includes("/metadata_submission")
+    ) {
+      // Must clone first so that the original body can be read again later
+      const body = (await request.clone().json()) as SubmissionMetadataUpdate;
+      piOwnerUpdated =
+        body.permissions != null && body.permissions[piOrcid] === "owner";
+    }
+  });
+
   const wrapper = createWrapper();
 
   // First fetch data from the submission list query
@@ -355,6 +374,7 @@ test("useSubmissionCreate should create submission", async () => {
   const newSubmission = initSubmission();
   newSubmission.metadata_submission.studyForm.studyName = "New Study";
   newSubmission.metadata_submission.studyForm.piEmail = "test@fake.org";
+  newSubmission.metadata_submission.studyForm.piOrcid = piOrcid;
   await act(() => {
     return result.current.mutateAsync(newSubmission);
   });
@@ -368,4 +388,5 @@ test("useSubmissionCreate should create submission", async () => {
         submission.metadata_submission.studyForm.studyName === "New Study",
     ),
   ).toBeDefined();
+  expect(piOwnerUpdated).toBe(true);
 });

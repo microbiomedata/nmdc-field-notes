@@ -3,6 +3,7 @@ import {
   LockOperationResult,
   Paginated,
   SubmissionMetadata,
+  SubmissionMetadataCreate,
   TokenResponse,
 } from "../api";
 import { submissions as submissionsFixture } from "./fixtures";
@@ -46,7 +47,7 @@ export const handlers = [
       });
     },
   ),
-  http.post<Record<never, never>, SubmissionMetadata, SubmissionMetadata>(
+  http.post<Record<never, never>, SubmissionMetadataCreate, SubmissionMetadata>(
     `${NMDC_SERVER_API_URL}/api/metadata_submission`,
     async ({ request }) => {
       const body = await request.json();
@@ -59,7 +60,7 @@ export const handlers = [
         },
         author_orcid: "",
         created: "",
-        id: "",
+        id: "00000000-0000-0000-0000-000000000003",
         lock_updated: "",
         locked_by: undefined,
         status: "",
@@ -71,6 +72,8 @@ export const handlers = [
         body.metadata_submission?.studyForm?.studyName || "";
       submission.metadata_submission.studyForm.piEmail =
         body.metadata_submission?.studyForm?.piEmail || "";
+      submission.metadata_submission.studyForm.piOrcid =
+        body.metadata_submission?.studyForm?.piOrcid || "";
       submissions.push(submission);
       return HttpResponse.json(submission);
     },

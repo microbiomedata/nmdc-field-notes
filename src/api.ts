@@ -167,8 +167,17 @@ export interface User {
   is_admin: boolean;
 }
 
-export interface SubmissionMetadataCreate {
+interface SubmissionMetadataBase {
   metadata_submission: MetadataSubmission;
+}
+
+export interface SubmissionMetadataCreate extends SubmissionMetadataBase {
+  status?: string;
+}
+
+export interface SubmissionMetadataUpdate extends SubmissionMetadataCreate {
+  // Map of ORCID iD to permission level
+  permissions?: Record<string, string>;
 }
 
 export interface SubmissionMetadata extends SubmissionMetadataCreate {
@@ -179,6 +188,7 @@ export interface SubmissionMetadata extends SubmissionMetadataCreate {
   author: User;
   lock_updated?: string;
   locked_by: Nullable<User>;
+  permission_level?: string;
 }
 
 export interface PaginationOptions {
@@ -331,7 +341,7 @@ class NmdcServerClient extends FetchClient {
     );
   }
 
-  async updateSubmission(id: string, data: Partial<SubmissionMetadata>) {
+  async updateSubmission(id: string, data: SubmissionMetadataUpdate) {
     return this.fetchJson<SubmissionMetadata>(
       `/api/metadata_submission/${id}`,
       {

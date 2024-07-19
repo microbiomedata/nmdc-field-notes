@@ -15,6 +15,7 @@ import {
   SubmissionMetadataCreate,
   LockOperationResult,
   ApiError,
+  SubmissionMetadataUpdate,
 } from "./api";
 import { produce } from "immer";
 
@@ -44,7 +45,18 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
       await queryClient.cancelQueries({
         queryKey: submissionKeys.detail(updated.id),
       });
-      return nmdcServerClient.updateSubmission(updated.id, updated);
+      // Keep the permissions updated with the PI ORCID as an owner
+      const updatedWithPermissions: SubmissionMetadataUpdate = updated;
+      const { piOrcid } = updated.metadata_submission.studyForm;
+      if (piOrcid) {
+        updatedWithPermissions.permissions = {
+          [piOrcid]: "owner",
+        };
+      }
+      return nmdcServerClient.updateSubmission(
+        updated.id,
+        updatedWithPermissions,
+      );
     },
   });
   queryClient.setMutationDefaults(submissionKeys.create(), {
@@ -52,7 +64,21 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
       await queryClient.cancelQueries({
         queryKey: submissionKeys.create(),
       });
-      return nmdcServerClient.createSubmission(newSubmission);
+      const created = await nmdcServerClient.createSubmission(newSubmission);
+      // If the submission has a PI ORCID, add the PI as an owner of the submission. This has to
+      // be done as a separate request after the submission is created because the create submission
+      // endpoint does not accept the `permissions` field, only the update one does.
+      const { piOrcid } = created.metadata_submission.studyForm;
+      if (piOrcid) {
+        return nmdcServerClient.updateSubmission(created.id, {
+          metadata_submission: created.metadata_submission,
+          permissions: {
+            [piOrcid]: "owner",
+          },
+        });
+      } else {
+        return created;
+      }
     },
   });
   queryClient.setMutationDefaults(submissionKeys.deletes(), {
