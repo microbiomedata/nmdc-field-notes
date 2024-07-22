@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSubmissionList } from "../../queries";
 import {
   IonButton,
@@ -15,6 +15,7 @@ import Pluralize from "../Pluralize/Pluralize";
 import { getSubmissionSamples } from "../../utils";
 import paths from "../../paths";
 import NoneOr from "../NoneOr/NoneOr";
+import { useTour } from "@reactour/tour";
 
 const StudyList: React.FC = () => {
   const submissionList = useSubmissionList();
@@ -28,11 +29,20 @@ const StudyList: React.FC = () => {
     );
   }, [submissionList.data]);
 
+  // Get the function that we can call to start the tour.
+  const { setIsOpen } = useTour();
+
+  useEffect(() => {
+    setIsOpen(true);
+  }, [setIsOpen]);
+
   return (
     <>
       <IonListHeader>
         <IonLabel>Studies</IonLabel>
-        <IonButton routerLink={paths.studyCreate}>New</IonButton>
+        <IonButton routerLink={paths.studyCreate} data-tour-step={2}>
+          New
+        </IonButton>
       </IonListHeader>
 
       <IonProgressBar
@@ -46,7 +56,7 @@ const StudyList: React.FC = () => {
       />
 
       {concatenatedSubmissions.length === 0 ? (
-        <IonText color="medium" className="ion-padding">
+        <IonText color="medium" className="ion-padding" data-tour-step={1}>
           No studies yet
         </IonText>
       ) : (

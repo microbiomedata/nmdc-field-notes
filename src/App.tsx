@@ -4,6 +4,7 @@ import ColorSchemePreferenceMonitor from "./components/ColorSchemePreferenceMoni
 import QueryClientProvider from "./QueryClientProvider";
 import Router from "./Router";
 import StoreProvider from "./Store";
+import { TourProvider, StepType } from "@reactour/tour";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -42,14 +43,44 @@ import "./theme/variables.css";
 
 setupIonicReact();
 
+// Create the steps for the tour.
+//
+// References:
+// - https://docs.react.tours/
+// - https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+//
+const steps: Array<StepType> = [
+  {
+    selector: "[data-tour-step='1']",
+    content: "You can view existing studies here.",
+  },
+  {
+    selector: "[data-tour-step='2']",
+    content: "You can create a new study here.",
+  },
+];
+
 const App: React.FC = () => {
   return (
     <StoreProvider>
       <QueryClientProvider>
-        <IonApp>
-          <ColorSchemePreferenceMonitor />
-          <Router />
-        </IonApp>
+        <TourProvider
+          steps={steps}
+          styles={{
+            popover: (base) => ({
+              ...base,
+              borderRadius: 4,
+              color: "var(--ion-color-primary-contrast)",
+            }),
+            maskArea: (base) => ({ ...base, rx: 4 }),
+          }}
+          showBadge={false}
+        >
+          <IonApp>
+            <ColorSchemePreferenceMonitor />
+            <Router />
+          </IonApp>
+        </TourProvider>
       </QueryClientProvider>
     </StoreProvider>
   );
