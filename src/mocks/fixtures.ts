@@ -40,6 +40,7 @@ export function generateSubmission(
       },
     },
     locked_by: null,
+    source_client: "field_notes",
   };
 }
 
@@ -115,6 +116,7 @@ export const submissions: SubmissionMetadata[] = [
     },
     lock_updated: "2024-01-01T00:00:00.000000",
     locked_by: null,
+    source_client: "submission_portal",
   },
   {
     metadata_submission: {
@@ -187,5 +189,6 @@ export const submissions: SubmissionMetadata[] = [
     },
     lock_updated: "2024-01-02T00:00:00.000000",
     locked_by: null,
+    source_client: "field_notes",
   },
 ];
