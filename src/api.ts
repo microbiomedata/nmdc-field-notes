@@ -169,6 +169,7 @@ export interface User {
 
 interface SubmissionMetadataBase {
   metadata_submission: MetadataSubmission;
+  source_client: "submission_portal" | "field_notes" | null;
 }
 
 export interface SubmissionMetadataCreate extends SubmissionMetadataBase {
