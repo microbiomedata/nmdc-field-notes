@@ -29,11 +29,11 @@ export const submissionKeys = {
   create: () => [...submissionKeys.all(), "create"],
   details: () => [...submissionKeys.all(), "detail"],
   detail: (id: string) => [...submissionKeys.details(), id],
-  deletes: () => [...submissionKeys.details(), "delete"],
+  deletes: () => [...submissionKeys.all(), "delete"],
   delete: (id: string) => [...submissionKeys.deletes(), id],
-  locks: () => [...submissionKeys.details(), "lock"],
+  locks: () => [...submissionKeys.all(), "lock"],
   lock: (id: string) => [...submissionKeys.locks(), id],
-  unlocks: () => [...submissionKeys.details(), "unlock"],
+  unlocks: () => [...submissionKeys.all(), "unlock"],
   unlock: (id: string) => [...submissionKeys.unlocks(), id],
   schemas: () => ["schemas"],
   submissionSchema: () => [...submissionKeys.schemas(), "submission_schema"],
@@ -250,7 +250,7 @@ export function useSubmission(id: string) {
     mutationKey: submissionKeys.delete(id),
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: submissionKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
+      return queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
     },
   });
 
