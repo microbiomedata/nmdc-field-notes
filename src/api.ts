@@ -169,14 +169,14 @@ export interface User {
 
 interface SubmissionMetadataBase {
   metadata_submission: MetadataSubmission;
-  source_client: "submission_portal" | "field_notes" | null;
 }
 
 export interface SubmissionMetadataCreate extends SubmissionMetadataBase {
   status?: string;
+  source_client: "submission_portal" | "field_notes" | null;
 }
 
-export interface SubmissionMetadataUpdate extends SubmissionMetadataCreate {
+export interface SubmissionMetadataUpdate extends SubmissionMetadataBase {
   // Map of ORCID iD to permission level
   permissions?: Record<string, string>;
 }
