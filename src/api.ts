@@ -215,7 +215,7 @@ export interface LockOperationResult {
   success: boolean;
   message: string;
   locked_by?: User | null;
-  lock_updated?: string | null;
+  lock_updated?: string | null; // ISO 8601 datetime string
 }
 
 export class ApiError extends Error {
