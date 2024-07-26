@@ -339,8 +339,8 @@ test("useSubmission should release a lock", async () => {
 });
 
 test("useSubmissionCreate should create submission", async () => {
-  // When SubmissionMetadata objects are returned they do not contain a full list of people who
-  // have permission roles on the submission. So to verify that the PI (not the same as the logged
+  // When SubmissionMetadata objects are returned, they do not contain a full list of people who
+  // have permission roles on the submission. So, to verify that the PI (not the same as the logged
   // in user) was added as an owner, we listen for PATCH requests to the submission and check that
   // the correct `permissions` field was sent.
   let piOwnerUpdated = false;

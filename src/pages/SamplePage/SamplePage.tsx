@@ -228,7 +228,7 @@ const SamplePage: React.FC = () => {
           <Banner color="warning">
             <IonLabel>
               Editing is disabled because this sample is currently being edited
-              by {submission.data?.locked_by?.name || "unknown user"}
+              by {submission.data?.locked_by?.name || "an unknown user"}
             </IonLabel>
           </Banner>
         )}

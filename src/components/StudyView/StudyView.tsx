@@ -141,7 +141,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
             onSampleCreate={handleSampleCreate}
             sampleCreateFailureMessage={
               lockMutation.isError
-                ? `Cannot create new sample because this study is currently being edited by ${submission.data.locked_by?.name || "unknown user"}`
+                ? `Cannot create new sample because this study is currently being edited by ${submission.data.locked_by?.name || "an unknown user"}`
                 : undefined
             }
           />
