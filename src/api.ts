@@ -365,7 +365,7 @@ class NmdcServerClient extends FetchClient {
     });
   }
 
-  async getSubmissionLock(id: string) {
+  async acquireSubmissionLock(id: string) {
     return this.fetchJson<LockOperationResult>(
       `/api/metadata_submission/${id}/lock`,
       {

@@ -94,7 +94,7 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
       await queryClient.cancelQueries({
         queryKey: submissionKeys.lock(id),
       });
-      return nmdcServerClient.getSubmissionLock(id);
+      return nmdcServerClient.acquireSubmissionLock(id);
     },
   });
   queryClient.setMutationDefaults(submissionKeys.unlocks(), {
