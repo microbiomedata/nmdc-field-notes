@@ -13,8 +13,14 @@ import {
   useSubmissionList,
 } from "./queries";
 import { produce } from "immer";
-import { patchMetadataSubmissionError, server, delay } from "./mocks/server";
+import {
+  patchMetadataSubmissionError,
+  server,
+  delay,
+  acquireLockConflict,
+} from "./mocks/server";
 import { initSubmission } from "./data";
+import { SubmissionMetadataUpdate } from "./api";
 
 interface TestWrapperProps {
   children: ReactNode;
@@ -38,6 +44,7 @@ const createWrapper = () => {
 };
 
 const TEST_ID_1 = "00000000-0000-0000-0000-000000000001";
+const TEST_ID_2 = "00000000-0000-0000-0000-000000000002";
 
 test("useCurrentUser should return data from the query", async () => {
   const wrapper = createWrapper();
@@ -274,7 +281,82 @@ test("useSubmission should delete submission", async () => {
   ).toBeUndefined();
 });
 
+test("useSubmission should update lock status on successful lock acquisition", async () => {
+  const wrapper = createWrapper();
+
+  const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
+  await waitFor(() => expect(result.current.query.isFetching).toBe(false));
+
+  // Ensure that the submission is not already locked
+  expect(result.current.query.data?.locked_by).toBeNull();
+
+  // Attempt to acquire a lock on the submission
+  act(() => result.current.lockMutation.mutate(TEST_ID_1));
+
+  // Verify that the mutation completes successfully and that the lock information is updated
+  await waitFor(() => expect(result.current.lockMutation.isSuccess).toBe(true));
+  expect(result.current.query.data?.locked_by).toBeDefined();
+  expect(result.current.query.data?.locked_by?.name).toBe("Test Testerson");
+});
+
+test("useSubmission should update lock status on lock conflict", async () => {
+  server.use(acquireLockConflict);
+
+  const wrapper = createWrapper();
+
+  const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
+  await waitFor(() => expect(result.current.query.isFetching).toBe(false));
+
+  // Ensure that the submission is not already locked
+  expect(result.current.query.data?.locked_by).toBeNull();
+
+  // Attempt to acquire a lock on the submission
+  act(() => result.current.lockMutation.mutate(TEST_ID_1));
+
+  // Verify that the request failed due to a lock conflict and that the lock information is updated
+  await waitFor(() => expect(result.current.lockMutation.isError).toBe(true));
+  expect(result.current.query.data?.locked_by).toBeDefined();
+  expect(result.current.query.data?.locked_by?.name).toBe("Lock Lockerson");
+});
+
+test("useSubmission should release a lock", async () => {
+  const wrapper = createWrapper();
+
+  const { result } = renderHook(() => useSubmission(TEST_ID_2), { wrapper });
+  await waitFor(() => expect(result.current.query.isFetching).toBe(false));
+
+  // Ensure that the submission is already locked
+  expect(result.current.query.data?.locked_by).toBeDefined();
+
+  // Attempt to release the lock on the submission
+  act(() => result.current.unlockMutation.mutate(TEST_ID_2));
+
+  // Verify that the mutation completes successfully and that the lock information is updated
+  await waitFor(() =>
+    expect(result.current.unlockMutation.isSuccess).toBe(true),
+  );
+  expect(result.current.query.data?.locked_by).toBeNull();
+});
+
 test("useSubmissionCreate should create submission", async () => {
+  // When SubmissionMetadata objects are returned, they do not contain a full list of people who
+  // have permission roles on the submission. So, to verify that the PI (not the same as the logged
+  // in user) was added as an owner, we listen for PATCH requests to the submission and check that
+  // the correct `permissions` field was sent.
+  let piOwnerUpdated = false;
+  const piOrcid = "0000-0000-0000-1234";
+  server.events.on("request:start", async ({ request }) => {
+    if (
+      request.method === "PATCH" &&
+      request.url.includes("/metadata_submission")
+    ) {
+      // Must clone first so that the original body can be read again later
+      const body = (await request.clone().json()) as SubmissionMetadataUpdate;
+      piOwnerUpdated =
+        body.permissions != null && body.permissions[piOrcid] === "owner";
+    }
+  });
+
   const wrapper = createWrapper();
 
   // First fetch data from the submission list query
@@ -292,6 +374,7 @@ test("useSubmissionCreate should create submission", async () => {
   const newSubmission = initSubmission();
   newSubmission.metadata_submission.studyForm.studyName = "New Study";
   newSubmission.metadata_submission.studyForm.piEmail = "test@fake.org";
+  newSubmission.metadata_submission.studyForm.piOrcid = piOrcid;
   await act(() => {
     return result.current.mutateAsync(newSubmission);
   });
@@ -305,4 +388,5 @@ test("useSubmissionCreate should create submission", async () => {
         submission.metadata_submission.studyForm.studyName === "New Study",
     ),
   ).toBeDefined();
+  expect(piOwnerUpdated).toBe(true);
 });

@@ -188,7 +188,12 @@ export const submissions: SubmissionMetadata[] = [
       is_admin: true,
     },
     lock_updated: "2024-01-02T00:00:00.000000",
-    locked_by: null,
+    locked_by: {
+      id: "00000000-0000-0000-0001-000000000002",
+      orcid: "0000-0000-0000-0002",
+      name: "Test Tester 2",
+      is_admin: true,
+    },
     source_client: "field_notes",
   },
 ];

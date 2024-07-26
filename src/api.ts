@@ -167,9 +167,18 @@ export interface User {
   is_admin: boolean;
 }
 
-export interface SubmissionMetadataCreate {
+interface SubmissionMetadataBase {
   metadata_submission: MetadataSubmission;
+}
+
+export interface SubmissionMetadataCreate extends SubmissionMetadataBase {
+  status?: string;
   source_client: "submission_portal" | "field_notes" | null;
+}
+
+export interface SubmissionMetadataUpdate extends SubmissionMetadataBase {
+  // Map of ORCID iD to permission level
+  permissions?: Record<string, string>;
 }
 
 export interface SubmissionMetadata extends SubmissionMetadataCreate {
@@ -180,6 +189,7 @@ export interface SubmissionMetadata extends SubmissionMetadataCreate {
   author: User;
   lock_updated?: string;
   locked_by: Nullable<User>;
+  permission_level?: string;
 }
 
 export interface PaginationOptions {
@@ -201,7 +211,14 @@ export interface TokenResponse {
   expires: number;
 }
 
-class ApiError extends Error {
+export interface LockOperationResult {
+  success: boolean;
+  message: string;
+  locked_by?: User | null;
+  lock_updated?: string | null; // ISO 8601 datetime string
+}
+
+export class ApiError extends Error {
   public readonly response: Response;
 
   constructor(message: string, response: Response) {
@@ -325,7 +342,7 @@ class NmdcServerClient extends FetchClient {
     );
   }
 
-  async updateSubmission(id: string, data: Partial<SubmissionMetadata>) {
+  async updateSubmission(id: string, data: SubmissionMetadataUpdate) {
     return this.fetchJson<SubmissionMetadata>(
       `/api/metadata_submission/${id}`,
       {
@@ -346,6 +363,24 @@ class NmdcServerClient extends FetchClient {
     return this.fetch(`/api/metadata_submission/${id}`, {
       method: "DELETE",
     });
+  }
+
+  async acquireSubmissionLock(id: string) {
+    return this.fetchJson<LockOperationResult>(
+      `/api/metadata_submission/${id}/lock`,
+      {
+        method: "PUT",
+      },
+    );
+  }
+
+  async releaseSubmissionLock(id: string) {
+    return this.fetchJson<LockOperationResult>(
+      `/api/metadata_submission/${id}/unlock`,
+      {
+        method: "PUT",
+      },
+    );
   }
 
   async getCurrentUser() {

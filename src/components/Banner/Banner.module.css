@@ -1,0 +1,13 @@
+ion-list.banner {
+  padding: 0;
+
+  & ion-item {
+    --min-height: auto;
+    font-size: 0.875rem;
+  }
+
+  & ion-button {
+    --color: initial;
+    font-weight: 500;
+  }
+}

@@ -20,12 +20,23 @@ interface StudyViewProps {
 
 const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
   const router = useIonRouter();
-  const { query: submission, updateMutation } = useSubmission(submissionId);
+  const {
+    query: submission,
+    updateMutation,
+    lockMutation,
+  } = useSubmission(submissionId);
 
-  const handleSampleCreate = () => {
+  const handleSampleCreate = async () => {
     if (!submission.data) {
       return;
     }
+
+    try {
+      await lockMutation.mutateAsync(submissionId);
+    } catch {
+      return;
+    }
+
     const updatedSubmission = produce(submission.data, (draft) => {
       const samples = getSubmissionSamples(draft, {
         createSampleDataFieldIfMissing: true,
@@ -128,6 +139,11 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
           <SampleList
             submission={submission.data}
             onSampleCreate={handleSampleCreate}
+            sampleCreateFailureMessage={
+              lockMutation.isError
+                ? `Cannot create new sample because this study is currently being edited by ${submission.data.locked_by?.name || "an unknown user"}`
+                : undefined
+            }
           />
         </>
       )}

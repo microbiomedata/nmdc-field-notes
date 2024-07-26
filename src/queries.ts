@@ -13,6 +13,9 @@ import {
   SubmissionMetadata,
   nmdcServerClient,
   SubmissionMetadataCreate,
+  LockOperationResult,
+  ApiError,
+  SubmissionMetadataUpdate,
 } from "./api";
 import { produce } from "immer";
 
@@ -26,8 +29,12 @@ export const submissionKeys = {
   create: () => [...submissionKeys.all(), "create"],
   details: () => [...submissionKeys.all(), "detail"],
   detail: (id: string) => [...submissionKeys.details(), id],
-  deletes: () => [...submissionKeys.details(), "delete"],
+  deletes: () => [...submissionKeys.all(), "delete"],
   delete: (id: string) => [...submissionKeys.deletes(), id],
+  locks: () => [...submissionKeys.all(), "lock"],
+  lock: (id: string) => [...submissionKeys.locks(), id],
+  unlocks: () => [...submissionKeys.all(), "unlock"],
+  unlock: (id: string) => [...submissionKeys.unlocks(), id],
   schemas: () => ["schemas"],
   submissionSchema: () => [...submissionKeys.schemas(), "submission_schema"],
 };
@@ -38,7 +45,18 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
       await queryClient.cancelQueries({
         queryKey: submissionKeys.detail(updated.id),
       });
-      return nmdcServerClient.updateSubmission(updated.id, updated);
+      // Keep the permissions updated with the PI ORCID as an owner
+      const updatedWithPermissions: SubmissionMetadataUpdate = updated;
+      const { piOrcid } = updated.metadata_submission.studyForm;
+      if (piOrcid) {
+        updatedWithPermissions.permissions = {
+          [piOrcid]: "owner",
+        };
+      }
+      return nmdcServerClient.updateSubmission(
+        updated.id,
+        updatedWithPermissions,
+      );
     },
   });
   queryClient.setMutationDefaults(submissionKeys.create(), {
@@ -46,7 +64,21 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
       await queryClient.cancelQueries({
         queryKey: submissionKeys.create(),
       });
-      return nmdcServerClient.createSubmission(newSubmission);
+      const created = await nmdcServerClient.createSubmission(newSubmission);
+      // If the submission has a PI ORCID, add the PI as an owner of the submission. This has to
+      // be done as a separate request after the submission is created because the create submission
+      // endpoint does not accept the `permissions` field, only the update one does.
+      const { piOrcid } = created.metadata_submission.studyForm;
+      if (piOrcid) {
+        return nmdcServerClient.updateSubmission(created.id, {
+          metadata_submission: created.metadata_submission,
+          permissions: {
+            [piOrcid]: "owner",
+          },
+        });
+      } else {
+        return created;
+      }
     },
   });
   queryClient.setMutationDefaults(submissionKeys.deletes(), {
@@ -55,6 +87,22 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
         queryKey: submissionKeys.delete(id),
       });
       return nmdcServerClient.deleteSubmission(id);
+    },
+  });
+  queryClient.setMutationDefaults(submissionKeys.locks(), {
+    mutationFn: async (id: string) => {
+      await queryClient.cancelQueries({
+        queryKey: submissionKeys.lock(id),
+      });
+      return nmdcServerClient.acquireSubmissionLock(id);
+    },
+  });
+  queryClient.setMutationDefaults(submissionKeys.unlocks(), {
+    mutationFn: async (id: string) => {
+      await queryClient.cancelQueries({
+        queryKey: submissionKeys.unlock(id),
+      });
+      return nmdcServerClient.releaseSubmissionLock(id);
     },
   });
 }
@@ -117,6 +165,23 @@ export function useSubmission(id: string) {
         }
       }),
     );
+  };
+
+  const updateLockStatusForSubmission = (
+    id: string,
+    lock: Partial<LockOperationResult>,
+  ) => {
+    const submission = queryClient.getQueryData<SubmissionMetadata>(
+      submissionKeys.detail(id),
+    );
+    if (!submission) {
+      return;
+    }
+    const updated = produce(submission, (draft) => {
+      draft.locked_by = lock.locked_by;
+      draft.lock_updated = lock.lock_updated || undefined;
+    });
+    updateSubmissionInQueryData(updated);
   };
 
   const query = useQuery({
@@ -185,14 +250,53 @@ export function useSubmission(id: string) {
     mutationKey: submissionKeys.delete(id),
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: submissionKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
+      return queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
     },
   });
+
+  // The lock mutation is used to acquire a lock on a submission. This should be done before
+  // updates to a submission. If a lock is not acquired before updating, the subsequent updates
+  // may fail.
+  const lockMutation = useMutation<LockOperationResult, DefaultError, string>({
+    mutationKey: submissionKeys.lock(id),
+    onSuccess: (data) => {
+      // If the lock operation was successful, update the submission data in the cache
+      // with the new lock information.
+      if (!data.success) {
+        return;
+      }
+      updateLockStatusForSubmission(id, data);
+    },
+    onError: async (error) => {
+      if (error instanceof ApiError && error.response.status === 409) {
+        // If the lock operation failed due to a conflict, the submission is already locked.
+        // The lock information is included in the error response, so update the submission
+        // data in the cache with the lock information.
+        const body = (await error.response.json()) as LockOperationResult;
+        updateLockStatusForSubmission(id, body);
+      }
+    },
+  });
+
+  // The unlock mutation is used to release a lock on a submission.
+  const unlockMutation = useMutation<LockOperationResult, DefaultError, string>(
+    {
+      mutationKey: submissionKeys.unlock(id),
+      onSettled: () => {
+        updateLockStatusForSubmission(id, {
+          locked_by: null,
+          lock_updated: null,
+        });
+      },
+    },
+  );
 
   return {
     query,
     updateMutation,
     deleteMutation,
+    lockMutation,
+    unlockMutation,
   };
 }
 

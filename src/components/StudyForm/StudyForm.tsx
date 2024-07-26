@@ -18,6 +18,7 @@ import { colorWand as autoFill } from "ionicons/icons";
 import styles from "./StudyForm.module.css";
 
 interface StudyFormProps {
+  disabled?: boolean;
   submission: SubmissionMetadataCreate;
   onSave: (submission: SubmissionMetadataCreate) => Promise<unknown>;
 }
@@ -36,7 +37,11 @@ interface StudyFormProps {
 const EMAIL_REGEX =
   /^(?!\.)(?!.*\.\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
 
-const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
+const StudyForm: React.FC<StudyFormProps> = ({
+  disabled,
+  submission,
+  onSave,
+}) => {
   const { loggedInUser } = useStore();
 
   const { handleSubmit, control, formState, setValue } =
@@ -44,6 +49,7 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
       defaultValues: submission,
       mode: "onTouched",
       reValidateMode: "onChange",
+      disabled,
     });
 
   return (
@@ -257,7 +263,7 @@ const StudyForm: React.FC<StudyFormProps> = ({ submission, onSave }) => {
           expand="block"
           className="ion-margin-top"
           type="submit"
-          disabled={formState.isDirty && !formState.isValid}
+          disabled={disabled || (formState.isDirty && !formState.isValid)}
         >
           {formState.isSubmitting ? "Saving" : "Save"}
         </IonButton>

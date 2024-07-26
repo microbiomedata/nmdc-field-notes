@@ -114,6 +114,7 @@ function getSelectState(
 
 interface SampleSlotEditModalProps {
   defaultValue: SampleDataValue;
+  disabled?: boolean;
   getSlotValue: (slot: SlotDefinitionName) => SampleDataValue;
   goldEcosystemTree: GoldEcosystemTreeNode;
   onCancel: () => void;
@@ -126,6 +127,7 @@ interface SampleSlotEditModalProps {
 }
 const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
   defaultValue,
+  disabled,
   getSlotValue,
   goldEcosystemTree,
   onCancel,
@@ -304,7 +306,7 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
                   color="primary"
                   expand="block"
                   onClick={handleSave}
-                  disabled={saving}
+                  disabled={disabled || saving}
                 >
                   {saving ? "Saving..." : "Save"}
                 </IonButton>

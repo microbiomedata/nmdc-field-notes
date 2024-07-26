@@ -1,5 +1,11 @@
 import { delay, http, HttpResponse } from "msw";
-import { Paginated, SubmissionMetadata, TokenResponse } from "../api";
+import {
+  LockOperationResult,
+  Paginated,
+  SubmissionMetadata,
+  SubmissionMetadataCreate,
+  TokenResponse,
+} from "../api";
 import { submissions as submissionsFixture } from "./fixtures";
 import { setupServer } from "msw/node";
 import config from "../config";
@@ -8,6 +14,9 @@ import { initSubmission } from "../data";
 const { NMDC_SERVER_API_URL } = config;
 
 let submissions = submissionsFixture;
+export function resetFixtureData() {
+  submissions = submissionsFixture;
+}
 
 export const handlers = [
   http.get<
@@ -38,7 +47,7 @@ export const handlers = [
       });
     },
   ),
-  http.post<Record<never, never>, SubmissionMetadata, SubmissionMetadata>(
+  http.post<Record<never, never>, SubmissionMetadataCreate, SubmissionMetadata>(
     `${NMDC_SERVER_API_URL}/api/metadata_submission`,
     async ({ request }) => {
       const body = await request.json();
@@ -51,7 +60,7 @@ export const handlers = [
         },
         author_orcid: "",
         created: "",
-        id: "",
+        id: "00000000-0000-0000-0000-000000000003",
         lock_updated: "",
         locked_by: undefined,
         status: "",
@@ -63,6 +72,8 @@ export const handlers = [
         body.metadata_submission?.studyForm?.studyName || "";
       submission.metadata_submission.studyForm.piEmail =
         body.metadata_submission?.studyForm?.piEmail || "";
+      submission.metadata_submission.studyForm.piOrcid =
+        body.metadata_submission?.studyForm?.piOrcid || "";
       submissions.push(submission);
       return HttpResponse.json(submission);
     },
@@ -73,6 +84,35 @@ export const handlers = [
       const { id } = params;
       submissions = submissions.filter((s) => s.id !== id);
       return new HttpResponse(null, { status: 204 });
+    },
+  ),
+  http.put<{ id: string }, Record<string, never>, LockOperationResult>(
+    `${NMDC_SERVER_API_URL}/api/metadata_submission/:id/lock`,
+    async ({ params }) => {
+      const { id } = params;
+      return HttpResponse.json({
+        success: true,
+        message: `Lock successfully acquired for submission with ID ${id}`,
+        locked_by: {
+          id: "1",
+          orcid: "0000-0000-0000-0000",
+          name: "Test Testerson",
+          is_admin: false,
+        },
+        lock_updated: new Date().toISOString(),
+      });
+    },
+  ),
+  http.put<{ id: string }, Record<string, never>, LockOperationResult>(
+    `${NMDC_SERVER_API_URL}/api/metadata_submission/:id/unlock`,
+    async ({ params }) => {
+      const { id } = params;
+      return HttpResponse.json({
+        success: true,
+        message: `Submission lock released successfully for submission with ID ${id}`,
+        locked_by: null,
+        lock_updated: null,
+      });
     },
   ),
   http.get(`${NMDC_SERVER_API_URL}/api/me`, async () => {
@@ -116,6 +156,26 @@ export const tokenExchangeError = http.post<
     { status: 401 },
   );
 });
+
+export const acquireLockConflict = http.put<{ id: string }>(
+  `${NMDC_SERVER_API_URL}/api/metadata_submission/:id/lock`,
+  async () => {
+    return HttpResponse.json(
+      {
+        success: false,
+        message: "Submission is already locked",
+        locked_by: {
+          id: "2",
+          orcid: "0000-0000-0000-000X",
+          name: "Lock Lockerson",
+          is_admin: false,
+        },
+        lock_updated: new Date().toISOString(),
+      },
+      { status: 409 },
+    );
+  },
+);
 
 export const server = setupServer(...handlers);
 

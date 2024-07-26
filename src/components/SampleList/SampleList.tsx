@@ -22,17 +22,20 @@ import { IonSearchbarCustomEvent } from "@ionic/core/dist/types/components";
 import { useMiniSearch } from "react-minisearch";
 import { getSubmissionSamples } from "../../utils";
 import { produce } from "immer";
+import Banner from "../Banner/Banner";
 
 interface SampleListProps {
   submission: SubmissionMetadata;
   collapsedSize?: number;
   onSampleCreate: () => void;
+  sampleCreateFailureMessage?: string;
 }
 
 const SampleList: React.FC<SampleListProps> = ({
   submission,
   collapsedSize = 5,
   onSampleCreate,
+  sampleCreateFailureMessage,
 }) => {
   const searchElement = React.useRef<HTMLIonSearchbarElement>(null);
 
@@ -114,6 +117,12 @@ const SampleList: React.FC<SampleListProps> = ({
         <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
         <IonButton onClick={onSampleCreate}>New</IonButton>
       </IonListHeader>
+
+      {sampleCreateFailureMessage && (
+        <Banner color="warning">
+          <IonLabel>{sampleCreateFailureMessage}</IonLabel>
+        </Banner>
+      )}
 
       <IonGrid className={isSearchVisible ? "ion-hide" : ""}>
         <IonRow class="ion-justify-content-between">
