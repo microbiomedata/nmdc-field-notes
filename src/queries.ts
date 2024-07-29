@@ -75,7 +75,7 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
       const { piOrcid } = created.metadata_submission.studyForm;
       if (piOrcid) {
         return nmdcServerClient.updateSubmission(created.id, {
-          metadata_submission: created.metadata_submission,
+          ...created,
           permissions: {
             [piOrcid]: "owner",
           },
