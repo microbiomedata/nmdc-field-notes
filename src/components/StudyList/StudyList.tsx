@@ -35,16 +35,6 @@ const StudyList: React.FC = () => {
         <IonButton routerLink={paths.studyCreate}>New</IonButton>
       </IonListHeader>
 
-      <IonProgressBar
-        type="indeterminate"
-        style={{
-          visibility:
-            submissionList.isFetching || submissionList.isLoading
-              ? "visible"
-              : "hidden",
-        }}
-      />
-
       {concatenatedSubmissions.length === 0 ? (
         <IonText color="medium" className="ion-padding">
           No studies yet
