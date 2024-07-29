@@ -57,16 +57,6 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
 
   return (
     <>
-      <IonProgressBar
-        type="indeterminate"
-        style={{
-          visibility:
-            submission.isFetching || submission.isLoading
-              ? "visible"
-              : "hidden",
-        }}
-      />
-
       {submission.data && (
         <>
           <IonList className="ion-padding-bottom">

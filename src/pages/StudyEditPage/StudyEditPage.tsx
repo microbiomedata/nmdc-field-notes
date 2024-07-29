@@ -149,18 +149,6 @@ const StudyEditPage: React.FC = () => {
           </Banner>
         )}
 
-        <IonProgressBar
-          type="indeterminate"
-          style={{
-            visibility:
-              submission.isFetching ||
-              submission.isLoading ||
-              lockMutation.isPending
-                ? "visible"
-                : "hidden",
-          }}
-        />
-
         {submission.data && (
           <StudyForm
             disabled={!loggedInUserCanEdit}
