@@ -1,12 +1,6 @@
 import React from "react";
 import { useSubmission } from "../../queries";
-import {
-  IonItem,
-  IonLabel,
-  IonList,
-  IonProgressBar,
-  useIonRouter,
-} from "@ionic/react";
+import { IonItem, IonLabel, IonList, useIonRouter } from "@ionic/react";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import NoneOr from "../NoneOr/NoneOr";
 import SampleList from "../SampleList/SampleList";

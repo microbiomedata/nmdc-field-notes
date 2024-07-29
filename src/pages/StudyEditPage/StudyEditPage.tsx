@@ -11,7 +11,6 @@ import {
   IonList,
   IonPage,
   IonPopover,
-  IonProgressBar,
   IonTitle,
   useIonAlert,
   useIonRouter,
