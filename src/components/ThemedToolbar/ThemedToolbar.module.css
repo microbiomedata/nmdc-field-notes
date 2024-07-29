@@ -16,3 +16,19 @@ ion-toolbar.themedBackground {
       url("../../theme/NMDC_microbe_dark.png");
   }
 }
+
+ion-toolbar.offlineToolbar {
+  --min-height: 1.25rem;
+}
+
+.offlineWarning {
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  & ion-icon {
+    margin-right: 4px;
+  }
+}
