@@ -6,7 +6,6 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
-  IonProgressBar,
   IonSpinner,
   IonText,
 } from "@ionic/react";
