@@ -111,13 +111,6 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
   });
 }
 
-export function useCurrentUser() {
-  return useQuery({
-    queryKey: userKeys.user(),
-    queryFn: () => nmdcServerClient.getCurrentUser(),
-  });
-}
-
 const PAGE_SIZE = 10;
 
 export function useSubmissionList() {
