@@ -19,10 +19,6 @@ import {
 } from "./api";
 import { produce } from "immer";
 
-export const userKeys = {
-  user: () => ["user"],
-};
-
 export const submissionKeys = {
   all: () => ["submissions"],
   list: () => [...submissionKeys.all(), "list"],
