@@ -17,7 +17,7 @@ const NetworkStatusContext = createContext<NetworkStatusContextValue>({
 });
 
 const NetworkStatusProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [isOnline, setIsOnline] = useState(true);
+  const [isOnline, setIsOnline] = useState<boolean | null>(null);
 
   useEffect(() => {
     // Used to prevent setting up the listener from being added from an unmounted component
@@ -47,6 +47,10 @@ const NetworkStatusProvider: React.FC<PropsWithChildren> = ({ children }) => {
       ignore = true;
     };
   }, []);
+
+  if (isOnline === null) {
+    return null;
+  }
 
   return (
     <NetworkStatusContext.Provider value={{ isOnline }}>
