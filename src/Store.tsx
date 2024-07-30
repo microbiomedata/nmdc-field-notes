@@ -13,9 +13,11 @@ import {
   isValidColorPaletteMode,
 } from "./theme/colorPalette";
 import { produce } from "immer";
+import { useNetworkStatus } from "./NetworkStatus";
 
 enum StorageKey {
   REFRESH_TOKEN = "refreshToken",
+  LOGGED_IN_USER = "loggedInUser",
   COLOR_PALETTE_MODE = "colorPaletteMode",
   HIDDEN_SLOTS = "hiddenSlots",
 }
@@ -70,6 +72,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
   const [hiddenSlots, setHiddenSlots] = useState<Record<string, string[]>>({});
+  const { isOnline } = useNetworkStatus();
 
   // Initialize the store.
   useEffect(() => {
@@ -83,16 +86,23 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
       // If browser storage contains an API refresh token, exchange it for an access token and
       // set the API client's bearer token.
+      const userFromStorage = await storage.get(StorageKey.LOGGED_IN_USER);
+      if (userFromStorage) {
+        setLoggedInUser(userFromStorage);
+      }
       const refreshToken = await storage.get(StorageKey.REFRESH_TOKEN);
       if (refreshToken) {
         try {
           const token =
             await nmdcServerClient.exchangeRefreshToken(refreshToken);
-          setIsLoggedIn(true);
           nmdcServerClient.setTokens(token.access_token, refreshToken);
+          await _updateLoggedInUser();
         } catch (e) {
-          console.debug("Failed to exchange refresh token for access token", e);
-          await storage.remove(StorageKey.REFRESH_TOKEN);
+          // If we are offline, the exchange will fail but not necessarily because the token is
+          // invalid. In this case, don't remove the token from storage.
+          if (isOnline) {
+            await storage.remove(StorageKey.REFRESH_TOKEN);
+          }
         }
       }
 
@@ -123,13 +133,24 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     init().then(() => console.debug("Storage is initialized"));
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      nmdcServerClient.getCurrentUser().then((user) => setLoggedInUser(user));
-    } else {
-      setLoggedInUser(null);
+  async function _updateLoggedInUser() {
+    const user = await nmdcServerClient.getCurrentUser();
+    setLoggedInUser(user);
+    if (store) {
+      await store.set(StorageKey.LOGGED_IN_USER, user);
     }
-  }, [isLoggedIn]);
+  }
+
+  async function _clearLoggedInUser() {
+    setLoggedInUser(null);
+    if (store) {
+      await store.remove(StorageKey.LOGGED_IN_USER);
+    }
+  }
+
+  useEffect(() => {
+    setIsLoggedIn(loggedInUser !== null);
+  }, [loggedInUser]);
 
   /**
    * Update the context to reflect that a user is logged in, pass the provided access and refresh
@@ -139,8 +160,8 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
    * @param refreshToken
    */
   async function login(accessToken: string, refreshToken: string) {
-    setIsLoggedIn(true);
     nmdcServerClient.setTokens(accessToken, refreshToken);
+    await _updateLoggedInUser();
     if (!store) {
       console.warn("login called before storage initialization");
       return;
@@ -153,8 +174,8 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
    * and remove the refresh token from storage.
    */
   async function logout() {
-    setIsLoggedIn(false);
     nmdcServerClient.setTokens(null, null);
+    await _clearLoggedInUser();
     if (!store) {
       console.warn("logout called before storage initialization");
       return;
