@@ -8,6 +8,7 @@ import { addDefaultMutationFns } from "./queries";
 import { useStore } from "./Store";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import config from "./config";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,15 @@ const queryClient = new QueryClient({
   },
 });
 addDefaultMutationFns(queryClient);
+
+// See: https://tanstack.com/query/latest/docs/framework/react/devtools#devtools-in-production
+const ReactQueryDevtoolsProduction = React.lazy(() =>
+  import("@tanstack/react-query-devtools/build/modern/production.js").then(
+    (d) => ({
+      default: d.ReactQueryDevtools,
+    }),
+  ),
+);
 
 const QueryClientProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { store } = useStore();
@@ -51,6 +61,11 @@ const QueryClientProvider: React.FC<PropsWithChildren> = ({ children }) => {
     >
       {children}
       <ReactQueryDevtools initialIsOpen={false} />
+      {config.SHOW_DEV_TOOLS_IN_PROD && (
+        <React.Suspense fallback={null}>
+          <ReactQueryDevtoolsProduction />
+        </React.Suspense>
+      )}
     </PersistQueryClientProvider>
   );
 };
