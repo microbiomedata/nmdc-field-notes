@@ -91,20 +91,25 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         setLoggedInUser(userFromStorage);
       }
       const refreshToken = await storage.get(StorageKey.REFRESH_TOKEN);
-      if (refreshToken) {
-        try {
-          const token =
-            await nmdcServerClient.exchangeRefreshToken(refreshToken);
-          nmdcServerClient.setTokens(token.access_token, refreshToken);
-          await _updateLoggedInUser();
-        } catch (e) {
-          // If we are offline, the exchange will fail but not necessarily because the token is
-          // invalid. In this case, don't remove the token from storage.
-          if (isOnline) {
-            await storage.remove(StorageKey.REFRESH_TOKEN);
+      if (isOnline) {
+        if (refreshToken) {
+          // If we are online and we have a refresh token, try to exchange it for an access token.
+          // If the exchange fails, clear the logged in user and remove the refresh token from
+          // storage.
+          try {
+            const token =
+              await nmdcServerClient.exchangeRefreshToken(refreshToken);
+            nmdcServerClient.setTokens(token.access_token, refreshToken);
+            await _updateLoggedInUser();
+          } catch (e) {
+            await _clearLoggedInUser();
           }
+        } else {
+          // If we are online and we do not have a refresh token, clear the logged in user.
+          await _clearLoggedInUser();
         }
       }
+      // If we are offline, do nothing. Keep the logged in user from storage if it exists.
 
       // If browser storage contains a color palette mode, load that into the Context and
       // apply the corresponding color palette to the UI.
