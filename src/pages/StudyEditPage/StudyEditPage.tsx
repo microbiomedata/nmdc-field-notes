@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   IonBackButton,
   IonButton,
@@ -50,6 +50,7 @@ const StudyEditPage: React.FC = () => {
     unlockMutation,
   } = useSubmission(submissionId);
   const { loggedInUser } = useStore();
+  const isDeleting = useRef(false);
 
   const loggedInUserCanEdit =
     loggedInUser &&
@@ -61,7 +62,7 @@ const StudyEditPage: React.FC = () => {
   });
 
   useIonViewDidLeave(() => {
-    if (loggedInUserCanEdit) {
+    if (loggedInUserCanEdit && !isDeleting.current) {
       unlockMutation.mutate(submissionId);
     }
   });
@@ -88,6 +89,7 @@ const StudyEditPage: React.FC = () => {
         {
           text: "Delete",
           handler: () => {
+            isDeleting.current = true;
             deleteMutation.mutate(submissionId, {
               onSuccess: () => router.push(paths.home, "back"),
             });

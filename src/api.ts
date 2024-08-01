@@ -177,6 +177,8 @@ export interface SubmissionMetadataCreate extends SubmissionMetadataBase {
 }
 
 export interface SubmissionMetadataUpdate extends SubmissionMetadataBase {
+  id: string;
+  status?: string;
   // Map of ORCID iD to permission level
   permissions?: Record<string, string>;
 }
