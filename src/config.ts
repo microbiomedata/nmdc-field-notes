@@ -15,7 +15,6 @@ const env = import.meta.env;
 interface Config {
   APP_VERSION: typeof env.PACKAGE_VERSION;
   NMDC_SERVER_API_URL: string;
-  SHOW_DEV_TOOLS_IN_PROD: boolean;
 }
 
 const config: Config = {
@@ -33,13 +32,6 @@ const config: Config = {
    */
   NMDC_SERVER_API_URL:
     env.VITE_NMDC_SERVER_API_URL || "https://data-dev.microbiomedata.org",
-
-  /**
-   * Boolean indicating whether to show React Query dev tools in production builds.
-   *
-   * This can be useful for debugging while running on device simulators.
-   */
-  SHOW_DEV_TOOLS_IN_PROD: env.VITE_SHOW_DEV_TOOLS_IN_PROD || false,
 };
 
 export default config;
