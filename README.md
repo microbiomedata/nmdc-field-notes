@@ -230,6 +230,109 @@ Here's how you can introduce a new environment variable to the code base:
 4. Elsewhere in the code base, access the variable via the `config` object exported by `config.ts` (instead of
    accessing `import.meta.env.{NAME}` directly)
 
+### Make a release
+
+Creating a release involves three steps: creating a new version tag and GitHub Release, creating and distributing a new Android build, creating and distributing a new iOS build.
+
+#### Create Version Tag and GitHub Release
+
+1. Ensure you are on the main branch and have the latest changes.
+    ```shell
+    git checkout main && git pull
+    ```
+2. Run a test build. Ensure that this command completes successfully and leaves _no local changes_. If there are local changes, commit them separately before proceeding.
+    ```shell
+    ionic capacitor sync --prod
+    ```
+3. Decide whether the new version will be a patch, minor, or major version. Then run the following to create a new version commit and tag.
+
+    > [!NOTE]
+    > During the beta testing period, use only minor or patch versions.
+
+    ```shell
+    npm version patch  # (or "minor" or "major")
+    git push && git push --tags
+    ```
+4. Check [GitHub Actions](https://github.com/microbiomedata/nmdc-field-notes/actions) to ensure that pushing the version tag triggered the workflow which creates a new GitHub Release and that it completed successfully.
+5. If proceeding to create Android or iOS builds, run another production build.
+    ```shell
+    ionic capacitor sync --prod
+    ```
+
+#### Create and Distribute a new Android Build
+
+<details>
+<summary>One-time keystore setup</summary>
+
+1. Obtain two passwords from other developers: the keystore decryption password and the keystore password. Save these securely in a password manager.
+2. Download the encrypted keystore file from NERSC.
+    ```shell
+    scp <user>@dtn01.nersc.gov:/global/cfs/cdirs/m3408/nmdc-field-notes/android-keystore/org.microbiomedata.fieldnotes.keystore.tar.gz.enc .
+    ```
+3. Decrypt the keystore file into the `android` directory. Enter the keystore decryption password when prompted.
+    ```shell
+    openssl enc -d -aes256 -pbkdf2 -in ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc | tar xz -C ./android
+    ```
+4. Remove the encrypted keystore file.
+    ```shell
+    rm org.microbiomedata.fieldnotes.keystore.tar.gz.enc
+    ```
+</details>
+
+1. If you are **not** continuing from the version tag section, checkout the version tag and run a production build.
+    ```shell
+    git checkout vX.Y.Z  # replace with the version tag
+    ionic capacitor sync --prod
+    ```
+2. Build the Android APK file.
+   1. Open the Android project in Android Studio.
+      ```shell
+      ionic capacitor open android
+      ```
+   2. In the toolbar, click `Build` > `Generate Signed App Bundle / APK...`
+   3. Select "APK" and click "Next"
+   4. Enter the following information and click "Next"
+       - Key store path: `<project root>/android/org.microbiomedata.fieldnotes.keystore`
+       - Key store password: `<keystore password>`
+       - Key alias: `nmdc field notes`
+       - Key password: `<keystore password>`
+   5. Select the "release" build variant and click "Create"
+   6. Wait for the gradle build to complete. Look for notification saying "Build completed successfully for module 'android.app.main' with 1 build variant."
+3. Distribute the APK file via the GitHub Release.
+   1. Make an appropriately named copy of the APK file.
+      ```shell
+      cp android/app/release/app-release.apk org.microbiomedata.fieldnotes-vX.Y.Z.apk  # replace with version number
+      ```
+   2. Edit the vX.Y.Z [GitHub Release](https://github.com/microbiomedata/nmdc-field-notes/releases) and attach the `org.microbiomedata.fieldnotes-vX.Y.Z.apk` file.
+
+#### Create and Distribute a new iOS Build
+
+> [!NOTE]
+> These instructions are based around distributing via TestFlight for the beta release period. These will be updated later to include App Store distribution once a stable release is ready.
+
+1. If you are **not** continuing from the version tag section, checkout the version tag and run a production build.
+    ```shell
+    git checkout vX.Y.Z  # replace with the version tag
+    ionic capacitor sync --prod
+    ```
+2. Create the iOS build:
+   1. Open the iOS project in Xcode.
+       ```shell
+       ionic capacitor open ios
+       ``` 
+   2. "[Create an archive of the app](https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases#Create-an-archive-of-your-app)" by clicking (in the toolbar) `Product` > `Archive`
+   3. "[Select the method of distribution](https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases#Select-a-method-for-distribution)" to be TestFlight & App Store
+   4. Click the "Validate App" button to validate the build with respect to App Store Connect
+   5. Click the "Distribute App" button to upload the build to App Store Connect
+3. Distribute the iOS build via TestFlight:
+   1. Log in to [App Store Connect](https://appstoreconnect.apple.com/)
+   2. Go to `Apps` > `NMDC Field Notes` > `TestFlight`
+   3. Under "iOS Builds," find the newly-uploaded build (in the table of all builds)
+   4. If it says "Missing Compliance", click "Manage", select "None of the algorithms mentioned above", and click "Save". The words "Ready to Submit" will take the place of the "Missing Compliance" message.
+   5. In the sidebar, click on one of the tester groups (e.g. NMDC iOS Developers)
+   6. Add the newly-uploaded build to this group (by clicking the `+` button next to "Builds"). At this point the people in that tester group will receive an email telling them that a new build is available to test (and that they can get it by opening the TestFlight app).
+   7. Repeat the previous two substeps for the other tester groups.
+
 ## License / Copyright
 
 NMDC Field Notes Phone Application (NMDC Field Notes) Copyright (c) 2024, The Regents of the University of California,
