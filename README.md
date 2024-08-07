@@ -232,7 +232,7 @@ Here's how you can introduce a new environment variable to the code base:
 
 ### Make a release
 
-Creating a release involves three steps: creating a new version tag and GitHub Release, creating and distributing a new Android build, creating and distributing a new iOS build.
+Creating a release involves three steps: creating a new version tag and GitHub Release, creating and distributing a new Android build, and creating and distributing a new iOS build.
 
 #### Create Version Tag and GitHub Release
 
@@ -244,7 +244,7 @@ Creating a release involves three steps: creating a new version tag and GitHub R
    ```shell
    ionic capacitor sync --prod
    ```
-3. Decide whether the new version will be a patch, minor, or major version. Then run the following to create a new version commit and tag.
+3. Decide whether the new version will be a patch, minor, or major version. Then, run the following commands to create a new version commit and tag.
 
    > [!NOTE]
    > During the beta testing period, use only minor or patch versions.
@@ -254,7 +254,7 @@ Creating a release involves three steps: creating a new version tag and GitHub R
    git push && git push --tags
    ```
 
-4. Check [GitHub Actions](https://github.com/microbiomedata/nmdc-field-notes/actions) to ensure that pushing the version tag triggered the workflow which creates a new GitHub Release and that it completed successfully.
+4. Check [GitHub Actions](https://github.com/microbiomedata/nmdc-field-notes/actions) to ensure that pushing the version tag triggered the workflow that creates a new GitHub Release, and that that workflow completed successfully.
 5. If proceeding to create Android or iOS builds, run another production build.
    ```shell
    ionic capacitor sync --prod
@@ -305,7 +305,7 @@ Creating a release involves three steps: creating a new version tag and GitHub R
       ```shell
       cp android/app/release/app-release.apk org.microbiomedata.fieldnotes-vX.Y.Z.apk  # replace with version number
       ```
-   2. Edit the vX.Y.Z [GitHub Release](https://github.com/microbiomedata/nmdc-field-notes/releases) and attach the `org.microbiomedata.fieldnotes-vX.Y.Z.apk` file.
+   2. Edit the vX.Y.Z [GitHub Release](https://github.com/microbiomedata/nmdc-field-notes/releases) and attach the `org.microbiomedata.fieldnotes-vX.Y.Z.apk` file to it.
 
 #### Create and Distribute a new iOS Build
 
