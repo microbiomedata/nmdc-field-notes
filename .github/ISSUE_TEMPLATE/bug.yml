@@ -4,8 +4,7 @@
 name: Report a bug
 description: Report a bug in a standardized format.
 
-# Initialize the issue title to this.
-title: ""
+# Note: We could use `title: "App is..."` to initialize the issue title to "App is..."
 
 # Automatically apply the "bug" label to the issue.
 labels: ["bug"]
