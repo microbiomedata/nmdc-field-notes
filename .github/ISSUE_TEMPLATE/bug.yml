@@ -1,0 +1,104 @@
+# This is an issue template that GitHub will render as a web form.
+# Reference: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
+
+name: Report a bug
+description: Report a bug in a standardized format.
+
+# Initialize the issue title to this.
+title: "App is..."
+
+# Automatically apply the "bug" label to the issue.
+labels: ["bug"]
+
+# Automatically add the issue to the NMDC Field Notes squad board (i.e. "microbiomedata/117").
+projects: ["microbiomedata/117"]
+
+# Don't automatically assign the issue to anyone.
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: >
+        This is our bug reporting form, which we use to gather information about bugs in a standardized format.
+        Before submitting this form, please search for any existing issues describing this bug. In case you
+        find one, we'd prefer you add comments to that existing issue instead of creating a new issue.
+  - type: input
+    id: bug-summary
+    attributes:
+      label: Bug summary
+      description: Please provide a one-line summary of the bug. If you've already done that in the issue title, you can copy/paste the issue title here.
+      placeholder: e.g., "Studies" screen shows two copies of each study
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug details
+      description: What did you expect and what did you observe? You can attach screenshots, videos, etc.
+      placeholder: e.g., I expected the "Studies" screen to show each study once, but it showed each study twice
+      value:
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: How can someone else reproduce the symptom?
+      placeholder: |
+        e.g.,
+        1. Launch app
+        2. Log in
+        3. Tap "Studies"
+      value:
+    validations:
+      required: false
+  - type: textarea
+    id: anything-else
+    attributes:
+      label: Anything else?
+      description: Providing more information up front helps us investigate issues with less "back and forth."
+      placeholder: Earlier that day, my internet connection was unstable
+      value:
+    validations:
+      required: false
+  # Note: I want the list of options to eventually be automatically derived from the list of GitHub Releases.
+  #       That may be achievable via a GitHub Action, per: https://github.com/orgs/community/discussions/4299
+  - type: dropdown
+    attributes:
+      label: App version
+      description: What version of the app are you using? You can get this from the "Settings" screen within the app.
+      multiple: false
+      options:
+        - 0.0.1
+        - 0.0.2
+        - 0.0.3
+        - (Other)
+      default: 0
+    validations:
+      required: false
+  # Note: This does not allow the user to explicitly indicate they are using the PWA version of the app.
+  #       If the developers want to add that option, they can update this issue template accordingly.
+  - type: dropdown
+    id: device-type
+    attributes:
+      label: Device type
+      description: Are you using an **Android** device (e.g. Google Pixel, Android Galaxy) or an **Apple** device (e.g. iPhone, iPad)?
+      multiple: false
+      options:
+        - Android
+        - Apple
+  - type: input
+    id: os-version
+    attributes:
+      label: Operating system version
+      description: Which operating system version are you using?
+      placeholder: e.g., iOS 17.6.1
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: >
+        Thank you for filling out our bug reporting form.
+        Once you submit this form, an issue will be created, which the repo maintainers
+        and community members (including you) will be able to comment on.
