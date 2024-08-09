@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { Network } from "@capacitor/network";
 import { PluginListenerHandle } from "@capacitor/core";
+import { onlineManager } from "@tanstack/react-query";
 
 interface NetworkStatusContextValue {
   isOnline: boolean;
@@ -31,9 +32,11 @@ const NetworkStatusProvider: React.FC<PropsWithChildren> = ({ children }) => {
       if (ignore) {
         return;
       }
+      onlineManager.setOnline(currentStatus.connected);
       setIsOnline(currentStatus.connected);
 
       listener = await Network.addListener("networkStatusChange", (status) => {
+        onlineManager.setOnline(currentStatus.connected);
         setIsOnline(status.connected);
       });
     }
@@ -48,6 +51,7 @@ const NetworkStatusProvider: React.FC<PropsWithChildren> = ({ children }) => {
     };
   }, []);
 
+  // Don't render the children until we know for certain the initial online status
   if (isOnline === null) {
     return null;
   }
