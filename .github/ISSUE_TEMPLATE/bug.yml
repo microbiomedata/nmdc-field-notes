@@ -62,19 +62,15 @@ body:
       value:
     validations:
       required: false
-  # Note: I want the list of options to eventually be automatically derived from the list of GitHub Releases.
+  # Note: I want to eventually present the user with a dropdown list of possible versions, automatically derived from the list of GitHub Releases.
   #       That may be achievable via a GitHub Action, per: https://github.com/orgs/community/discussions/4299
-  - type: dropdown
+  #       For now, I'll implement this as a freeform text input, so we don't have to manually maintain a list.
+  - type: input
+    id: app-version
     attributes:
       label: App version
       description: What version of the app are you using? You can get this from the "Settings" screen within the app.
-      multiple: false
-      options:
-        - 0.0.1
-        - 0.0.2
-        - 0.0.3
-        - (Other)
-      default: 0
+      placeholder: e.g., 0.0.1
     validations:
       required: false
   # Note: This does not allow the user to explicitly indicate they are using the PWA version of the app.
