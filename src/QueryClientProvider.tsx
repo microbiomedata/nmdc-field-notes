@@ -9,11 +9,13 @@ import { useStore } from "./Store";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+const GARBAGE_COLLECTION_TIME = 1000 * 60 * 60 * 24 * 7; // 1 week
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 20, // 20 seconds
-      gcTime: 1000 * 60 * 60 * 24 * 7, // 1 week
+      gcTime: GARBAGE_COLLECTION_TIME,
       retry: 0,
     },
   },
@@ -42,10 +44,10 @@ const QueryClientProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister: persister, maxAge: Infinity }}
+      persistOptions={{ persister: persister, maxAge: GARBAGE_COLLECTION_TIME }}
       onSuccess={() => {
         queryClient.resumePausedMutations().then(() => {
-          queryClient.invalidateQueries();
+          void queryClient.invalidateQueries();
         });
       }}
     >
