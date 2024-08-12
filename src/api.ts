@@ -288,6 +288,10 @@ class NmdcServerClient extends FetchClient {
     });
   }
 
+  setRefreshToken(refreshToken: string | null) {
+    this.refreshToken = refreshToken;
+  }
+
   setTokens(accessToken: string | null, refreshToken?: string | null) {
     if (accessToken !== null) {
       this.setBearerToken(accessToken);
@@ -295,7 +299,7 @@ class NmdcServerClient extends FetchClient {
       this.clearBearerToken();
     }
     if (refreshToken !== undefined) {
-      this.refreshToken = refreshToken;
+      this.setRefreshToken(refreshToken);
     }
   }
 
@@ -316,9 +320,7 @@ class NmdcServerClient extends FetchClient {
         error.response.status === 401 &&
         this.refreshToken !== null
       ) {
-        const tokenResponse = await this.exchangeRefreshToken(
-          this.refreshToken,
-        );
+        const tokenResponse = await this.exchangeRefreshToken();
         this.setTokens(tokenResponse.access_token);
         return super.fetch(endpoint, options);
       }
@@ -405,13 +407,16 @@ class NmdcServerClient extends FetchClient {
   // multiple requests that require authentication to be made in quick succession, and if they all
   // fail because of an expired or missing access token we don't want to initiate a token refresh
   // for each request when only one is needed.
-  async exchangeRefreshToken(refreshToken: string) {
+  async exchangeRefreshToken() {
     if (this.exchangeRefreshTokenCache !== null) {
       return this.exchangeRefreshTokenCache;
     }
+    if (this.refreshToken === null) {
+      throw new Error("No refresh token");
+    }
     const response = this.fetchJson<TokenResponse>("/auth/refresh", {
       method: "POST",
-      body: JSON.stringify({ refresh_token: refreshToken }),
+      body: JSON.stringify({ refresh_token: this.refreshToken }),
     });
     this.exchangeRefreshTokenCache = response;
     setTimeout(() => {

@@ -13,7 +13,7 @@ import {
   isValidColorPaletteMode,
 } from "./theme/colorPalette";
 import { produce } from "immer";
-import { useNetworkStatus } from "./NetworkStatus";
+import { Network } from "@capacitor/network";
 
 enum StorageKey {
   REFRESH_TOKEN = "refreshToken",
@@ -72,7 +72,6 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
   const [hiddenSlots, setHiddenSlots] = useState<Record<string, string[]>>({});
-  const { isOnline } = useNetworkStatus();
 
   // Initialize the store.
   useEffect(() => {
@@ -84,34 +83,40 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       });
       await storage.create();
 
-      // If browser storage contains an API refresh token, exchange it for an access token and
-      // set the API client's bearer token.
+      // If persistent storage contains an API refresh token, exchange it for an access token and
+      // set the API client's bearer token. If the user is not online, this will be the only
+      // indication that the user is logged in since the API client will not be able to fetch the
+      // user's information.
       const userFromStorage = await storage.get(StorageKey.LOGGED_IN_USER);
       if (userFromStorage) {
         setLoggedInUser(userFromStorage);
       }
+
+      // If persistent storage contains a refresh token, provide it to the API client.
       const refreshToken = await storage.get(StorageKey.REFRESH_TOKEN);
-      if (isOnline) {
-        if (refreshToken) {
-          // If we are online and we have a refresh token, try to exchange it for an access token.
-          // If the exchange fails, clear the logged in user and remove the refresh token from
-          // storage.
-          try {
-            const token =
-              await nmdcServerClient.exchangeRefreshToken(refreshToken);
-            nmdcServerClient.setTokens(token.access_token, refreshToken);
-            await _updateLoggedInUser();
-          } catch (e) {
-            await _clearLoggedInUser();
-          }
-        } else {
-          // If we are online and we do not have a refresh token, clear the logged in user.
-          await _clearLoggedInUser();
+      if (refreshToken) {
+        nmdcServerClient.setRefreshToken(refreshToken);
+      }
+
+      // If the user is online, attempt to exchange the refresh token for an access token. If
+      // successful, update the context to reflect the currently logged-in user. If the exchange
+      // fails, clear the logged-in user from the context and storage.
+      // If the user is offline, we don't do anything here. We know the refresh token exchange
+      // will fail so there's no need to attempt it. And we don't want to clear the logged-in user
+      // from the context if it was loaded from storage. This allows a user to be "presumptively"
+      // logged in if the app is opened while offline.
+      const networkStatus = await Network.getStatus();
+      if (networkStatus.connected) {
+        try {
+          const token = await nmdcServerClient.exchangeRefreshToken();
+          nmdcServerClient.setTokens(token.access_token);
+          await _updateLoggedInUser(storage);
+        } catch (e) {
+          await _clearLoggedInUser(storage);
         }
       }
-      // If we are offline, do nothing. Keep the logged in user from storage if it exists.
 
-      // If browser storage contains a color palette mode, load that into the Context and
+      // If persistent storage contains a color palette mode, load that into the Context and
       // apply the corresponding color palette to the UI.
       const colorPaletteModeFromStorage = await storage.get(
         StorageKey.COLOR_PALETTE_MODE,
@@ -124,7 +129,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setColorPaletteMode(sanitizedColorPaletteMode);
       applyColorPalette(sanitizedColorPaletteMode);
 
-      // If browser storage contains hidden slots, load them into the Context.
+      // If persistent storage contains hidden slots, load them into the Context.
       const hiddenSlotsFromStorage = await storage.get(StorageKey.HIDDEN_SLOTS);
       if (hiddenSlotsFromStorage) {
         setHiddenSlots(hiddenSlotsFromStorage);
@@ -138,18 +143,31 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     init().then(() => console.debug("Storage is initialized"));
   }, []);
 
-  async function _updateLoggedInUser() {
+  /**
+   * Update the context to reflect the currently logged-in user. This is ultimately determined by
+   * the access token stored in the NmdcServerClient instance. If storage is provided, persist
+   * the user to storage as well.
+   *
+   * @param storage
+   */
+  async function _updateLoggedInUser(storage: Storage | null) {
     const user = await nmdcServerClient.getCurrentUser();
     setLoggedInUser(user);
-    if (store) {
-      await store.set(StorageKey.LOGGED_IN_USER, user);
+    if (storage) {
+      await storage.set(StorageKey.LOGGED_IN_USER, user);
     }
   }
 
-  async function _clearLoggedInUser() {
+  /**
+   * Update the context to reflect that no user is logged in. If storage is provided, remove the
+   * logged-in user from storage as well.
+   *
+   * @param storage
+   */
+  async function _clearLoggedInUser(storage: Storage | null) {
     setLoggedInUser(null);
-    if (store) {
-      await store.remove(StorageKey.LOGGED_IN_USER);
+    if (storage) {
+      await storage.remove(StorageKey.LOGGED_IN_USER);
     }
   }
 
@@ -166,7 +184,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
    */
   async function login(accessToken: string, refreshToken: string) {
     nmdcServerClient.setTokens(accessToken, refreshToken);
-    await _updateLoggedInUser();
+    await _updateLoggedInUser(store);
     if (!store) {
       console.warn("login called before storage initialization");
       return;
@@ -180,7 +198,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
    */
   async function logout() {
     nmdcServerClient.setTokens(null, null);
-    await _clearLoggedInUser();
+    await _clearLoggedInUser(store);
     if (!store) {
       console.warn("logout called before storage initialization");
       return;
