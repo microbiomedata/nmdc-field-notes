@@ -12,7 +12,7 @@ const ThemedToolbar: React.FC<ThemedToolbarProps> = (props) => {
   const { isOnline } = useNetworkStatus();
   const { children, ...rest } = props;
   const isFetching = useIsFetching();
-  const isMutating = useIsMutating();
+  const isMutating = useIsMutating({ predicate: (m) => !m.state.isPaused });
 
   return (
     <>
@@ -27,12 +27,9 @@ const ThemedToolbar: React.FC<ThemedToolbarProps> = (props) => {
       <IonToolbar {...rest} className={classes.themedBackground}>
         {children}
       </IonToolbar>
-      <IonProgressBar
-        type="indeterminate"
-        style={{
-          visibility: isFetching || isMutating ? "visible" : "hidden",
-        }}
-      />
+      {(isFetching > 0 || isMutating > 0) && (
+        <IonProgressBar className={classes.loadingBar} type="indeterminate" />
+      )}
     </>
   );
 };

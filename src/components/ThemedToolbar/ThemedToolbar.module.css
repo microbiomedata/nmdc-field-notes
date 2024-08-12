@@ -32,3 +32,9 @@ ion-toolbar.offlineToolbar {
     margin-right: 4px;
   }
 }
+
+.loadingBar {
+  position: absolute;
+  bottom: 0;
+  z-index: 11;
+}
