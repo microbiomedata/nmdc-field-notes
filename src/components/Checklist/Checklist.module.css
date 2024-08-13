@@ -7,6 +7,26 @@
   color: var(--ion-color-primary);
 }
 
-.listItem {
-  color: var(--ion-color-primary);
+.section .title {
+  font-weight: bold;
 }
+
+.listItem {
+  color: black;
+}
+
+.listIcon {
+  position: absolute;
+  position: absolute;
+  top: 0px;
+  left: 10px;
+}
+
+.listLabel {
+  margin-left: 20px;
+}
+
+.popover {
+  --width: 80%;
+}
+

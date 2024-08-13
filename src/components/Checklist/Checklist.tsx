@@ -2,15 +2,14 @@ import React from "react";
 import {
   IonIcon,
   IonContent,
-  IonAccordion,
   IonAccordionGroup,
   IonItem,
   IonLabel,
   IonList,
   IonPopover,
 } from "@ionic/react";
-import { informationCircleOutline, checkmarkCircle } from "ionicons/icons";
-import { soilPackageChecklist } from "./md-in-js/soilPackageChecklist";
+import { informationCircleOutline, checkmarkCircle, checkmarkCircleOutline } from "ionicons/icons";
+import { fieldworkChecklist } from "./md-in-js/fieldworkChecklist";
 import Markdown from "react-markdown";
 
 import styles from "./Checklist.module.css";
@@ -19,16 +18,16 @@ const Checklist: React.FC = () => {
   return (
     <IonAccordionGroup>
       <div className={styles.header}>
-        <span className={styles.title}>{soilPackageChecklist.header}</span>
+        <span className={styles.title}>{fieldworkChecklist.header}</span>
         <IonIcon
-          id="hover-trigger-soil"
+          id="hover-trigger-fieldwork"
           icon={informationCircleOutline}
           size="small"
           color="primary"
         ></IonIcon>
-        <IonPopover trigger="hover-trigger-soil" triggerAction="hover">
+        <IonPopover className={styles.popover} trigger="hover-trigger-fieldwork" triggerAction="hover">
           <IonContent class="ion-padding">
-            {soilPackageChecklist.info.split("\n").map(function (item, index) {
+            {fieldworkChecklist.info.split("\n").map(function (item, index) {
               return (
                 <span key={index}>
                   {item}
@@ -41,33 +40,48 @@ const Checklist: React.FC = () => {
       </div>
 
       {/* Render each section in its own accordion. */}
-      {soilPackageChecklist.sections.map((s) => (
-        <IonAccordion key={s.title}>
-          <IonItem slot={"header"}>
-            <IonLabel>{s.title}</IonLabel>
+      {fieldworkChecklist.sections.map((s) => (
+        <div key={s.title}>
+          <IonItem slot={"header"} className={styles.section}>
+            <IonLabel className={styles.title}>{s.title}</IonLabel>
           </IonItem>
           <div className={"ion-padding"} slot={"content"}>
             <Markdown
               // Map Markdown elements to React elements.
               components={{
                 ul: (props) => <IonList>{props!.children}</IonList>,
-                li: (props) => (
+                li: (props) =>{
+                  // use different icon for the nested list item
+                  const match = /^NESTEDLISTITEM/.exec(props!.children?.toString() || '')
+                  return match ?  (
                   <IonItem className={styles.listItem} lines={"none"}>
                     <IonIcon
+                      className={styles.listIcon}
+                      size={"small"}
+                      slot={"start"}
+                      icon={checkmarkCircleOutline}
+                      color={"primary"}
+                    />
+                    <IonLabel className={styles.listLabel}>{props!.children?.toString().replace(/NESTEDLISTITEM /, '')}</IonLabel>
+                  </IonItem>
+                ): (
+                  <IonItem className={styles.listItem} lines={"none"}>
+                    <IonIcon
+                      className={styles.listIcon}
                       size={"small"}
                       slot={"start"}
                       icon={checkmarkCircle}
                       color={"primary"}
                     />
-                    <span>{props!.children}</span>
+                    <IonLabel className={styles.listLabel}>{props!.children}</IonLabel>
                   </IonItem>
-                ),
+                )},
               }}
             >
               {s.md}
             </Markdown>
           </div>
-        </IonAccordion>
+        </div>
       ))}
     </IonAccordionGroup>
   );
