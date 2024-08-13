@@ -6,8 +6,11 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonRefresher,
+  IonRefresherContent,
   IonSpinner,
   IonText,
+  RefresherEventDetail,
 } from "@ionic/react";
 import { SubmissionMetadata } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
@@ -27,12 +30,21 @@ const StudyList: React.FC = () => {
     );
   }, [submissionList.data]);
 
+  const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
+    await submissionList.refetch();
+    event.detail.complete();
+  };
+
   return (
     <>
       <IonListHeader>
         <IonLabel>Studies</IonLabel>
         <IonButton routerLink={paths.studyCreate}>New</IonButton>
       </IonListHeader>
+
+      <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+        <IonRefresherContent />
+      </IonRefresher>
 
       {concatenatedSubmissions.length === 0 ? (
         <IonText color="medium" className="ion-padding">

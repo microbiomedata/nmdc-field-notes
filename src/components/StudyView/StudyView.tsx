@@ -1,6 +1,14 @@
 import React from "react";
 import { useSubmission } from "../../queries";
-import { IonItem, IonLabel, IonList, useIonRouter } from "@ionic/react";
+import {
+  IonItem,
+  IonLabel,
+  IonList,
+  IonRefresher,
+  IonRefresherContent,
+  RefresherEventDetail,
+  useIonRouter,
+} from "@ionic/react";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import NoneOr from "../NoneOr/NoneOr";
 import SampleList from "../SampleList/SampleList";
@@ -53,8 +61,17 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
     });
   };
 
+  const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
+    await submission.refetch();
+    event.detail.complete();
+  };
+
   return (
     <>
+      <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+        <IonRefresherContent />
+      </IonRefresher>
+
       {submission.data && (
         <>
           <IonList className="ion-padding-bottom">

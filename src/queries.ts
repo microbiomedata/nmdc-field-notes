@@ -302,7 +302,7 @@ export function useSubmissionCreate() {
   >({
     mutationKey: submissionKeys.create(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
+      return queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
     },
   });
   return mutation;
