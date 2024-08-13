@@ -7,6 +7,7 @@ import SampleList from "../SampleList/SampleList";
 import { getSubmissionSamples } from "../../utils";
 import { produce } from "immer";
 import paths from "../../paths";
+import { useNetworkStatus } from "../../NetworkStatus";
 
 interface StudyViewProps {
   submissionId: string;
@@ -19,16 +20,19 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
     updateMutation,
     lockMutation,
   } = useSubmission(submissionId);
+  const { isOnline } = useNetworkStatus();
 
   const handleSampleCreate = async () => {
     if (!submission.data) {
       return;
     }
 
-    try {
-      await lockMutation.mutateAsync(submissionId);
-    } catch {
-      return;
+    if (isOnline) {
+      try {
+        await lockMutation.mutateAsync(submissionId);
+      } catch {
+        return;
+      }
     }
 
     const updatedSubmission = produce(submission.data, (draft) => {

@@ -29,8 +29,9 @@ import { produce } from "immer";
 import Validator, { ValidationResults } from "../../Validator";
 import { ellipsisHorizontal, ellipsisVertical } from "ionicons/icons";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
-import { useStore } from "../../Store";
 import Banner from "../../components/Banner/Banner";
+import { useNetworkStatus } from "../../NetworkStatus";
+import { useIsSubmissionEditable } from "../../useIsSubmissionEditable";
 
 interface SamplePageParams {
   submissionId: string;
@@ -38,7 +39,6 @@ interface SamplePageParams {
 }
 
 const SamplePage: React.FC = () => {
-  const { loggedInUser } = useStore();
   const schema = useSubmissionSchema();
   const router = useIonRouter();
   const [presentAlert] = useIonAlert();
@@ -57,6 +57,7 @@ const SamplePage: React.FC = () => {
     () => getSubmissionSample(submission.data, sampleIndexInt),
     [submission.data, sampleIndexInt],
   );
+  const { isOnline } = useNetworkStatus();
 
   const getSlotValue = useCallback(
     (slotName: SlotDefinitionName) => {
@@ -76,10 +77,7 @@ const SamplePage: React.FC = () => {
     return validator;
   }, [schema.data?.schema, schemaClassName]);
 
-  const loggedInUserCanEdit =
-    loggedInUser &&
-    (submission.data?.locked_by === null ||
-      submission.data?.locked_by?.id === loggedInUser.id);
+  const loggedInUserCanEdit = useIsSubmissionEditable(submission.data);
 
   const handleSlotClick = (slot: SlotDefinition) => {
     setModalSlot(slot);
@@ -104,6 +102,11 @@ const SamplePage: React.FC = () => {
     updateMutation.mutate(updatedSubmission, {
       onSuccess: () => setModalSlot(null),
     });
+    if (!isOnline) {
+      // If we're offline, the updateMutation will stay in a paused state and not fire onSuccess
+      // until we go back online. So we need to manually close the modal here.
+      setModalSlot(null);
+    }
   };
 
   const handleModalValueChange = (value: SampleDataValue) => {
@@ -139,11 +142,13 @@ const SamplePage: React.FC = () => {
   };
 
   useIonViewWillEnter(() => {
-    lockMutation.mutate(submissionId);
+    if (isOnline) {
+      lockMutation.mutate(submissionId);
+    }
   });
 
   useIonViewDidLeave(() => {
-    if (loggedInUserCanEdit) {
+    if (isOnline && loggedInUserCanEdit) {
       unlockMutation.mutate(submissionId);
     }
   });
@@ -224,14 +229,17 @@ const SamplePage: React.FC = () => {
           </IonContent>
         </IonPopover>
 
-        {!loggedInUserCanEdit && (
-          <Banner color="warning">
-            <IonLabel>
-              Editing is disabled because this sample is currently being edited
-              by {submission.data?.locked_by?.name || "an unknown user"}
-            </IonLabel>
-          </Banner>
-        )}
+        {!lockMutation.isPending &&
+          !lockMutation.isIdle &&
+          !loggedInUserCanEdit && (
+            <Banner color="warning">
+              <IonLabel>
+                Editing is disabled because this sample is currently being
+                edited by{" "}
+                {submission.data?.locked_by?.name || "an unknown user"}
+              </IonLabel>
+            </Banner>
+          )}
 
         {schema.data && (
           <>
@@ -250,7 +258,7 @@ const SamplePage: React.FC = () => {
               onCancel={() => setModalSlot(null)}
               onSave={handleSave}
               onChange={handleModalValueChange}
-              saving={updateMutation.isPending}
+              saving={isOnline && updateMutation.isPending}
               schema={schema.data.schema}
               slot={modalSlot}
               validationResult={

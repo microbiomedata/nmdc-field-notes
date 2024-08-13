@@ -29,8 +29,9 @@ import {
   ellipsisVertical,
 } from "ionicons/icons";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
-import { useStore } from "../../Store";
 import Banner from "../../components/Banner/Banner";
+import { useNetworkStatus } from "../../NetworkStatus";
+import { useIsSubmissionEditable } from "../../useIsSubmissionEditable";
 
 interface StudyEditPageParams {
   submissionId: string;
@@ -48,20 +49,19 @@ const StudyEditPage: React.FC = () => {
     lockMutation,
     unlockMutation,
   } = useSubmission(submissionId);
-  const { loggedInUser } = useStore();
   const isDeleting = useRef(false);
+  const { isOnline } = useNetworkStatus();
 
-  const loggedInUserCanEdit =
-    loggedInUser &&
-    (submission.data?.locked_by === null ||
-      submission.data?.locked_by?.id === loggedInUser.id);
+  const loggedInUserCanEdit = useIsSubmissionEditable(submission.data);
 
   useIonViewWillEnter(() => {
-    lockMutation.mutate(submissionId);
+    if (isOnline) {
+      lockMutation.mutate(submissionId);
+    }
   });
 
   useIonViewDidLeave(() => {
-    if (loggedInUserCanEdit && !isDeleting.current) {
+    if (isOnline && loggedInUserCanEdit && !isDeleting.current) {
       unlockMutation.mutate(submissionId);
     }
   });
@@ -139,14 +139,16 @@ const StudyEditPage: React.FC = () => {
           </IonContent>
         </IonPopover>
 
-        {!lockMutation.isPending && !loggedInUserCanEdit && (
-          <Banner color="warning">
-            <IonLabel>
-              Editing is disabled because this study is currently being edited
-              by {submission.data?.locked_by?.name || "an unknown user"}
-            </IonLabel>
-          </Banner>
-        )}
+        {!lockMutation.isPending &&
+          !lockMutation.isIdle &&
+          !loggedInUserCanEdit && (
+            <Banner color="warning">
+              <IonLabel>
+                Editing is disabled because this study is currently being edited
+                by {submission.data?.locked_by?.name || "an unknown user"}
+              </IonLabel>
+            </Banner>
+          )}
 
         {submission.data && (
           <StudyForm
