@@ -41,18 +41,22 @@ export const submissionKeys = {
 
 export function addDefaultMutationFns(queryClient: QueryClient) {
   queryClient.setMutationDefaults(submissionKeys.details(), {
-    mutationFn: async (updated: SubmissionMetadata) => {
+    mutationFn: async (updated: SubmissionMetadataUpdate) => {
       await queryClient.cancelQueries({
         queryKey: submissionKeys.detail(updated.id),
       });
       // Keep the permissions updated with the PI ORCID as an owner
-      const updatedWithPermissions: SubmissionMetadataUpdate = updated;
-      const { piOrcid } = updated.metadata_submission.studyForm;
-      if (piOrcid) {
-        updatedWithPermissions.permissions = {
-          [piOrcid]: "owner",
-        };
-      }
+      const updatedWithPermissions: SubmissionMetadataUpdate = produce(
+        updated,
+        (draft) => {
+          const { piOrcid } = draft.metadata_submission.studyForm;
+          if (piOrcid) {
+            draft.permissions = {
+              [piOrcid]: "owner",
+            };
+          }
+        },
+      );
       return nmdcServerClient.updateSubmission(
         updated.id,
         updatedWithPermissions,
@@ -71,7 +75,7 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
       const { piOrcid } = created.metadata_submission.studyForm;
       if (piOrcid) {
         return nmdcServerClient.updateSubmission(created.id, {
-          metadata_submission: created.metadata_submission,
+          ...created,
           permissions: {
             [piOrcid]: "owner",
           },
