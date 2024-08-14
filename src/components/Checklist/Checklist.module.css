@@ -1,32 +1,24 @@
-.header {
-  padding: 10px 10px 10px 10px;
-}
-
-.header .title {
-  font-weight: bold;
-  color: var(--ion-color-primary);
-}
-
-.section .title {
-  font-weight: bold;
+.info {
+  padding: 0px 15px 0px 15px;
+  font-size: 0.875rem;
+  opacity: 0.6;
 }
 
 .listItem {
   color: black;
+  a {
+    text-decoration: none;
+  }
 }
 
 .listIcon {
   position: absolute;
   position: absolute;
-  top: 0px;
-  left: 10px;
+  top: 5px;
+  left: 15px;
 }
 
 .listLabel {
-  margin-left: 20px;
-}
-
-.popover {
-  --width: 80%;
+  margin-left: 25px;
 }
 

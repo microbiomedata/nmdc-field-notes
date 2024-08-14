@@ -1,6 +1,7 @@
 export const title = `What to consider reviewing prior to going into the field`;
 
 // language=Markdown
+export const info = ``;
 // Mark nested list item with 'NESTEDLISTITEM'
 const rawMarkdownContent = `
 * Review the NMDC metadata requirements for you sample type(s)  
@@ -10,7 +11,7 @@ const rawMarkdownContent = `
   * NESTEDLISTITEM Be sure to know how to read measurements from each specific tool you plan to use (eg., compass, pH testing strips, maps)  
 * Consider setting up a study in the app prior to going out into the field  
 * Consider entering a test sample into the app to get familiar with the process and information needed  
-* Review the CARE principles for proper data sovereignty for indigenous lands and this figure from the Geological Society of America describes other aspects of Field Ethics ([https://www.geosociety.org/GSA/Education_Careers/GSA/edu-career/fieldethics.aspx?hkey=de4690fb-49ef-460a-8e86-21797ea969d8](https://www.geosociety.org/GSA/Education_Careers/GSA/edu-career/fieldethics.aspx?hkey=de4690fb-49ef-460a-8e86-21797ea969d8))
+* Review the CARE principles for proper data sovereignty for indigenous lands and this figure from the Geological Society of America describes other aspects of [Field Ethics](https://www.geosociety.org/GSA/Education_Careers/GSA/edu-career/fieldethics.aspx?hkey=de4690fb-49ef-460a-8e86-21797ea969d8)
 
 ![image1](assets/images/field-ethics.png)
 `;

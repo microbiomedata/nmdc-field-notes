@@ -7,15 +7,13 @@ import {
   IonSelectOption,
   IonText,
   IonTextarea,
-  IonPopover,
-  IonContent,
 } from "@ionic/react";
 import RequiredMark from "../RequiredMark/RequiredMark";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import { SubmissionMetadataCreate, TEMPLATES } from "../../api";
 import { Controller, useForm } from "react-hook-form";
 import { useStore } from "../../Store";
-import { colorWand as autoFill, informationCircleOutline } from "ionicons/icons";
+import { colorWand as autoFill } from "ionicons/icons";
 
 import styles from "./StudyForm.module.css";
 
@@ -222,30 +220,7 @@ const StudyForm: React.FC<StudyFormProps> = ({
         />
       </div>
 
-      <SectionHeader >
-        Environment
-        <IonIcon
-          id="hover-trigger-soil"
-          icon={informationCircleOutline}
-          size="small"
-          color="primary"
-        ></IonIcon>
-        <IonPopover className={styles.popover} trigger="hover-trigger-soil" triggerAction="hover">
-          <IonContent class="ion-padding" >
-          NMDC Submission Schema
-          <br></br>
-          <span className={styles["text-muted"]} >Schema for biosamples based on MIxS and other standards</span>
-          <br></br><br></br>
-          {Object.entries(TEMPLATES).map(([key, template]) => (
-            <div key={key}>
-              <a href={"https://microbiomedata.github.io/submission-schema/" + template.schemaClass}>{template.displayName}</a>
-              <br></br>
-              <br></br>
-            </div>
-          ))}
-          </IonContent>
-        </IonPopover>
-      </SectionHeader>
+      <SectionHeader>Environment</SectionHeader>
 
       <div className="ion-padding">
         <Controller

@@ -1,51 +1,28 @@
 import React from "react";
 import {
   IonIcon,
-  IonContent,
-  IonAccordionGroup,
   IonItem,
   IonLabel,
   IonList,
-  IonPopover,
 } from "@ionic/react";
-import { informationCircleOutline, checkmarkCircle, checkmarkCircleOutline } from "ionicons/icons";
-import { fieldworkChecklist } from "./md-in-js/fieldworkChecklist";
+import { checkmarkCircle, checkmarkCircleOutline } from "ionicons/icons";
 import Markdown from "react-markdown";
-
+import SectionHeader from "../SectionHeader/SectionHeader";
+import { fieldworkChecklist } from "./md-in-js/fieldworkChecklist";
 import styles from "./Checklist.module.css";
 
 const Checklist: React.FC = () => {
   return (
-    <IonAccordionGroup>
-      <div className={styles.header}>
-        <span className={styles.title}>{fieldworkChecklist.header}</span>
-        <IonIcon
-          id="hover-trigger-fieldwork"
-          icon={informationCircleOutline}
-          size="small"
-          color="primary"
-        ></IonIcon>
-        <IonPopover className={styles.popover} trigger="hover-trigger-fieldwork" triggerAction="hover">
-          <IonContent class="ion-padding">
-            {fieldworkChecklist.info.split("\n").map(function (item, index) {
-              return (
-                <span key={index}>
-                  {item}
-                  <br />
-                </span>
-              );
-            })}
-          </IonContent>
-        </IonPopover>
+    <div>
+      <div className={styles.info}>
+        <Markdown>{fieldworkChecklist.info}</Markdown>
       </div>
-
       {/* Render each section in its own accordion. */}
       {fieldworkChecklist.sections.map((s) => (
         <div key={s.title}>
-          <IonItem slot={"header"} className={styles.section}>
-            <IonLabel className={styles.title}>{s.title}</IonLabel>
-          </IonItem>
-          <div className={"ion-padding"} slot={"content"}>
+          <SectionHeader>{s.title}</SectionHeader>
+          <div slot={"content"}>
+            <Markdown className={styles.info}>{s.info}</Markdown>
             <Markdown
               // Map Markdown elements to React elements.
               components={{
@@ -80,10 +57,11 @@ const Checklist: React.FC = () => {
             >
               {s.md}
             </Markdown>
+            <br></br>
           </div>
         </div>
       ))}
-    </IonAccordionGroup>
+    </div>
   );
 };
 

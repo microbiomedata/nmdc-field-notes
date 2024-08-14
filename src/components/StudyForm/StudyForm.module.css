@@ -2,15 +2,3 @@
   font-size: 0.75rem;
   color: var(--ion-color-danger);
 }
-
-.popover {
-  --width: 80%;
-  a {
-    text-decoration: none;
-  }
-}
-
-.text-muted{
-  font-size: 0.75rem;
-  opacity: 0.6;
-}

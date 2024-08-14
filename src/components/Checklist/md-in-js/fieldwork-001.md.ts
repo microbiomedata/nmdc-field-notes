@@ -1,6 +1,7 @@
 export const title = `Basic recommendations for fieldwork`;
 
 // language=Markdown
+export const info = ``;
 // Mark nested list item with 'NESTEDLISTITEM'
 const rawMarkdownContent = `
 * Bring sunscreen, hat, sunglasses, bug spray  
