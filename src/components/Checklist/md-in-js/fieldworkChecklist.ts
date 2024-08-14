@@ -12,7 +12,7 @@ type Section = {
 const sections: Array<Section> = [
   { title: s1.title, md: s1.markdownContent, info: s1.info },
   { title: s2.title, md: s2.markdownContent, info: s2.info },
-  { title: s3.title, md: s3.markdownContent , info: s3.info},
+  { title: s3.title, md: s3.markdownContent, info: s3.info },
 ];
 
 const header = "Fieldwork";

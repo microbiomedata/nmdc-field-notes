@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-} from "@ionic/react";
+import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { checkmarkCircle, checkmarkCircleOutline } from "ionicons/icons";
 import Markdown from "react-markdown";
 import SectionHeader from "../SectionHeader/SectionHeader";
@@ -27,32 +22,41 @@ const Checklist: React.FC = () => {
               // Map Markdown elements to React elements.
               components={{
                 ul: (props) => <IonList>{props!.children}</IonList>,
-                li: (props) =>{
+                li: (props) => {
                   // use different icon for the nested list item
-                  const match = /^NESTEDLISTITEM/.exec(props!.children?.toString() || '')
-                  return match ?  (
-                  <IonItem className={styles.listItem} lines={"none"}>
-                    <IonIcon
-                      className={styles.listIcon}
-                      size={"small"}
-                      slot={"start"}
-                      icon={checkmarkCircleOutline}
-                      color={"primary"}
-                    />
-                    <IonLabel className={styles.listLabel}>{props!.children?.toString().replace(/NESTEDLISTITEM /, '')}</IonLabel>
-                  </IonItem>
-                ): (
-                  <IonItem className={styles.listItem} lines={"none"}>
-                    <IonIcon
-                      className={styles.listIcon}
-                      size={"small"}
-                      slot={"start"}
-                      icon={checkmarkCircle}
-                      color={"primary"}
-                    />
-                    <IonLabel className={styles.listLabel}>{props!.children}</IonLabel>
-                  </IonItem>
-                )},
+                  const match = /^NESTEDLISTITEM/.exec(
+                    props!.children?.toString() || "",
+                  );
+                  return match ? (
+                    <IonItem className={styles.listItem} lines={"none"}>
+                      <IonIcon
+                        className={styles.listIcon}
+                        size={"small"}
+                        slot={"start"}
+                        icon={checkmarkCircleOutline}
+                        color={"primary"}
+                      />
+                      <IonLabel className={styles.listLabel}>
+                        {props!.children
+                          ?.toString()
+                          .replace(/NESTEDLISTITEM /, "")}
+                      </IonLabel>
+                    </IonItem>
+                  ) : (
+                    <IonItem className={styles.listItem} lines={"none"}>
+                      <IonIcon
+                        className={styles.listIcon}
+                        size={"small"}
+                        slot={"start"}
+                        icon={checkmarkCircle}
+                        color={"primary"}
+                      />
+                      <IonLabel className={styles.listLabel}>
+                        {props!.children}
+                      </IonLabel>
+                    </IonItem>
+                  );
+                },
               }}
             >
               {s.md}
