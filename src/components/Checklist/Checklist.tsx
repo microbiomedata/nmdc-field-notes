@@ -8,7 +8,7 @@ import styles from "./Checklist.module.css";
 
 const Checklist: React.FC = () => {
   return (
-    <div>
+    <div className={"ion-padding-bottom"}>
       <div className={styles.info}>
         <Markdown>{fieldworkChecklist.info}</Markdown>
       </div>
@@ -64,7 +64,6 @@ const Checklist: React.FC = () => {
           </div>
         </div>
       ))}
-      <br></br>
     </div>
   );
 };
