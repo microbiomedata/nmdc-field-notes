@@ -61,10 +61,10 @@ const Checklist: React.FC = () => {
             >
               {s.md}
             </Markdown>
-            <br></br>
           </div>
         </div>
       ))}
+      <br></br>
     </div>
   );
 };
