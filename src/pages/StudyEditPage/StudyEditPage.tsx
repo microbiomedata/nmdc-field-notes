@@ -80,23 +80,32 @@ const StudyEditPage: React.FC = () => {
   };
 
   const handleDeleteInitiate = () => {
-    presentAlert({
-      header: "Delete Study",
-      message:
-        "Are you sure you want to delete this study? All associated sample data will be deleted as well.",
-      buttons: [
-        "Cancel",
-        {
-          text: "Delete",
-          handler: () => {
-            isDeleting.current = true;
-            deleteMutation.mutate(submissionId, {
-              onSuccess: () => router.push(paths.home, "back"),
-            });
+    if (isOnline) {
+      presentAlert({
+        header: "Delete Study",
+        message:
+          "Are you sure you want to delete this study? All associated sample data will be deleted as well.",
+        buttons: [
+          "Cancel",
+          {
+            text: "Delete",
+            handler: () => {
+              isDeleting.current = true;
+              deleteMutation.mutate(submissionId, {
+                onSuccess: () => router.push(paths.home, "back"),
+              });
+            },
           },
-        },
-      ],
-    });
+        ],
+      });
+    } else {
+      presentAlert({
+        header: "Delete Study",
+        message:
+          "Study deletion is disabled while offline. Please try again when online.",
+        buttons: ["OK"],
+      });
+    }
   };
 
   return (

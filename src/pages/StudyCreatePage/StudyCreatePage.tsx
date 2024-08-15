@@ -16,12 +16,15 @@ import paths from "../../paths";
 import { initSubmission } from "../../data";
 import { checkmark } from "ionicons/icons";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
+import { useNetworkStatus } from "../../NetworkStatus";
+import FixedCenteredMessage from "../../components/FixedCenteredMessage/FixedCenteredMessage";
 
 const StudyCreatePage: React.FC = () => {
   const router = useIonRouter();
   const [present] = useIonToast();
   const submissionCreate = useSubmissionCreate();
   const submission = useMemo(initSubmission, []);
+  const { isOnline } = useNetworkStatus();
 
   const handleSave = async (submission: SubmissionMetadataCreate) => {
     submissionCreate.mutate(submission, {
@@ -47,7 +50,14 @@ const StudyCreatePage: React.FC = () => {
         </ThemedToolbar>
       </IonHeader>
       <IonContent>
-        <StudyForm submission={submission} onSave={handleSave} />
+        {isOnline ? (
+          <StudyForm submission={submission} onSave={handleSave} />
+        ) : (
+          <FixedCenteredMessage>
+            Study creation is disabled while offline. Please try again when
+            online.
+          </FixedCenteredMessage>
+        )}
       </IonContent>
     </IonPage>
   );
