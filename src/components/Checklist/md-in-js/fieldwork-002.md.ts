@@ -13,7 +13,7 @@ const rawMarkdownContent = `
 * Consider entering a test sample into the app to get familiar with the process and information needed  
 * Review the CARE principles for proper data sovereignty for indigenous lands and this figure from the Geological Society of America describes other aspects of [Field Ethics](https://www.geosociety.org/GSA/Education_Careers/GSA/edu-career/fieldethics.aspx?hkey=de4690fb-49ef-460a-8e86-21797ea969d8)
 
-![image1](assets/images/field-ethics.png)
+![Field Ethics and Sampling Checklist](assets/images/field-ethics.png)
 `;
 
 export const markdownContent = rawMarkdownContent.trim();
