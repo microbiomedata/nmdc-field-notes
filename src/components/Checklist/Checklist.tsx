@@ -39,7 +39,7 @@ const Checklist: React.FC = () => {
                       <IonLabel className={styles.listLabel}>
                         {props!.children
                           ?.toString()
-                          .replace(/NESTEDLISTITEM /, "")}
+                          .replace(/^NESTEDLISTITEM /, "")}
                       </IonLabel>
                     </IonItem>
                   ) : (
