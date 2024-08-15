@@ -32,6 +32,7 @@ import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import Banner from "../../components/Banner/Banner";
 import { useNetworkStatus } from "../../NetworkStatus";
 import { useIsSubmissionEditable } from "../../useIsSubmissionEditable";
+import MutationErrorBanner from "../../components/MutationErrorBanner/MutationErrorBanner";
 
 interface SamplePageParams {
   submissionId: string;
@@ -188,6 +189,11 @@ const SamplePage: React.FC = () => {
     });
   };
 
+  const handleModalCancel = () => {
+    setModalSlot(null);
+    updateMutation.reset();
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -253,9 +259,14 @@ const SamplePage: React.FC = () => {
             <SampleSlotEditModal
               defaultValue={modalSlot && sample?.[modalSlot.name]}
               disabled={!loggedInUserCanEdit}
+              errorBanner={
+                <MutationErrorBanner mutation={updateMutation}>
+                  Error saving sample
+                </MutationErrorBanner>
+              }
               getSlotValue={getSlotValue}
               goldEcosystemTree={schema.data.goldEcosystemTree}
-              onCancel={() => setModalSlot(null)}
+              onCancel={handleModalCancel}
               onSave={handleSave}
               onChange={handleModalValueChange}
               saving={isOnline && updateMutation.isPending}

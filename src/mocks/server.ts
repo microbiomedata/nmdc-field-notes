@@ -18,7 +18,7 @@ export function resetFixtureData() {
   submissions = submissionsFixture;
 }
 
-export const handlers = [
+const handlers = [
   http.get<
     Record<string, never>,
     Record<string, never>,
@@ -135,6 +135,26 @@ export const handlers = [
   ),
 ];
 
+// These do not correspond to anything in the actual nmdc-server API. They are just convenience
+// endpoints used for testing. See also: FakeErrorTestClient in fixtures.ts.
+const fakeErrorHandlers = [
+  http.all(`${NMDC_SERVER_API_URL}/_fake-error-tester`, async ({ request }) => {
+    const url = new URL(request.url);
+    const status = parseInt(url.searchParams.get("status") || "200");
+    // This delay helps to test transitions between loading, error, and success states
+    await delay(100);
+    return HttpResponse.json(
+      {
+        detail: status < 300 ? "Everything is fine" : "Something bad happened",
+      },
+      { status },
+    );
+  }),
+];
+handlers.push(...fakeErrorHandlers);
+
+// The remaining handlers are used to test specific error conditions, so they are not added to the
+// mock server by default. Instead they are imported and used in specific test files.
 export const patchMetadataSubmissionError = http.patch<{ id: string }>(
   `${NMDC_SERVER_API_URL}/api/metadata_submission/:id`,
   async () => {

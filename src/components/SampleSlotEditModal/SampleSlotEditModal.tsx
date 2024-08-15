@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   SchemaDefinition,
   SlotDefinition,
@@ -115,6 +115,7 @@ function getSelectState(
 interface SampleSlotEditModalProps {
   defaultValue: SampleDataValue;
   disabled?: boolean;
+  errorBanner?: React.ReactNode;
   getSlotValue: (slot: SlotDefinitionName) => SampleDataValue;
   goldEcosystemTree: GoldEcosystemTreeNode;
   onCancel: () => void;
@@ -128,6 +129,7 @@ interface SampleSlotEditModalProps {
 const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
   defaultValue,
   disabled,
+  errorBanner,
   getSlotValue,
   goldEcosystemTree,
   onCancel,
@@ -138,7 +140,17 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
   slot,
   validationResult,
 }) => {
-  const [value, setValue] = React.useState<SampleDataValue>(defaultValue);
+  const modal = useRef<HTMLIonModalElement>(null);
+  const [value, setValue] = useState<SampleDataValue>(defaultValue);
+
+  // Re-apply the default value when the slot changes.
+  // See: https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [previousSlot, setPreviousSlot] = useState<SlotDefinition | null>(slot);
+  if (slot !== previousSlot) {
+    setValue(defaultValue);
+    setPreviousSlot(slot);
+  }
+
   const slotIsNumeric: boolean = useMemo(() => {
     if (!slot) {
       return false;
@@ -159,10 +171,6 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
   const selectState = useMemo(() => {
     return getSelectState(schema, slot, getSlotValue, goldEcosystemTree);
   }, [getSlotValue, goldEcosystemTree, schema, slot]);
-
-  useEffect(() => {
-    setValue(defaultValue);
-  }, [defaultValue]);
 
   const handleValueChange = (value: Nullable<string>) => {
     let parsed: SampleDataValue = value;
@@ -199,12 +207,14 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
 
   return (
     <IonModal
+      ref={modal}
       className={styles.sampleSlotEditModal}
       breakpoints={[0, 1]}
       initialBreakpoint={1}
       isOpen={slot !== null}
       onIonModalDidDismiss={onCancel}
     >
+      {errorBanner}
       {slot && (
         <IonContent className="ion-padding">
           <h2>{slot.title || slot.name}</h2>
@@ -297,7 +307,14 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
           <IonGrid>
             <IonRow>
               <IonCol>
-                <IonButton fill="outline" expand="block" onClick={onCancel}>
+                <IonButton
+                  fill="outline"
+                  expand="block"
+                  // Call dismiss here instead of onCancel directly so that the modal can animate
+                  // out of view before the onCancel handler is called via the IonModalDidDismiss
+                  // event
+                  onClick={() => modal.current?.dismiss()}
+                >
                   Cancel
                 </IonButton>
               </IonCol>

@@ -32,6 +32,7 @@ import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import Banner from "../../components/Banner/Banner";
 import { useNetworkStatus } from "../../NetworkStatus";
 import { useIsSubmissionEditable } from "../../useIsSubmissionEditable";
+import MutationErrorBanner from "../../components/MutationErrorBanner/MutationErrorBanner";
 
 interface StudyEditPageParams {
   submissionId: string;
@@ -120,6 +121,13 @@ const StudyEditPage: React.FC = () => {
         </ThemedToolbar>
       </IonHeader>
       <IonContent>
+        <MutationErrorBanner mutation={updateMutation}>
+          Error saving study
+        </MutationErrorBanner>
+        <MutationErrorBanner mutation={deleteMutation}>
+          Error deleting study
+        </MutationErrorBanner>
+
         <IonPopover
           trigger="ellipsis-menu-trigger"
           triggerAction="click"

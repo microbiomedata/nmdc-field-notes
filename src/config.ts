@@ -15,6 +15,7 @@ const env = import.meta.env;
 interface Config {
   APP_VERSION: typeof env.PACKAGE_VERSION;
   NMDC_SERVER_API_URL: string;
+  SUPPORT_EMAIL: string;
 }
 
 const config: Config = {
@@ -32,6 +33,11 @@ const config: Config = {
    */
   NMDC_SERVER_API_URL:
     env.VITE_NMDC_SERVER_API_URL || "https://data-dev.microbiomedata.org",
+
+  /**
+   * Support email address.
+   */
+  SUPPORT_EMAIL: env.VITE_SUPPORT_EMAIL || "support@microbiomedata.org",
 };
 
 export default config;

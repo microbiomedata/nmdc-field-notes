@@ -1,5 +1,6 @@
-import { SubmissionMetadata } from "../api";
+import { FetchClient, SubmissionMetadata } from "../api";
 import { initAddressForm, initContextForm, initMultiOmicsForm } from "../data";
+import config from "../config";
 
 export function generateSubmission(
   numberOfSamples: number,
@@ -197,3 +198,27 @@ export const submissions: SubmissionMetadata[] = [
     source_client: "field_notes",
   },
 ];
+
+export class FakeErrorTestClient extends FetchClient {
+  private static readonly successEndpoint = "/_fake-error-tester";
+  private static readonly errorEndpoint = "/_fake-error-tester?status=500";
+  constructor() {
+    super(config.NMDC_SERVER_API_URL);
+  }
+  getSuccess() {
+    return this.fetch(FakeErrorTestClient.successEndpoint);
+  }
+  getError() {
+    return this.fetch(FakeErrorTestClient.errorEndpoint);
+  }
+  postSuccess() {
+    return this.fetch(FakeErrorTestClient.successEndpoint, {
+      method: "POST",
+    });
+  }
+  postError() {
+    return this.fetch(FakeErrorTestClient.errorEndpoint, {
+      method: "POST",
+    });
+  }
+}

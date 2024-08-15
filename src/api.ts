@@ -221,17 +221,21 @@ export interface LockOperationResult {
 }
 
 export class ApiError extends Error {
+  public readonly request: Request;
   public readonly response: Response;
+  public readonly responseBody: string;
 
-  constructor(message: string, response: Response) {
-    super(message);
+  constructor(request: Request, response: Response, responseBody: string) {
+    super(`API error: ${response.statusText}`);
     Object.setPrototypeOf(this, ApiError.prototype);
 
+    this.request = request;
     this.response = response;
+    this.responseBody = responseBody;
   }
 }
 
-class FetchClient {
+export class FetchClient {
   private readonly baseUrl: string;
   private readonly defaultOptions: RequestInit;
 
@@ -260,9 +264,11 @@ class FetchClient {
       ...this.defaultOptions,
       ...options,
     };
-    const response = await fetch(this.baseUrl + endpoint, init);
+    const request = new Request(this.baseUrl + endpoint, init);
+    const response = await fetch(request);
     if (!response.ok) {
-      throw new ApiError(`API error: ${response.statusText}`, response);
+      const responseBody = await response.text();
+      throw new ApiError(request, response, responseBody);
     }
     return response;
   }

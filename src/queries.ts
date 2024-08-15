@@ -265,7 +265,7 @@ export function useSubmission(id: string) {
         // If the lock operation failed due to a conflict, the submission is already locked.
         // The lock information is included in the error response, so update the submission
         // data in the cache with the lock information.
-        const body = (await error.response.json()) as LockOperationResult;
+        const body = JSON.parse(error.responseBody) as LockOperationResult;
         updateLockStatusForSubmission(id, body);
       }
     },

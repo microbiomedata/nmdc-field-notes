@@ -16,6 +16,8 @@ import { getSubmissionSamples } from "../../utils";
 import { produce } from "immer";
 import paths from "../../paths";
 import { useNetworkStatus } from "../../NetworkStatus";
+import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
+import MutationErrorBanner from "../MutationErrorBanner/MutationErrorBanner";
 
 interface StudyViewProps {
   submissionId: string;
@@ -68,6 +70,13 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
 
   return (
     <>
+      <QueryErrorBanner query={submission}>
+        Error loading study
+      </QueryErrorBanner>
+      <MutationErrorBanner mutation={updateMutation}>
+        Error adding sample
+      </MutationErrorBanner>
+
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent />
       </IonRefresher>
