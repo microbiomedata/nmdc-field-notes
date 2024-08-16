@@ -44,7 +44,7 @@ const QueryClientProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister: persister, maxAge: GARBAGE_COLLECTION_TIME }}
+      persistOptions={{ persister: persister, maxAge: Infinity }}
       onSuccess={() => {
         queryClient.resumePausedMutations().then(() => {
           void queryClient.invalidateQueries();
