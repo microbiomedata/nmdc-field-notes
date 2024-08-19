@@ -6,7 +6,7 @@ export const info = ``;
 const rawMarkdownContent = `
 * Bring sunscreen, hat, sunglasses, bug spray  
 * Tell at least one person where you are going, when you are going, other information about your sampling trip (designate a rendezvous point or time)  
-* Know local wildlife, dangers they may pose and consider bringing wildlife deterrents (e.g., bear spray)  
+* Know local wildlife and the dangers they may pose, and consider bringing wildlife deterrents (e.g., bear spray)  
 * Check weather conditions and know risks for local weather events (e.g., flash floods, lightning storms)  
 * Know risks for injuries in the sampling environment  
 * Bring plenty of food and water (always bring more than what is needed)  
