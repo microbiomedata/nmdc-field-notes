@@ -9,7 +9,7 @@ const rawMarkdownContent = `
 * Know local wildlife and the dangers they may pose, and consider bringing wildlife deterrents (e.g., bear spray)  
 * Check weather conditions and know risks for local weather events (e.g., flash floods, lightning storms)  
 * Know risks for injuries in the sampling environment  
-* Bring plenty of food and water (always bring more than what is needed)  
+* Bring plenty of food and water (always bring more than you need)  
 * Bring communication device(s), know limitations of them (e.g., no cell phone service, finite battery life)  
 * Bring a battery pack or energy bank if possible  
 * Wear or pack proper shoes and clothes for the environment and weather  
