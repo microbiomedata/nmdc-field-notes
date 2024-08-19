@@ -21,7 +21,7 @@ const header = "Fieldwork";
 const info = `
 Are you planning a trip to the field to collect samples and metadata? Here is some general guidance for conducting fieldwork as well as links to more specific information depending on your environment/sample type(s).
 
-Note: This guidance is not meant to be exhaustive and there are other considerations for fieldwork. Please consult your institutional policies regarding safety and security in the field and review existing fieldwork guidance. Review the protocols, guides from other groups or publications if you wish to more directly compare samples or data.
+Note: This guidance is not meant to be exhaustive and there are other considerations for fieldwork. Please consult your institutional policies regarding safety and security in the field and review existing fieldwork guidance. Review the protocols and/or guides from other groups and/or publications if you wish to more directly compare samples or data.
 `;
 
 export const fieldworkChecklist = {
