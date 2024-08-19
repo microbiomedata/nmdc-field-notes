@@ -4,7 +4,7 @@ export const title = `What to consider reviewing prior to going into the field`;
 export const info = ``;
 // Mark nested list item with 'NESTEDLISTITEM'
 const rawMarkdownContent = `
-* Review the NMDC metadata requirements for you sample type(s)  
+* Review the NMDC metadata requirements for your sample type(s)  
   * NESTEDLISTITEM Review standard descriptors/ontologies to ensure you obtain the most accurate observations  
 * Obtain topographical and geographical information for your sampling sites if that data will not be measured or recorded while on site  
 * Test and calibrate all tools prior to use in the field  
