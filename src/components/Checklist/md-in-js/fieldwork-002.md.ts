@@ -8,7 +8,7 @@ const rawMarkdownContent = `
   * NESTEDLISTITEM Review standard descriptors/ontologies to ensure you obtain the most accurate observations  
 * Obtain topographical and geographical information for your sampling sites if that data will not be measured or recorded while on site  
 * Test and calibrate all tools prior to use in the field  
-  * NESTEDLISTITEM Be sure to know how to read measurements from each specific tool you plan to use (eg., compass, pH testing strips, maps)  
+  * NESTEDLISTITEM Know how to read measurements from each specific tool you plan to use (e.g., compass, pH testing strips, maps)  
 * Consider setting up a study in the app prior to going out into the field  
 * Consider entering a test sample into the app to get familiar with the process and information needed  
 * Review the CARE principles for proper data sovereignty for indigenous lands and this figure from the Geological Society of America describes other aspects of [Field Ethics](https://www.geosociety.org/GSA/Education_Careers/GSA/edu-career/fieldethics.aspx?hkey=de4690fb-49ef-460a-8e86-21797ea969d8)
