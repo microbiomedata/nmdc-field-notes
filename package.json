@@ -1,7 +1,7 @@
 {
   "name": "nmdc-field-notes",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "ionic serve --host=127.0.0.1 --port=8100 --no-open",

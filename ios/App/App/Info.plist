@@ -48,15 +48,15 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>CFBundleURLTypes</key>
-    <array>
-      <dict>
-        <key>CFBundleURLName</key>
-        <string>org.microbiomedata.fieldnotes</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>org.microbiomedata.fieldnotes</string>
-        </array>
-      </dict>
-    </array>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>org.microbiomedata.fieldnotes</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>org.microbiomedata.fieldnotes</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
