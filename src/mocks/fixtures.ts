@@ -199,6 +199,15 @@ export const submissions: SubmissionMetadata[] = [
   },
 ];
 
+/**
+ * This is a subclass of FetchClient (similar to NmdcServerClient) that is used for testing error
+ * handling. It calls endpoints that are only defined on the mock server used by tests (i.e. "fake")
+ * and that do not exist on the real NMDC server.
+ *
+ * See also:
+ * - `fakeErrorHandlers` in src/mocks/server.ts
+ * - src/components/QueryErrorBanner/QueryErrorBanner.test.tsx
+ */
 export class FakeErrorTestClient extends FetchClient {
   private static readonly successEndpoint = "/_fake-error-tester";
   private static readonly errorEndpoint = "/_fake-error-tester?status=500";
