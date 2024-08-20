@@ -22,14 +22,14 @@ const NetworkStatusProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     // Used to prevent setting up the listener from being added from an unmounted component
-    let ignore = false;
+    let isComponentUnmounted = false;
     let listener: PluginListenerHandle | null = null;
 
     async function addNetworkListener() {
       const initialStatus = await Network.getStatus();
       // If the component is unmounted before the previous await finishes, ignore the result and
       // do not set up a listener.
-      if (ignore) {
+      if (isComponentUnmounted) {
         return;
       }
 
@@ -58,7 +58,7 @@ const NetworkStatusProvider: React.FC<PropsWithChildren> = ({ children }) => {
       }
 
       // Always flag the component as unmounted when the cleanup function is called.
-      ignore = true;
+      isComponentUnmounted = true;
     };
   }, []);
 
