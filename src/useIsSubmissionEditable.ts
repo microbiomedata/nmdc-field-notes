@@ -17,8 +17,9 @@ export function useIsSubmissionEditable(submission?: SubmissionMetadata) {
   }
 
   // If someone is logged in and is offline, there is no way they can claim the lock so just
-  // assume that no one else is editing. This may result in data clobbering once this user goes
-  // back online.
+  // assume that no one else is editing.
+  // 
+  // WARNING: This may result in data clobbering once this user goes back online.
   if (!isOnline) {
     return true;
   }

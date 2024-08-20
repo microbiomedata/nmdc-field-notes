@@ -310,9 +310,9 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
                 <IonButton
                   fill="outline"
                   expand="block"
-                  // Call dismiss here instead of onCancel directly so that the modal can animate
-                  // out of view before the onCancel handler is called via the IonModalDidDismiss
-                  // event
+                  // Call `dismiss` here instead of `onCancel` directly so that the modal can animate
+                  // out of view before the `onCancel` handler is called via the `IonModalDidDismiss`
+                  // event.
                   onClick={() => modal.current?.dismiss()}
                 >
                   Cancel

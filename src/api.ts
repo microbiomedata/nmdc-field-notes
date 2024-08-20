@@ -418,7 +418,7 @@ class NmdcServerClient extends FetchClient {
       return this.exchangeRefreshTokenCache;
     }
     if (this.refreshToken === null) {
-      throw new Error("No refresh token");
+      throw new Error("No refresh token found");
     }
     const response = this.fetchJson<TokenResponse>("/auth/refresh", {
       method: "POST",

@@ -104,7 +104,7 @@ const SamplePage: React.FC = () => {
       onSuccess: () => setModalSlot(null),
     });
     if (!isOnline) {
-      // If we're offline, the updateMutation will stay in a paused state and not fire onSuccess
+      // If we're offline, the `updateMutation` will stay in a paused state and not fire `onSuccess`
       // until we go back online. So we need to manually close the modal here.
       setModalSlot(null);
     }
