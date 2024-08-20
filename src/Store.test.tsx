@@ -65,6 +65,7 @@ const TestStoreConsumer: React.FC = () => {
 
 const renderTestStoreConsumer = () => {
   const setTokensSpy = vi.spyOn(nmdcServerClient, "setTokens");
+  const setRefreshTokenSpy = vi.spyOn(nmdcServerClient, "setRefreshToken");
   const user = userEvent.setup();
 
   render(
@@ -76,6 +77,7 @@ const renderTestStoreConsumer = () => {
   return {
     user,
     setTokensSpy,
+    setRefreshTokenSpy,
     elements: {
       storeStatus: screen.getByTestId("store-status"),
       isLoggedIn: screen.getByTestId("is-logged-in"),
@@ -159,19 +161,18 @@ describe("Store", () => {
     );
 
     // Render the test component
-    const { elements, setTokensSpy } = renderTestStoreConsumer();
+    const { elements, setRefreshTokenSpy, setTokensSpy } =
+      renderTestStoreConsumer();
 
     // Verify that the store gets initialized with the pre-populated token and that it is used to
     // perform a token exchange
     await waitFor(() =>
       expect(elements.storeStatus.textContent).toBe("store created"),
     );
-    expect(elements.isLoggedIn.textContent).toBe("true");
+    await waitFor(() => expect(elements.isLoggedIn.textContent).toBe("true"));
     expect(elements.loggedInUser.textContent).toBe("Test Testerson");
-    expect(setTokensSpy).toHaveBeenCalledWith(
-      "refreshed-access-token",
-      "from-storage",
-    );
+    expect(setRefreshTokenSpy).toHaveBeenCalledWith("from-storage");
+    expect(setTokensSpy).toHaveBeenCalledWith("refreshed-access-token");
   });
 
   it("should not hydrate the refresh token from storage if the token exchange fails", async () => {

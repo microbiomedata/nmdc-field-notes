@@ -4,7 +4,9 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonProgressBar,
+  IonRefresher,
+  IonRefresherContent,
+  RefresherEventDetail,
   useIonRouter,
 } from "@ionic/react";
 import SectionHeader from "../SectionHeader/SectionHeader";
@@ -13,6 +15,9 @@ import SampleList from "../SampleList/SampleList";
 import { getSubmissionSamples } from "../../utils";
 import { produce } from "immer";
 import paths from "../../paths";
+import { useNetworkStatus } from "../../NetworkStatus";
+import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
+import MutationErrorBanner from "../MutationErrorBanner/MutationErrorBanner";
 
 interface StudyViewProps {
   submissionId: string;
@@ -25,16 +30,19 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
     updateMutation,
     lockMutation,
   } = useSubmission(submissionId);
+  const { isOnline } = useNetworkStatus();
 
   const handleSampleCreate = async () => {
     if (!submission.data) {
       return;
     }
 
-    try {
-      await lockMutation.mutateAsync(submissionId);
-    } catch {
-      return;
+    if (isOnline) {
+      try {
+        await lockMutation.mutateAsync(submissionId);
+      } catch {
+        return;
+      }
     }
 
     const updatedSubmission = produce(submission.data, (draft) => {
@@ -55,17 +63,23 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
     });
   };
 
+  const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
+    await submission.refetch();
+    event.detail.complete();
+  };
+
   return (
     <>
-      <IonProgressBar
-        type="indeterminate"
-        style={{
-          visibility:
-            submission.isFetching || submission.isLoading
-              ? "visible"
-              : "hidden",
-        }}
-      />
+      <QueryErrorBanner query={submission}>
+        Error loading study
+      </QueryErrorBanner>
+      <MutationErrorBanner mutation={updateMutation}>
+        Error adding sample
+      </MutationErrorBanner>
+
+      <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+        <IonRefresherContent />
+      </IonRefresher>
 
       {submission.data && (
         <>

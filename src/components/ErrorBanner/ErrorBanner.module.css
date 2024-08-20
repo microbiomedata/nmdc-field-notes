@@ -1,0 +1,7 @@
+.errorDetails {
+  background-color: color-mix(
+    in srgb,
+    var(--ion-color-danger),
+    transparent 85%
+  );
+}

@@ -1,10 +1,10 @@
 import React from "react";
 import { IonContent, IonHeader, IonPage, IonTitle } from "@ionic/react";
-import "./HomePage.css";
 import StudyList from "../../components/StudyList/StudyList";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import { useStore } from "../../Store";
 import { initiateLogin } from "../../auth";
+import FixedCenteredMessage from "../../components/FixedCenteredMessage/FixedCenteredMessage";
 
 const HEADER_TEXT = "NMDC Field Notes";
 
@@ -21,9 +21,9 @@ const HomePage: React.FC = () => {
         {isLoggedIn ? (
           <StudyList />
         ) : (
-          <div slot="fixed">
+          <FixedCenteredMessage>
             <a onClick={initiateLogin}>Log in</a> to view and edit studies
-          </div>
+          </FixedCenteredMessage>
         )}
       </IonContent>
     </IonPage>

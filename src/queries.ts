@@ -19,10 +19,6 @@ import {
 } from "./api";
 import { produce } from "immer";
 
-export const userKeys = {
-  user: () => ["user"],
-};
-
 export const submissionKeys = {
   all: () => ["submissions"],
   list: () => [...submissionKeys.all(), "list"],
@@ -108,13 +104,6 @@ export function addDefaultMutationFns(queryClient: QueryClient) {
       });
       return nmdcServerClient.releaseSubmissionLock(id);
     },
-  });
-}
-
-export function useCurrentUser() {
-  return useQuery({
-    queryKey: userKeys.user(),
-    queryFn: () => nmdcServerClient.getCurrentUser(),
   });
 }
 
@@ -276,7 +265,7 @@ export function useSubmission(id: string) {
         // If the lock operation failed due to a conflict, the submission is already locked.
         // The lock information is included in the error response, so update the submission
         // data in the cache with the lock information.
-        const body = (await error.response.json()) as LockOperationResult;
+        const body = JSON.parse(error.responseBody) as LockOperationResult;
         updateLockStatusForSubmission(id, body);
       }
     },
@@ -313,7 +302,7 @@ export function useSubmissionCreate() {
   >({
     mutationKey: submissionKeys.create(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
+      return queryClient.invalidateQueries({ queryKey: submissionKeys.list() });
     },
   });
   return mutation;

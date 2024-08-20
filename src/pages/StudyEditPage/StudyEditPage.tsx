@@ -11,7 +11,6 @@ import {
   IonList,
   IonPage,
   IonPopover,
-  IonProgressBar,
   IonTitle,
   useIonAlert,
   useIonRouter,
@@ -30,8 +29,10 @@ import {
   ellipsisVertical,
 } from "ionicons/icons";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
-import { useStore } from "../../Store";
 import Banner from "../../components/Banner/Banner";
+import { useNetworkStatus } from "../../NetworkStatus";
+import { useIsSubmissionEditable } from "../../useIsSubmissionEditable";
+import MutationErrorBanner from "../../components/MutationErrorBanner/MutationErrorBanner";
 
 interface StudyEditPageParams {
   submissionId: string;
@@ -49,20 +50,19 @@ const StudyEditPage: React.FC = () => {
     lockMutation,
     unlockMutation,
   } = useSubmission(submissionId);
-  const { loggedInUser } = useStore();
   const isDeleting = useRef(false);
+  const { isOnline } = useNetworkStatus();
 
-  const loggedInUserCanEdit =
-    loggedInUser &&
-    (submission.data?.locked_by === null ||
-      submission.data?.locked_by?.id === loggedInUser.id);
+  const loggedInUserCanEdit = useIsSubmissionEditable(submission.data);
 
   useIonViewWillEnter(() => {
-    lockMutation.mutate(submissionId);
+    if (isOnline) {
+      lockMutation.mutate(submissionId);
+    }
   });
 
   useIonViewDidLeave(() => {
-    if (loggedInUserCanEdit && !isDeleting.current) {
+    if (isOnline && loggedInUserCanEdit && !isDeleting.current) {
       unlockMutation.mutate(submissionId);
     }
   });
@@ -80,23 +80,32 @@ const StudyEditPage: React.FC = () => {
   };
 
   const handleDeleteInitiate = () => {
-    presentAlert({
-      header: "Delete Study",
-      message:
-        "Are you sure you want to delete this study? All associated sample data will be deleted as well.",
-      buttons: [
-        "Cancel",
-        {
-          text: "Delete",
-          handler: () => {
-            isDeleting.current = true;
-            deleteMutation.mutate(submissionId, {
-              onSuccess: () => router.push(paths.home, "back"),
-            });
+    if (isOnline) {
+      presentAlert({
+        header: "Delete Study",
+        message:
+          "Are you sure you want to delete this study? All associated sample data will be deleted as well.",
+        buttons: [
+          "Cancel",
+          {
+            text: "Delete",
+            handler: () => {
+              isDeleting.current = true;
+              deleteMutation.mutate(submissionId, {
+                onSuccess: () => router.push(paths.home, "back"),
+              });
+            },
           },
-        },
-      ],
-    });
+        ],
+      });
+    } else {
+      presentAlert({
+        header: "Delete Study",
+        message:
+          "Study deletion is disabled while offline. Please try again when online.",
+        buttons: ["OK"],
+      });
+    }
   };
 
   return (
@@ -121,6 +130,13 @@ const StudyEditPage: React.FC = () => {
         </ThemedToolbar>
       </IonHeader>
       <IonContent>
+        <MutationErrorBanner mutation={updateMutation}>
+          Error saving study
+        </MutationErrorBanner>
+        <MutationErrorBanner mutation={deleteMutation}>
+          Error deleting study
+        </MutationErrorBanner>
+
         <IonPopover
           trigger="ellipsis-menu-trigger"
           triggerAction="click"
@@ -140,26 +156,16 @@ const StudyEditPage: React.FC = () => {
           </IonContent>
         </IonPopover>
 
-        {!lockMutation.isPending && !loggedInUserCanEdit && (
-          <Banner color="warning">
-            <IonLabel>
-              Editing is disabled because this study is currently being edited
-              by {submission.data?.locked_by?.name || "an unknown user"}
-            </IonLabel>
-          </Banner>
-        )}
-
-        <IonProgressBar
-          type="indeterminate"
-          style={{
-            visibility:
-              submission.isFetching ||
-              submission.isLoading ||
-              lockMutation.isPending
-                ? "visible"
-                : "hidden",
-          }}
-        />
+        {!lockMutation.isPending &&
+          !lockMutation.isIdle &&
+          !loggedInUserCanEdit && (
+            <Banner color="warning">
+              <IonLabel>
+                Editing is disabled because this study is currently being edited
+                by {submission.data?.locked_by?.name || "an unknown user"}
+              </IonLabel>
+            </Banner>
+          )}
 
         {submission.data && (
           <StudyForm

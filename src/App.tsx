@@ -2,6 +2,7 @@ import React from "react";
 import { IonApp, setupIonicReact } from "@ionic/react";
 import ColorSchemePreferenceMonitor from "./components/ColorSchemePreferenceMonitor/ColorSchemePreferenceMonitor";
 import QueryClientProvider from "./QueryClientProvider";
+import NetworkStatusProvider from "./NetworkStatus";
 import Router from "./Router";
 import StoreProvider from "./Store";
 
@@ -44,14 +45,16 @@ setupIonicReact();
 
 const App: React.FC = () => {
   return (
-    <StoreProvider>
-      <QueryClientProvider>
-        <IonApp>
-          <ColorSchemePreferenceMonitor />
-          <Router />
-        </IonApp>
-      </QueryClientProvider>
-    </StoreProvider>
+    <NetworkStatusProvider>
+      <StoreProvider>
+        <QueryClientProvider>
+          <IonApp>
+            <ColorSchemePreferenceMonitor />
+            <Router />
+          </IonApp>
+        </QueryClientProvider>
+      </StoreProvider>
+    </NetworkStatusProvider>
   );
 };
 
