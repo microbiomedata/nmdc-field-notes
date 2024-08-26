@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "ionic serve --host=127.0.0.1 --port=8100 --no-open",
-    "build": "tsc && vite build",
+    "build": "tsc && ionic build",
+    "build.native": "tsc && ionic capacitor sync",
     "format": "prettier . --write",
     "check.format": "prettier . --check",
     "check.imports": "madge --circular src/main.tsx",
