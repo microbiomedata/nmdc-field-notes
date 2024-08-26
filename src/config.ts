@@ -13,7 +13,8 @@
 const env = import.meta.env;
 
 interface Config {
-  APP_VERSION: typeof env.PACKAGE_VERSION;
+  APP_VERSION: typeof env.FIELD_NOTES_VERSION_NUMBER;
+  APP_BUILD: typeof env.FIELD_NOTES_BUILD_NUMBER;
   NMDC_SERVER_API_URL: string;
   SUPPORT_EMAIL: string;
 }
@@ -22,9 +23,20 @@ const config: Config = {
   /**
    * Version identifier of the app (e.g. "1.23.456").
    *
-   * This is the value of the `version` property in the `package.json` file.
+   * This is the value of the `version` property in the `package.json` file. However, it
+   * is only set when initiated by an NPM script (i.e. `npm run <script>`). If you are not
+   * seeing the correct value, confirm that you are using an NPM script.
    */
-  APP_VERSION: env.PACKAGE_VERSION,
+  APP_VERSION: env.FIELD_NOTES_VERSION_NUMBER || "0.0.0",
+
+  /**
+   * Build identifier of the app (e.g. "4").
+   *
+   * This is the value of the `config.buildNumber` property in the `package.json` file.
+   * However, it is only set when initiated by an NPM script (i.e. `npm run <script>`). If you
+   * are not seeing the correct value, confirm that you are using an NPM script.
+   */
+  APP_BUILD: env.FIELD_NOTES_BUILD_NUMBER || "0",
 
   /**
    * URL of the endpoint the mobile app can use to access the NMDC data portal API.
