@@ -245,7 +245,7 @@ Creating a release involves three steps:
 <details>
 <summary>How do I choose?</summary>
 
-* A build release is a new **internal** release of the app. It may be thought of as a release candidate. It implies a new `buildNumber` in `package.json`. This corresponds to a new "build number" in [iOS terms](https://help.apple.com/xcode/mac/current/#/devba7f53ad4) or "versionCode" in [Android terms](https://developer.android.com/studio/publish/versioning). New builds do not go through Apple's approval process when released to TestFlight.
+* A build release is a new **testing** release of the app. It may be thought of as a release candidate. It implies a new `buildNumber` in `package.json`. This corresponds to a new "build number" in [iOS terms](https://help.apple.com/xcode/mac/current/#/devba7f53ad4) or "versionCode" in [Android terms](https://developer.android.com/studio/publish/versioning). New builds do not go through Apple's approval process when released to TestFlight.
 * A version release is a new **general** release of the app. It implies a new `version` number in `package.json` _and_ new `buildNumber`. The commit where these numbers are updated is also tagged. The new `version` corresponds to a new "version number" in [iOS terms](https://help.apple.com/xcode/mac/current/#/devba7f53ad4) or "versionName" in [Android terms](https://developer.android.com/studio/publish/versioning). There will typically be several build releases before a version release.
 
 </details>
@@ -265,7 +265,6 @@ Creating a release involves three steps:
       npm run release -- patch  # (or "minor" or "major")
       git push --follow-tags
       ```
-
 3. If this is a **version** release, check [GitHub Actions](https://github.com/microbiomedata/nmdc-field-notes/actions) to ensure that pushing the version tag triggered the workflow that creates a new GitHub Release. Ensure that the workflow completed successfully.
 
 #### Create and Distribute a new Android Build
@@ -309,7 +308,7 @@ Creating a release involves three steps:
       npm run rename.apk 
       ```
    2. Edit the vX.Y.Z [GitHub Release](https://github.com/microbiomedata/nmdc-field-notes/releases) and attach the `org.microbiomedata.fieldnotes-vX.Y.Z-build.N.apk` file to it. **NOTE**: If this is a **build** release there may be one or more existing APK files attached to the release. This is expected.
-   3. The APK file can now be deleted from your local project root.
+   3. Deleted the APK file from your local project root.
       ```shell
       rm org.microbiomedata.fieldnotes-*.apk
       ```
