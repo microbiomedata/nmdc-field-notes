@@ -14,10 +14,10 @@ fi
 RELEASE_TYPE=$1
 
 log "Checking for clean working directory"
-#if [[ -n "$(git status --porcelain)" ]]; then
-#  log "ERROR: Working directory must be clean. Stash or commit changes before releasing."
-#  exit 1
-#fi
+if [[ -n "$(git status --porcelain)" ]]; then
+  log "ERROR: Working directory must be clean. Stash or commit changes before releasing."
+  exit 1
+fi
 
 # Increment the build number by getting the current build number from the package.json file,
 # incrementing it by 1, and then setting the new build number in the package.json file.
@@ -58,11 +58,11 @@ trapeze run trapeze.config.yaml -y
 COMMIT_MESSAGE="$VERSION_NUMBER ($NEW_BUILD_NUMBER)"
 log "Creating commit: $COMMIT_MESSAGE"
 git add package.json package-lock.json android ios
-echo "git commit -m \"$COMMIT_MESSAGE\""
+git commit -m "$COMMIT_MESSAGE"
 
 # If this is not a build release, tag the commit with the new version number
 if [[ "$RELEASE_TYPE" != "build" ]]; then
   TAG_MESSAGE="v$VERSION_NUMBER"
   log "Creating tag: $TAG_MESSAGE"
-  echo "git tag -a \"$TAG_MESSAGE\" -m \"$TAG_MESSAGE\""
+  git tag -a "$TAG_MESSAGE" -m "$TAG_MESSAGE"
 fi
