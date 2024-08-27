@@ -232,11 +232,11 @@ Here's how you can introduce a new environment variable to the code base:
 
 ### Make a release
 
-Creating a release involves three steps: 
+Creating a release involves three steps:
 
-* Increment the build number and optionally update the version number
-* Create and distribute a new Android build
-* Create and distribute a new iOS build
+- Increment the build number and optionally update the version number
+- Create and distribute a new Android build
+- Create and distribute a new iOS build
 
 #### Incrementing build and version numbers
 
@@ -245,8 +245,8 @@ Creating a release involves three steps:
 <details>
 <summary>How do I choose?</summary>
 
-* A build release is a new **testing** release of the app. It may be thought of as a release candidate. It implies a new `buildNumber` in `package.json`. This corresponds to a new "build number" in [iOS terms](https://help.apple.com/xcode/mac/current/#/devba7f53ad4) or "versionCode" in [Android terms](https://developer.android.com/studio/publish/versioning). New builds do not go through Apple's approval process when released to TestFlight.
-* A version release is a new **general** release of the app. It implies a new `version` number in `package.json` _and_ new `buildNumber`. The commit where these numbers are updated is also tagged. The new `version` corresponds to a new "version number" in [iOS terms](https://help.apple.com/xcode/mac/current/#/devba7f53ad4) or "versionName" in [Android terms](https://developer.android.com/studio/publish/versioning). There will typically be several build releases before a version release.
+- A build release is a new **testing** release of the app. It may be thought of as a release candidate. It implies a new `buildNumber` in `package.json`. This corresponds to a new "build number" in [iOS terms](https://help.apple.com/xcode/mac/current/#/devba7f53ad4) or "versionCode" in [Android terms](https://developer.android.com/studio/publish/versioning). New builds do not go through Apple's approval process when released to TestFlight.
+- A version release is a new **general** release of the app. It implies a new `version` number in `package.json` _and_ new `buildNumber`. The commit where these numbers are updated is also tagged. The new `version` corresponds to a new "version number" in [iOS terms](https://help.apple.com/xcode/mac/current/#/devba7f53ad4) or "versionName" in [Android terms](https://developer.android.com/studio/publish/versioning). There will typically be several build releases before a version release.
 
 </details>
 
@@ -305,7 +305,7 @@ Creating a release involves three steps:
 2. Distribute the APK file via the GitHub Release.
    1. Make a copy of the APK file with the version and build numbers in the filename.
       ```shell
-      npm run rename.apk 
+      npm run rename.apk
       ```
    2. Edit the vX.Y.Z [GitHub Release](https://github.com/microbiomedata/nmdc-field-notes/releases) and attach the `org.microbiomedata.fieldnotes-vX.Y.Z-build.N.apk` file to it. **NOTE**: If this is a **build** release there may be one or more existing APK files attached to the release. This is expected.
    3. Deleted the APK file from your local project root.
