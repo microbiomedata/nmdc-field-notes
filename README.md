@@ -232,33 +232,41 @@ Here's how you can introduce a new environment variable to the code base:
 
 ### Make a release
 
-Creating a release involves three steps: creating a new version tag and GitHub Release, creating and distributing a new Android build, and creating and distributing a new iOS build.
+Creating a release involves three steps: 
 
-#### Create Version Tag and GitHub Release
+* Increment the build number and optionally update the version number
+* Create and distribute a new Android build
+* Create and distribute a new iOS build
+
+#### Incrementing build and version numbers
+
+**Decide**: Are you releasing a new **build** or a new **version**?
+
+<details>
+<summary>How do I choose?</summary>
+
+* A build release is a new **internal** release of the app. It may be thought of as a release candidate. It implies a new `buildNumber` in `package.json`. This corresponds to a new "build number" in [iOS terms](https://help.apple.com/xcode/mac/current/#/devba7f53ad4) or "versionCode" in [Android terms](https://developer.android.com/studio/publish/versioning). New builds do not go through Apple's approval process when released to TestFlight.
+* A version release is a new **general** release of the app. It implies a new `version` number in `package.json` _and_ new `buildNumber`. The commit where these numbers are updated is also tagged. The new `version` corresponds to a new "version number" in [iOS terms](https://help.apple.com/xcode/mac/current/#/devba7f53ad4) or "versionName" in [Android terms](https://developer.android.com/studio/publish/versioning). There will typically be several build releases before a version release.
+
+</details>
 
 1. Ensure you are on the main branch and have the latest changes.
    ```shell
    git checkout main && git pull
    ```
-2. Run a test build. Ensure that this command completes successfully and leaves _no local changes_. If there are local changes, commit them separately before proceeding.
-   ```shell
-   ionic capacitor sync --prod
-   ```
-3. Decide whether the new version will be a patch, minor, or major version. Then, run the following commands to create a new version commit and tag.
+2. Update build and (optionally) version numbers.
+   1. If this is a **build** release, run the following commands to increment the build number.
+      ```shell
+      npm run release -- build
+      git push
+      ```
+   2. If this is a **version** release, decide whether the new version will be a patch, minor, or major version. Then, run the following commands to create a new version commit and tag. **NOTE**: During the beta testing period, use only minor or patch versions.
+      ```shell
+      npm run release -- patch  # (or "minor" or "major")
+      git push --follow-tags
+      ```
 
-   > [!NOTE]
-   > During the beta testing period, use only minor or patch versions.
-
-   ```shell
-   npm version patch  # (or "minor" or "major")
-   git push && git push --tags
-   ```
-
-4. Check [GitHub Actions](https://github.com/microbiomedata/nmdc-field-notes/actions) to ensure that pushing the version tag triggered the workflow that creates a new GitHub Release, and that that workflow completed successfully.
-5. If proceeding to create Android or iOS builds, run another production build.
-   ```shell
-   ionic capacitor sync --prod
-   ```
+3. If this is a **version** release, check [GitHub Actions](https://github.com/microbiomedata/nmdc-field-notes/actions) to ensure that pushing the version tag triggered the workflow that creates a new GitHub Release. Ensure that the workflow completed successfully.
 
 #### Create and Distribute a new Android Build
 
@@ -281,12 +289,7 @@ Creating a release involves three steps: creating a new version tag and GitHub R
 
 </details>
 
-1. If you are **not** continuing from the version tag section, checkout the version tag and run a production build.
-   ```shell
-   git checkout vX.Y.Z  # replace with the version tag
-   ionic capacitor sync --prod
-   ```
-2. Build the Android APK file.
+1. Build the Android APK file.
    1. Open the Android project in Android Studio.
       ```shell
       ionic capacitor open android
@@ -300,24 +303,23 @@ Creating a release involves three steps: creating a new version tag and GitHub R
       - Key password: `<keystore password>`
    5. Select the "release" build variant and click "Create"
    6. Wait for the gradle build to complete. Look for notification saying "Build completed successfully for module 'android.app.main' with 1 build variant."
-3. Distribute the APK file via the GitHub Release.
-   1. Make an appropriately named copy of the APK file.
+2. Distribute the APK file via the GitHub Release.
+   1. Make a copy of the APK file with the version and build numbers in the filename.
       ```shell
-      cp android/app/release/app-release.apk org.microbiomedata.fieldnotes-vX.Y.Z.apk  # replace with version number
+      npm run rename.apk 
       ```
-   2. Edit the vX.Y.Z [GitHub Release](https://github.com/microbiomedata/nmdc-field-notes/releases) and attach the `org.microbiomedata.fieldnotes-vX.Y.Z.apk` file to it.
+   2. Edit the vX.Y.Z [GitHub Release](https://github.com/microbiomedata/nmdc-field-notes/releases) and attach the `org.microbiomedata.fieldnotes-vX.Y.Z-build.N.apk` file to it. **NOTE**: If this is a **build** release there may be one or more existing APK files attached to the release. This is expected.
+   3. The APK file can now be deleted from your local project root.
+      ```shell
+      rm org.microbiomedata.fieldnotes-*.apk
+      ```
 
 #### Create and Distribute a new iOS Build
 
 > [!NOTE]
 > These instructions are based around distributing via TestFlight for the beta release period. These will be updated later to include App Store distribution once a stable release is ready.
 
-1. If you are **not** continuing from the version tag section, checkout the version tag and run a production build.
-   ```shell
-   git checkout vX.Y.Z  # replace with the version tag
-   ionic capacitor sync --prod
-   ```
-2. Create the iOS build:
+1. Create the iOS build:
    1. Open the iOS project in Xcode.
       ```shell
       ionic capacitor open ios
@@ -326,7 +328,7 @@ Creating a release involves three steps: creating a new version tag and GitHub R
    3. "[Select the method of distribution](https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases#Select-a-method-for-distribution)" to be TestFlight & App Store
    4. Click the "Validate App" button to validate the build with respect to App Store Connect
    5. Click the "Distribute App" button to upload the build to App Store Connect
-3. Distribute the iOS build via TestFlight:
+2. Distribute the iOS build via TestFlight:
    1. Log in to [App Store Connect](https://appstoreconnect.apple.com/)
    2. Go to `Apps` > `NMDC Field Notes` > `TestFlight`
    3. Under "iOS Builds," find the newly-uploaded build (in the table of all builds)
