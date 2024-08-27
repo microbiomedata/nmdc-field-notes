@@ -1,13 +1,13 @@
 vars:
-  APP_VERSION:
-    default: 0.0.0
+  FIELD_NOTES_VERSION_NUMBER:
+  FIELD_NOTES_BUILD_NUMBER:
 
 platforms:
   android:
-    incrementVersionCode: true
-    versionName: $APP_VERSION
+    versionCode: $FIELD_NOTES_BUILD_NUMBER
+    versionName: $FIELD_NOTES_VERSION_NUMBER
   ios:
     targets:
       App:
-        incrementBuild: true
-        version: $APP_VERSION
+        buildNumber: $FIELD_NOTES_BUILD_NUMBER
+        version: $FIELD_NOTES_VERSION_NUMBER
