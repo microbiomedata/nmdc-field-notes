@@ -6,6 +6,7 @@ log() {
   echo "[release] $1"
 }
 
+# Validate the first CLI option passed to the script.
 if [[ ! $1 =~ ^(major|minor|patch|build)$ ]]; then
   log "ERROR: Must specify a release type: major, minor, patch, or build"
   exit 1
@@ -32,7 +33,7 @@ npm pkg set config.buildNumber=$NEW_BUILD_NUMBER --json
 
 log "New build number: $NEW_BUILD_NUMBER"
 
-# If this is a build release grab the existing version number, otherwise increment the version
+# If this is a build release, grab the existing version number; otherwise, increment the version
 # number by running 'npm version' and then grab the new version number.
 if [[ "$RELEASE_TYPE" == "build" ]]; then
   VERSION_NUMBER=${npm_package_version:=}
