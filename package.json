@@ -2,10 +2,14 @@
   "name": "nmdc-field-notes",
   "private": true,
   "version": "0.1.0",
+  "config": {
+    "buildNumber": 4
+  },
   "type": "module",
   "scripts": {
     "dev": "ionic serve --host=127.0.0.1 --port=8100 --no-open",
     "build": "tsc && vite build",
+    "build.native": "tsc && ionic capacitor sync",
     "format": "prettier . --write",
     "check.format": "prettier . --check",
     "check.imports": "madge --circular src/main.tsx",
@@ -17,8 +21,9 @@
     "lint": "eslint src",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "preversion": "vitest run",
-    "version": "APP_VERSION=$npm_package_version trapeze run trapeze.config.yaml -y && git add android ios"
+    "prerelease": "vitest run && npm run build.native",
+    "release": "./scripts/release.sh",
+    "rename.apk": "cp android/app/release/app-release.apk org.microbiomedata.fieldnotes-v$npm_package_version-build.$npm_package_config_buildNumber.apk"
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
@@ -91,7 +96,6 @@
     "terser": "^5.4.0",
     "typescript": "^5.1.6",
     "vite": "^5.0.0",
-    "vite-plugin-package-version": "^1.1.0",
     "vitest": "^0.34.6"
   },
   "optionalDependencies": {

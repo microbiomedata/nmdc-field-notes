@@ -8,7 +8,9 @@ const SettingsAboutList: React.FC = () => {
       <IonItem>
         <IonLabel>
           <h3>Version</h3>
-          <p>{config.APP_VERSION}</p>
+          <p>
+            {config.APP_VERSION} ({config.APP_BUILD})
+          </p>
         </IonLabel>
       </IonItem>
     </IonList>
