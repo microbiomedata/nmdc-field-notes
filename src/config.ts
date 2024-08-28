@@ -16,6 +16,7 @@ interface Config {
   APP_VERSION: typeof env.FIELD_NOTES_VERSION_NUMBER;
   APP_BUILD: typeof env.FIELD_NOTES_BUILD_NUMBER;
   NMDC_SERVER_API_URL: string;
+  SHOW_DEV_SITE_WARNING: boolean;
   SUPPORT_EMAIL: string;
 }
 
@@ -45,6 +46,11 @@ const config: Config = {
    */
   NMDC_SERVER_API_URL:
     env.VITE_NMDC_SERVER_API_URL || "https://data-dev.microbiomedata.org",
+
+  /**
+   * Whether to show a warning that the user is on a development site.
+   */
+  SHOW_DEV_SITE_WARNING: env.VITE_SHOW_DEV_SITE_WARNING === "true",
 
   /**
    * Support email address.

@@ -36,6 +36,8 @@ jobs:
 
       - name: Build project
         run: npm run build -- --mode staging
+        env:
+          VITE_SHOW_DEV_SITE_WARNING: "true"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

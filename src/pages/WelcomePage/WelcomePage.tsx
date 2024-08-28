@@ -13,12 +13,14 @@ import {
   IonCardTitle,
   IonAlert,
   useIonRouter,
+  IonHeader,
 } from "@ionic/react";
 import { logIn } from "ionicons/icons";
 import Logo from "../../components/Logo/Logo";
 import paths from "../../paths";
 import classes from "./WelcomePage.module.css";
 import { initiateLogin } from "../../auth";
+import DevelopmentSiteWarning from "../../components/DevelopmentSiteWarning/DevelopmentSiteWarning";
 
 const WelcomePage: React.FC = () => {
   const router = useIonRouter();
@@ -29,6 +31,9 @@ const WelcomePage: React.FC = () => {
 
   return (
     <IonPage>
+      <IonHeader>
+        <DevelopmentSiteWarning />
+      </IonHeader>
       <IonContent
         fullscreen
         className={`ion-padding ${classes.themedBackground}`}
