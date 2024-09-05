@@ -1,10 +1,11 @@
 import React from "react";
 import { IonIcon, IonProgressBar, IonToolbar } from "@ionic/react";
 import { cloudOfflineOutline } from "ionicons/icons";
+import { useIsFetching, useIsMutating } from "@tanstack/react-query";
 import { useNetworkStatus } from "../../NetworkStatus";
+import DevelopmentSiteWarning from "../DevelopmentSiteWarning/DevelopmentSiteWarning";
 
 import classes from "./ThemedToolbar.module.css";
-import { useIsFetching, useIsMutating } from "@tanstack/react-query";
 
 interface ThemedToolbarProps extends React.ComponentProps<typeof IonToolbar> {}
 
@@ -24,6 +25,7 @@ const ThemedToolbar: React.FC<ThemedToolbarProps> = (props) => {
           </div>
         </IonToolbar>
       )}
+      <DevelopmentSiteWarning />
       <IonToolbar {...rest} className={classes.themedBackground}>
         {children}
       </IonToolbar>
