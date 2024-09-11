@@ -17,8 +17,10 @@ import {
   LockOperationResult,
   ApiError,
   SubmissionMetadataUpdate,
+  GoldEcosystemTreeNode,
 } from "./api";
 import { produce } from "immer";
+import { SchemaDefinition } from "./linkml-metamodel";
 
 export const submissionKeys = {
   all: () => ["submissions"],
@@ -312,7 +314,11 @@ export function useSubmissionCreate() {
   return mutation;
 }
 
-function submissionSchemaQueryOptions() {
+export interface SubmissionSchema {
+  schema: SchemaDefinition;
+  goldEcosystemTree: GoldEcosystemTreeNode;
+}
+function submissionSchemaQueryOptions(queryClient: QueryClient) {
   // The `queryOptions` function is to help with type inference
   // https://tanstack.com/query/latest/docs/framework/react/typescript#typing-query-options
   return queryOptions({
@@ -320,6 +326,19 @@ function submissionSchemaQueryOptions() {
     // These two files are used in conjunction with each other so make the two requests in parallel
     // and return an object bundling the results together.
     queryFn: async () => {
+      const cachedData = queryClient.getQueryData<SubmissionSchema>(
+        schemaKeys.submissionSchema(),
+      );
+      if (cachedData !== undefined) {
+        // We have a copy of the schema in the cache. Check to see if it is still the latest version
+        const versionInfo = await nmdcServerClient.getVersionInfo();
+        // If the cached schema is the same version as the current server version, return the cached
+        // schema
+        if (cachedData.schema.version === versionInfo.nmdc_submission_schema) {
+          return cachedData;
+        }
+      }
+      // We don't have a cached schema or the cached schema is out of date. Fetch the latest schema.
       const result = await Promise.all([
         nmdcServerClient.getSubmissionSchema(),
         nmdcServerClient.getGoldEcosystemTree(),
@@ -329,16 +348,20 @@ function submissionSchemaQueryOptions() {
         goldEcosystemTree: result[1],
       };
     },
-    staleTime: 1000 * 60 * 60 * 72, // 72 hours; these files only change between releases
+    // Nearly all the time the queryFn will only result in a version info check. This is a pretty
+    // inexpensive call, but we still don't need to do it that often. Let's try no more than once
+    // every 30 minutes.
+    staleTime: 1000 * 60 * 30,
   });
 }
 export function useSubmissionSchema() {
-  return useQuery(submissionSchemaQueryOptions());
+  const queryClient = useQueryClient();
+  return useQuery(submissionSchemaQueryOptions(queryClient));
 }
 // NOTE: this is a plain function, not a hook!
 // See:
 // - https://tanstack.com/query/v5/docs/framework/react/guides/prefetching
 // - https://tanstack.com/query/v5/docs/reference/QueryClient/#queryclientprefetchquery
 export function prefetchSubmissionSchema(queryClient: QueryClient) {
-  return queryClient.prefetchQuery(submissionSchemaQueryOptions());
+  return queryClient.prefetchQuery(submissionSchemaQueryOptions(queryClient));
 }
