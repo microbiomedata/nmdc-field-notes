@@ -3,6 +3,7 @@ import {
   hashKey,
   InfiniteData,
   QueryClient,
+  queryOptions,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -31,8 +32,11 @@ export const submissionKeys = {
   lock: (id: string) => [...submissionKeys.locks(), id],
   unlocks: () => [...submissionKeys.all(), "unlock"],
   unlock: (id: string) => [...submissionKeys.unlocks(), id],
-  schemas: () => ["schemas"],
-  submissionSchema: () => [...submissionKeys.schemas(), "submission_schema"],
+};
+
+export const schemaKeys = {
+  all: () => ["schemas"],
+  submissionSchema: () => [...schemaKeys.all(), "submission_schema"],
 };
 
 export function addDefaultMutationFns(queryClient: QueryClient) {
@@ -308,9 +312,11 @@ export function useSubmissionCreate() {
   return mutation;
 }
 
-export function useSubmissionSchema() {
-  return useQuery({
-    queryKey: submissionKeys.submissionSchema(),
+function submissionSchemaQueryOptions() {
+  // The `queryOptions` function is to help with type inference
+  // https://tanstack.com/query/latest/docs/framework/react/typescript#typing-query-options
+  return queryOptions({
+    queryKey: schemaKeys.submissionSchema(),
     // These two files are used in conjunction with each other so make the two requests in parallel
     // and return an object bundling the results together.
     queryFn: async () => {
@@ -325,4 +331,14 @@ export function useSubmissionSchema() {
     },
     staleTime: 1000 * 60 * 60 * 72, // 72 hours; these files only change between releases
   });
+}
+export function useSubmissionSchema() {
+  return useQuery(submissionSchemaQueryOptions());
+}
+// NOTE: this is a plain function, not a hook!
+// See:
+// - https://tanstack.com/query/v5/docs/framework/react/guides/prefetching
+// - https://tanstack.com/query/v5/docs/reference/QueryClient/#queryclientprefetchquery
+export function prefetchSubmissionSchema(queryClient: QueryClient) {
+  return queryClient.prefetchQuery(submissionSchemaQueryOptions());
 }

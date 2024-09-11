@@ -1,6 +1,7 @@
 import React from "react";
 import { IonApp, setupIonicReact } from "@ionic/react";
 import ColorSchemePreferenceMonitor from "./components/ColorSchemePreferenceMonitor/ColorSchemePreferenceMonitor";
+import DataPrefetcher from "./components/DataPrefetcher/DataPrefetcher";
 import QueryClientProvider from "./QueryClientProvider";
 import NetworkStatusProvider from "./NetworkStatus";
 import Router from "./Router";
@@ -50,6 +51,7 @@ const App: React.FC = () => {
         <QueryClientProvider>
           <IonApp>
             <ColorSchemePreferenceMonitor />
+            <DataPrefetcher />
             <Router />
           </IonApp>
         </QueryClientProvider>
