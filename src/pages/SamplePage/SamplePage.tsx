@@ -247,6 +247,14 @@ const SamplePage: React.FC = () => {
             </Banner>
           )}
 
+        {!schema.data && !schema.isFetching && (
+          <Banner color="danger">
+            <IonLabel>
+              <b>Error</b> Missing schema information
+            </IonLabel>
+          </Banner>
+        )}
+
         {schema.data && (
           <>
             <SampleView
