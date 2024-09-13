@@ -250,7 +250,7 @@ const SamplePage: React.FC = () => {
         {!schema.data && !schema.isFetching && (
           <Banner color="danger">
             <IonLabel>
-              <b>Error</b> Missing schema information
+              <b>Error</b> Schema not found. Please ensure you are connected to the internet and try again.
             </IonLabel>
           </Banner>
         )}
