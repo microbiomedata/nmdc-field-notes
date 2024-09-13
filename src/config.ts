@@ -49,12 +49,12 @@ const config: Config = {
     env.VITE_NMDC_SERVER_API_URL || "https://data-dev.microbiomedata.org",
 
   /**
-   * The base URL of the NMDC submission-schema.
+   * The base URL of the NMDC submission-schema documentation website.
    *
    * Default: `https://microbiomedata.github.io/submission-schema`
    */
-  NMDC_SCHEMA_BASE_URL:
-    env.VITE_NMDC_SCHEMA_BASE_URL || "https://microbiomedata.github.io/submission-schema",
+  NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL:
+    env.VITE_NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL || "https://microbiomedata.github.io/submission-schema",
 
   /**
    * Whether to show a warning that the user is on a development site.
