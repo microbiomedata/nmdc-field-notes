@@ -9,6 +9,7 @@
 interface ImportMetaEnv {
   readonly VITE_NMDC_SERVER_API_URL?: string;
   readonly VITE_NMDC_SERVER_LOGIN_URL?: string;
+  readonly VITE_NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL?: string;
   readonly FIELD_NOTES_BUILD_NUMBER: string;
   readonly FIELD_NOTES_VERSION_NUMBER: string;
 }
