@@ -329,11 +329,10 @@ function submissionSchemaQueryOptions(queryClient: QueryClient) {
       const cachedData = queryClient.getQueryData<SubmissionSchema>(
         schemaKeys.submissionSchema(),
       );
+      // If we have a cached schema and it's the same version as the server
+      // would give us if we were to fetch it now, return that cached schema.
       if (cachedData !== undefined) {
-        // We have a copy of the schema in the cache. Check to see if it is still the latest version
         const versionInfo = await nmdcServerClient.getVersionInfo();
-        // If the cached schema is the same version as the current server version, return the cached
-        // schema
         if (cachedData.schema.version === versionInfo.nmdc_submission_schema) {
           return cachedData;
         }
