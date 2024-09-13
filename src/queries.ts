@@ -3,6 +3,7 @@ import {
   hashKey,
   InfiniteData,
   QueryClient,
+  queryOptions,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -16,8 +17,10 @@ import {
   LockOperationResult,
   ApiError,
   SubmissionMetadataUpdate,
+  GoldEcosystemTreeNode,
 } from "./api";
 import { produce } from "immer";
+import { SchemaDefinition } from "./linkml-metamodel";
 
 export const submissionKeys = {
   all: () => ["submissions"],
@@ -31,8 +34,11 @@ export const submissionKeys = {
   lock: (id: string) => [...submissionKeys.locks(), id],
   unlocks: () => [...submissionKeys.all(), "unlock"],
   unlock: (id: string) => [...submissionKeys.unlocks(), id],
-  schemas: () => ["schemas"],
-  submissionSchema: () => [...submissionKeys.schemas(), "submission_schema"],
+};
+
+export const schemaKeys = {
+  all: () => ["schemas"],
+  submissionSchema: () => [...schemaKeys.all(), "submission_schema"],
 };
 
 export function addDefaultMutationFns(queryClient: QueryClient) {
@@ -308,12 +314,30 @@ export function useSubmissionCreate() {
   return mutation;
 }
 
-export function useSubmissionSchema() {
-  return useQuery({
-    queryKey: submissionKeys.submissionSchema(),
+export interface SubmissionSchema {
+  schema: SchemaDefinition;
+  goldEcosystemTree: GoldEcosystemTreeNode;
+}
+function submissionSchemaQueryOptions(queryClient: QueryClient) {
+  // The `queryOptions` function is to help with type inference
+  // https://tanstack.com/query/latest/docs/framework/react/typescript#typing-query-options
+  return queryOptions({
+    queryKey: schemaKeys.submissionSchema(),
     // These two files are used in conjunction with each other so make the two requests in parallel
     // and return an object bundling the results together.
     queryFn: async () => {
+      const cachedData = queryClient.getQueryData<SubmissionSchema>(
+        schemaKeys.submissionSchema(),
+      );
+      // If we have a cached schema and it's the same version as the server
+      // would give us if we were to fetch it now, return that cached schema.
+      if (cachedData !== undefined) {
+        const versionInfo = await nmdcServerClient.getVersionInfo();
+        if (cachedData.schema.version === versionInfo.nmdc_submission_schema) {
+          return cachedData;
+        }
+      }
+      // We don't have a cached schema or the cached schema is out of date. Fetch the latest schema.
       const result = await Promise.all([
         nmdcServerClient.getSubmissionSchema(),
         nmdcServerClient.getGoldEcosystemTree(),
@@ -323,6 +347,20 @@ export function useSubmissionSchema() {
         goldEcosystemTree: result[1],
       };
     },
-    staleTime: 1000 * 60 * 60 * 72, // 72 hours; these files only change between releases
+    // Nearly all the time the queryFn will only result in a version info check. This is a pretty
+    // inexpensive call, but we still don't need to do it that often. Let's try no more than once
+    // every 30 minutes.
+    staleTime: 1000 * 60 * 30,
   });
+}
+export function useSubmissionSchema() {
+  const queryClient = useQueryClient();
+  return useQuery(submissionSchemaQueryOptions(queryClient));
+}
+// NOTE: this is a plain function, not a hook!
+// See:
+// - https://tanstack.com/query/v5/docs/framework/react/guides/prefetching
+// - https://tanstack.com/query/v5/docs/reference/QueryClient/#queryclientprefetchquery
+export function prefetchSubmissionSchema(queryClient: QueryClient) {
+  return queryClient.prefetchQuery(submissionSchemaQueryOptions(queryClient));
 }

@@ -247,6 +247,15 @@ const SamplePage: React.FC = () => {
             </Banner>
           )}
 
+        {!schema.data && !schema.isFetching && (
+          <Banner color="danger">
+            <IonLabel>
+              <b>Error</b> Schema not found. Please ensure you are connected to
+              the internet and try again.
+            </IonLabel>
+          </Banner>
+        )}
+
         {schema.data && (
           <>
             <SampleView

@@ -220,6 +220,12 @@ export interface LockOperationResult {
   lock_updated?: string | null; // ISO 8601 datetime string
 }
 
+export interface VersionInfo {
+  nmdc_server: string;
+  nmdc_schema: string;
+  nmdc_submission_schema: string;
+}
+
 export class ApiError extends Error {
   public readonly request: Request;
   public readonly response: Response;
@@ -407,6 +413,10 @@ class NmdcServerClient extends FetchClient {
     return this.fetchJson<GoldEcosystemTreeNode>(
       "/static/submission_schema/GoldEcosystemTree.json",
     );
+  }
+
+  async getVersionInfo() {
+    return this.fetchJson<VersionInfo>("/api/version");
   }
 
   // This method is rate-limited to once every 20 seconds. This is because it's possible for
