@@ -16,7 +16,7 @@ interface Config {
   APP_VERSION: typeof env.FIELD_NOTES_VERSION_NUMBER;
   APP_BUILD: typeof env.FIELD_NOTES_BUILD_NUMBER;
   NMDC_SERVER_API_URL: string;
-  NMDC_SCHEMA_BASE_URL: string;
+  NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL: string;
   SHOW_DEV_SITE_WARNING: boolean;
   SUPPORT_EMAIL: string;
 }
@@ -54,7 +54,8 @@ const config: Config = {
    * Default: `https://microbiomedata.github.io/submission-schema`
    */
   NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL:
-    env.VITE_NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL || "https://microbiomedata.github.io/submission-schema",
+    env.VITE_NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL ||
+    "https://microbiomedata.github.io/submission-schema",
 
   /**
    * Whether to show a warning that the user is on a development site.
