@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSubmissionList } from "../../queries";
 import {
   IonButton,
@@ -18,8 +18,35 @@ import { getSubmissionSamples } from "../../utils";
 import paths from "../../paths";
 import NoneOr from "../NoneOr/NoneOr";
 import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
+import { StepType, useTour } from "@reactour/tour";
+
+// Make steps for the tour.
+// Reference: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+const steps: Array<StepType> = [
+  {
+    selector: '[data-tour="StudyList-1"]',
+    content: "Tap here to create a new study.",
+  },
+  {
+    selector: '[data-tour="StudyList-2"]',
+    content: "Tap here to edit an existing study.",
+    padding: { mask: [24, 0, 0, 0] }, // increases padding-top so "Studies" header is also highlighted
+  },
+];
 
 const StudyList: React.FC = () => {
+  // Initialize the tour of this component.
+  const { setIsOpen: setIsTourOpen, setSteps, setCurrentStep } = useTour();
+  useEffect(() => {
+    if (setSteps !== undefined) {
+      setSteps(steps);
+      setCurrentStep(0);
+      setIsTourOpen(true);
+    } else {
+      setIsTourOpen(false);
+    }
+  }, [setIsTourOpen, setSteps, setCurrentStep]);
+
   const submissionList = useSubmissionList();
   const concatenatedSubmissions = useMemo(() => {
     if (!submissionList.data) {
@@ -44,7 +71,9 @@ const StudyList: React.FC = () => {
 
       <IonListHeader>
         <IonLabel>Studies</IonLabel>
-        <IonButton routerLink={paths.studyCreate}>New</IonButton>
+        <IonButton routerLink={paths.studyCreate} data-tour={"StudyList-1"}>
+          New
+        </IonButton>
       </IonListHeader>
 
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
@@ -53,12 +82,16 @@ const StudyList: React.FC = () => {
 
       {submissionList.data &&
         (concatenatedSubmissions.length === 0 ? (
-          <IonText color="medium" className="ion-padding">
+          <IonText
+            color="medium"
+            className="ion-padding"
+            data-tour={"StudyList-2"}
+          >
             No studies yet
           </IonText>
         ) : (
           <>
-            <IonList>
+            <IonList data-tour={"StudyList-2"}>
               {concatenatedSubmissions.map((submission) => (
                 <IonItem
                   key={submission.id}
