@@ -10,7 +10,6 @@ import { IonButton } from "@ionic/react";
  */
 const CustomTourProvider: React.FC<ProviderProps> = ({
   showBadge = false,
-  // Note: The user can tap outside the caption in order to end the tour.
   showCloseButton = false,
   // Note: We disable interaction by default; because interacting with highlighted `select` elements is currently buggy
   //       (i.e. the menu trigger gets highlighted, but the menu list that pops up is not—it is still masked—so we'd
