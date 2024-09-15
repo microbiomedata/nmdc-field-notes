@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   IonButton,
   IonIcon,
@@ -14,8 +14,9 @@ import { SubmissionMetadataCreate, TEMPLATES } from "../../api";
 import { Controller, useForm } from "react-hook-form";
 import { useStore } from "../../Store";
 import { colorWand as autoFill } from "ionicons/icons";
-import { StepType, useTour } from "@reactour/tour";
+import { StepType } from "@reactour/tour";
 import styles from "./StudyForm.module.css";
+import { useLocalTour } from "../CustomTourProvider/hooks";
 
 // Make steps for the tour.
 const steps: Array<StepType> = [
@@ -60,17 +61,7 @@ const StudyForm: React.FC<StudyFormProps> = ({
   submission,
   onSave,
 }) => {
-  // Initialize the tour of this component.
-  const { setIsOpen: setIsTourOpen, setSteps, setCurrentStep } = useTour();
-  useEffect(() => {
-    if (setSteps !== undefined) {
-      setSteps(steps);
-      setCurrentStep(0);
-      setIsTourOpen(true);
-    } else {
-      setIsTourOpen(false);
-    }
-  }, [setIsTourOpen, setSteps, setCurrentStep]);
+  useLocalTour(steps);
 
   const { loggedInUser } = useStore();
 

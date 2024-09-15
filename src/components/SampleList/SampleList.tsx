@@ -23,7 +23,8 @@ import { useMiniSearch } from "react-minisearch";
 import { getSubmissionSamples } from "../../utils";
 import { produce } from "immer";
 import Banner from "../Banner/Banner";
-import { StepType, useTour } from "@reactour/tour";
+import { StepType } from "@reactour/tour";
+import { useLocalTour } from "../CustomTourProvider/hooks";
 
 // Make steps for the tour.
 const steps: Array<StepType> = [
@@ -46,17 +47,7 @@ const SampleList: React.FC<SampleListProps> = ({
   onSampleCreate,
   sampleCreateFailureMessage,
 }) => {
-  // Initialize the tour of this component.
-  const { setIsOpen: setIsTourOpen, setSteps, setCurrentStep } = useTour();
-  useEffect(() => {
-    if (setSteps !== undefined) {
-      setSteps(steps);
-      setCurrentStep(0);
-      setIsTourOpen(true);
-    } else {
-      setIsTourOpen(false);
-    }
-  }, [setIsTourOpen, setSteps, setCurrentStep]);
+  useLocalTour(steps);
 
   const searchElement = React.useRef<HTMLIonSearchbarElement>(null);
 

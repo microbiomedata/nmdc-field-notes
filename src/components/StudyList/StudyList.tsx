@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useSubmissionList } from "../../queries";
 import {
   IonButton,
@@ -18,7 +18,8 @@ import { getSubmissionSamples } from "../../utils";
 import paths from "../../paths";
 import NoneOr from "../NoneOr/NoneOr";
 import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
-import { StepType, useTour } from "@reactour/tour";
+import { StepType } from "@reactour/tour";
+import { useLocalTour } from "../CustomTourProvider/hooks";
 
 // Make steps for the tour.
 // Reference: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
@@ -35,17 +36,7 @@ const steps: Array<StepType> = [
 ];
 
 const StudyList: React.FC = () => {
-  // Initialize the tour of this component.
-  const { setIsOpen: setIsTourOpen, setSteps, setCurrentStep } = useTour();
-  useEffect(() => {
-    if (setSteps !== undefined) {
-      setSteps(steps);
-      setCurrentStep(0);
-      setIsTourOpen(true);
-    } else {
-      setIsTourOpen(false);
-    }
-  }, [setIsTourOpen, setSteps, setCurrentStep]);
+  useLocalTour(steps);
 
   const submissionList = useSubmissionList();
   const concatenatedSubmissions = useMemo(() => {

@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { IonContent, IonHeader, IonPage, IonTitle } from "@ionic/react";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import SectionHeader from "../../components/SectionHeader/SectionHeader";
 import SettingsUserList from "../../components/SettingsUserList/SettingsUserList";
 import SettingsAboutList from "../../components/SettingsAboutList/SettingsAboutList";
 import SettingsAppearanceList from "../../components/SettingsAppearanceList/SettingsAppearanceList";
-import { StepType, useTour } from "@reactour/tour";
+import { StepType } from "@reactour/tour";
+import { useLocalTour } from "../../components/CustomTourProvider/hooks";
 
 // Make steps for the tour.
 const steps: Array<StepType> = [
@@ -32,17 +33,7 @@ const steps: Array<StepType> = [
 ];
 
 const SettingsPage: React.FC = () => {
-  // Initialize the tour of this component.
-  const { setIsOpen: setIsTourOpen, setSteps, setCurrentStep } = useTour();
-  useEffect(() => {
-    if (setSteps !== undefined) {
-      setSteps(steps);
-      setCurrentStep(0);
-      setIsTourOpen(true);
-    } else {
-      setIsTourOpen(false);
-    }
-  }, [setIsTourOpen, setSteps, setCurrentStep]);
+  useLocalTour(steps);
 
   return (
     <IonPage>
