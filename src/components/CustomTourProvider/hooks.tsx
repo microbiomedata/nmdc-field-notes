@@ -8,19 +8,25 @@ import { useStore } from "../../Store";
  */
 export const useLocalTour = (tourId: TourId, steps: Array<StepType>) => {
   const { setIsOpen, setSteps, setCurrentStep } = useTour();
-
-  const { checkWhetherTourIsDismissed } = useStore();
-  const isTourDismissed = checkWhetherTourIsDismissed(tourId);
+  const { checkWhetherTourHasBeenPresented, rememberTourHasBeenPresented } =
+    useStore();
 
   useEffect(() => {
     // Note: I don't know the circumstances under which `setSteps` would be `undefined`,
     //       but the TypeScript type information about `useTour` says it can be.
-    if (setSteps !== undefined) {
+    if (setSteps !== undefined && !checkWhetherTourHasBeenPresented(tourId)) {
       setSteps(steps);
       setCurrentStep(0);
-      if (!isTourDismissed) {
-        setIsOpen(true);
-      }
+      setIsOpen(true);
+      rememberTourHasBeenPresented(tourId);
     }
-  }, [steps, setIsOpen, setSteps, setCurrentStep, isTourDismissed]);
+  }, [
+    steps,
+    setIsOpen,
+    setSteps,
+    setCurrentStep,
+    checkWhetherTourHasBeenPresented,
+    rememberTourHasBeenPresented,
+    tourId,
+  ]);
 };

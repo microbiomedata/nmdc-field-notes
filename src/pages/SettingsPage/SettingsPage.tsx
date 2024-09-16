@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { IonContent, IonHeader, IonPage, IonTitle } from "@ionic/react";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import SectionHeader from "../../components/SectionHeader/SectionHeader";

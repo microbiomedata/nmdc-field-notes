@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from "react";
+import React, { useMemo } from "react";
 import { useSubmissionList } from "../../queries";
 import {
   IonButton,
@@ -63,7 +63,10 @@ const StudyList: React.FC = () => {
 
       <IonListHeader>
         <IonLabel>Studies</IonLabel>
-        <IonButton routerLink={paths.studyCreate} data-tour={`${TourId.StudyList}-1`}>
+        <IonButton
+          routerLink={paths.studyCreate}
+          data-tour={`${TourId.StudyList}-1`}
+        >
           New
         </IonButton>
       </IonListHeader>

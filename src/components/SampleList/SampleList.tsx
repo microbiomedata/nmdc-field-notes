@@ -128,7 +128,10 @@ const SampleList: React.FC<SampleListProps> = ({
     <>
       <IonListHeader>
         <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
-        <IonButton onClick={onSampleCreate} data-tour={`${TourId.SampleList}-1`}>
+        <IonButton
+          onClick={onSampleCreate}
+          data-tour={`${TourId.SampleList}-1`}
+        >
           New
         </IonButton>
       </IonListHeader>

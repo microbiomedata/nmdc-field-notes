@@ -21,7 +21,7 @@ enum StorageKey {
   LOGGED_IN_USER = "loggedInUser",
   COLOR_PALETTE_MODE = "colorPaletteMode",
   HIDDEN_SLOTS = "hiddenSlots",
-  DISMISSED_TOUR_IDS = "dismissedTourIds",
+  PRESENTED_TOUR_IDS = "presentedTourIds",
 }
 
 interface StoreContextValue {
@@ -41,9 +41,9 @@ interface StoreContextValue {
     hiddenSlots: string[],
   ) => void;
 
-  checkWhetherTourIsDismissed: (tourId: TourId) => boolean;
-  dismissTour: (tourId: TourId | null) => void;
-  undismissTour: (tourId: TourId | null) => void;
+  checkWhetherTourHasBeenPresented: (tourId: TourId) => boolean;
+  rememberTourHasBeenPresented: (tourId: TourId | null) => void;
+  forgetTourHasBeenPresented: (tourId: TourId | null) => void;
 }
 
 const StoreContext = createContext<StoreContextValue>({
@@ -70,14 +70,16 @@ const StoreContext = createContext<StoreContextValue>({
     throw new Error("setHiddenSlotsForSchemaClass called outside of provider");
   },
 
-  checkWhetherTourIsDismissed: () => {
-    throw new Error("checkWhetherTourIsDismissed called outside of provider");
+  checkWhetherTourHasBeenPresented: () => {
+    throw new Error(
+      "checkWhetherTourHasBeenPresented called outside of provider",
+    );
   },
-  dismissTour: () => {
-    throw new Error("dismissTour called outside of provider");
+  rememberTourHasBeenPresented: () => {
+    throw new Error("rememberTourHasBeenPresented called outside of provider");
   },
-  undismissTour: () => {
-    throw new Error("undismissTour called outside of provider");
+  forgetTourHasBeenPresented: () => {
+    throw new Error("forgetTourHasBeenPresented called outside of provider");
   },
 });
 
@@ -88,7 +90,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
   const [hiddenSlots, setHiddenSlots] = useState<Record<string, string[]>>({});
-  const [dismissedTourIds, setDismissedTourIds] = useState<Set<TourId>>(
+  const [presentedTourIds, setPresentedTourIds] = useState<Set<TourId>>(
     new Set(),
   );
 
@@ -154,13 +156,17 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         setHiddenSlots(hiddenSlotsFromStorage);
       }
 
-      // If persistent storage contains dismissed tour IDs, load them into the Context as a `Set`.
-      // Note: Although we use them as a `Set`, we persist them as an `Array`.
-      const dismissedTourIdsFromStorage = await storage.get(
-        StorageKey.DISMISSED_TOUR_IDS,
+      // If persistent storage contains presented tour IDs, load them into the Context.
+      //
+      // Note: If we were storing our `Set` into browser storage directly, we'd have to convert it into an array first.
+      //       However, this `storage` object seems to be able to store and retrieve a `Set` as-is.
+      //       So, we currently do not translate our `Set` into an `Array` and vice versa.
+      //
+      const presentedTourIdsFromStorage = await storage.get(
+        StorageKey.PRESENTED_TOUR_IDS,
       );
-      if (Array.isArray(dismissedTourIdsFromStorage)) {
-        setDismissedTourIds(new Set(dismissedTourIdsFromStorage));
+      if (presentedTourIdsFromStorage instanceof Set) {
+        setPresentedTourIds(presentedTourIdsFromStorage);
       }
 
       // This should be done last so that we can block rendering until in-memory state is fully
@@ -284,57 +290,59 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   /**
-   * Returns `true` if the specified tour has been dismissed; otherwise returns `false`.
+   * Returns `true` if the specified tour has been presented; otherwise returns `false`.
    *
    * @param tourId ID of the tour.
    */
-  function checkWhetherTourIsDismissed(tourId: TourId) {
-    return dismissedTourIds.has(tourId);
+  function checkWhetherTourHasBeenPresented(tourId: TourId) {
+    return presentedTourIds.has(tourId);
   }
 
   /**
-   * Dismisses one specific tour, or all tours, and updates the Context and the store to reflect that.
+   * Remembers that a tour, or all tours, has been presented; and updates the Context and the store to reflect that.
    *
-   * @param tourId ID of the tour you want to dismiss, or `null` to dismiss all tours.
+   * @param tourId ID of the tour you want to remember has been presented, or `null` to remember it for all tours.
    */
-  async function dismissTour(tourId: TourId | null) {
-    const nextDismissedTourIds = new Set(dismissedTourIds);
+  async function rememberTourHasBeenPresented(tourId: TourId | null) {
+    const nextPresentedTourIds = new Set(presentedTourIds);
     if (tourId !== null) {
-      // Dismiss a single tour.
-      nextDismissedTourIds.add(tourId);
+      nextPresentedTourIds.add(tourId);
     } else {
-      // Dismiss all tours.
       Object.values(TourId).forEach((tourId_) =>
-        nextDismissedTourIds.add(tourId_),
+        nextPresentedTourIds.add(tourId_),
       );
     }
-    setDismissedTourIds(nextDismissedTourIds);
+    setPresentedTourIds(nextPresentedTourIds);
     if (store === null) {
-      console.warn("dismissTour called before storage initialization");
+      console.warn(
+        "rememberTourHasBeenPresented called before storage initialization",
+      );
       return;
     } else {
-      return store.set(StorageKey.DISMISSED_TOUR_IDS, nextDismissedTourIds);
+      return store.set(StorageKey.PRESENTED_TOUR_IDS, nextPresentedTourIds);
     }
   }
 
   /**
-   * Undismisses one specific tour, or all tours, and updates the Context and the store to reflect that.
+   * Forgets that a tour, or all tours, have been presented; and updates the Context and the store to reflect that.
    *
-   * @param tourId ID of the tour you want to undismiss, or `null` to dismiss all tours.
+   * @param tourId ID of the tour you want to forget has been presented, or `null` to remember it for all tours.
    */
-  async function undismissTour(tourId: TourId | null) {
-    const nextDismissedTourIds = new Set(dismissedTourIds);
+  async function forgetTourHasBeenPresented(tourId: TourId | null) {
+    const nextPresentedTourIds = new Set(presentedTourIds);
     if (tourId !== null) {
-      nextDismissedTourIds.delete(tourId);
+      nextPresentedTourIds.delete(tourId);
     } else {
-      nextDismissedTourIds.clear();
+      nextPresentedTourIds.clear();
     }
-    setDismissedTourIds(nextDismissedTourIds);
+    setPresentedTourIds(nextPresentedTourIds);
     if (store === null) {
-      console.warn("undismissTour called before storage initialization");
+      console.warn(
+        "forgetTourHasBeenPresented called before storage initialization",
+      );
       return;
     } else {
-      return store.set(StorageKey.DISMISSED_TOUR_IDS, nextDismissedTourIds);
+      return store.set(StorageKey.PRESENTED_TOUR_IDS, nextPresentedTourIds);
     }
   }
 
@@ -354,9 +362,9 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         getHiddenSlotsForSchemaClass,
         setHiddenSlotsForSchemaClass,
 
-        checkWhetherTourIsDismissed,
-        dismissTour,
-        undismissTour,
+        checkWhetherTourHasBeenPresented,
+        rememberTourHasBeenPresented,
+        forgetTourHasBeenPresented,
       }}
     >
       {children}
