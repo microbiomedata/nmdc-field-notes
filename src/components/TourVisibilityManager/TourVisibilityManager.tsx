@@ -1,13 +1,22 @@
-import { IonLabel } from "@ionic/react";
+import { IonLabel, useIonToast } from "@ionic/react";
 import React from "react";
 import { useStore } from "../../Store";
+import { checkmark } from "ionicons/icons";
 
 const TourVisibilityManager: React.FC = () => {
   const { forgetTourHasBeenPresented } = useStore();
+  const [present] = useIonToast();
 
   const handleResetClick = () => {
-    // Forget any tours have been presented.
+    // Forget that any tours have been presented.
     forgetTourHasBeenPresented(null);
+
+    // Display a toast notification.
+    void present({
+      message: "Tours reset",
+      duration: 3000,
+      icon: checkmark,
+    });
   };
 
   return (
