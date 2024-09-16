@@ -1,7 +1,7 @@
 import { StepType, useTour } from "@reactour/tour";
-import { useEffect } from "react";
 import { TourId } from "./CustomTourProvider";
 import { useStore } from "../../Store";
+import { useIonViewDidEnter } from "@ionic/react";
 
 /**
  * Custom React hook that initializes a Reactour tour having the specified steps.
@@ -11,7 +11,9 @@ export const useLocalTour = (tourId: TourId, steps: Array<StepType>) => {
   const { checkWhetherTourHasBeenPresented, rememberTourHasBeenPresented } =
     useStore();
 
-  useEffect(() => {
+  // Show the tour "when component routing has finished animating."
+  // Reference: https://ionicframework.com/docs/react/lifecycle
+  useIonViewDidEnter(() => {
     // Note: I don't know the circumstances under which `setSteps` would be `undefined`,
     //       but the TypeScript type information about `useTour` says it can be.
     if (setSteps !== undefined && !checkWhetherTourHasBeenPresented(tourId)) {
