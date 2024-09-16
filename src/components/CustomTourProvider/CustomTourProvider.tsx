@@ -3,6 +3,13 @@ import { TourProvider, ProviderProps } from "@reactour/tour";
 import styles from "./CustomTourProvider.module.css";
 import { IonButton } from "@ionic/react";
 
+export enum TourId {
+  SampleList = "SampleList",
+  StudyForm = "StudyForm",
+  StudyList = "StudyList",
+  SettingsPage = "SettingsPage",
+}
+
 /**
  * Reactour `TourProvider` whose default configuration has been customized for this application.
  *

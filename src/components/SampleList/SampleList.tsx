@@ -25,11 +25,12 @@ import { produce } from "immer";
 import Banner from "../Banner/Banner";
 import { StepType } from "@reactour/tour";
 import { useLocalTour } from "../CustomTourProvider/hooks";
+import { TourId } from "../CustomTourProvider/CustomTourProvider";
 
 // Make steps for the tour.
 const steps: Array<StepType> = [
   {
-    selector: "[data-tour='SampleList-1']",
+    selector: `[data-tour="${TourId.SampleList}-1"]`,
     content: "Tap here to add samples to the study.",
   },
 ];
@@ -47,7 +48,7 @@ const SampleList: React.FC<SampleListProps> = ({
   onSampleCreate,
   sampleCreateFailureMessage,
 }) => {
-  useLocalTour(steps);
+  useLocalTour(TourId.SampleList, steps);
 
   const searchElement = React.useRef<HTMLIonSearchbarElement>(null);
 
@@ -127,7 +128,7 @@ const SampleList: React.FC<SampleListProps> = ({
     <>
       <IonListHeader>
         <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
-        <IonButton onClick={onSampleCreate} data-tour={"SampleList-1"}>
+        <IonButton onClick={onSampleCreate} data-tour={`${TourId.SampleList}-1`}>
           New
         </IonButton>
       </IonListHeader>

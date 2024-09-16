@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, {useEffect, useMemo} from "react";
 import { useSubmissionList } from "../../queries";
 import {
   IonButton,
@@ -20,23 +20,24 @@ import NoneOr from "../NoneOr/NoneOr";
 import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
 import { StepType } from "@reactour/tour";
 import { useLocalTour } from "../CustomTourProvider/hooks";
+import { TourId } from "../CustomTourProvider/CustomTourProvider";
 
 // Make steps for the tour.
 // Reference: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 const steps: Array<StepType> = [
   {
-    selector: '[data-tour="StudyList-1"]',
+    selector: `[data-tour="${TourId.StudyList}-1"]`,
     content: "Tap here to create a new study.",
   },
   {
-    selector: '[data-tour="StudyList-2"]',
+    selector: `[data-tour="${TourId.StudyList}-2"]`,
     content: "Tap here to edit an existing study.",
     padding: { mask: [24, 0, 0, 0] }, // increases padding-top so "Studies" header is also highlighted
   },
 ];
 
 const StudyList: React.FC = () => {
-  useLocalTour(steps);
+  useLocalTour(TourId.StudyList, steps);
 
   const submissionList = useSubmissionList();
   const concatenatedSubmissions = useMemo(() => {
@@ -62,7 +63,7 @@ const StudyList: React.FC = () => {
 
       <IonListHeader>
         <IonLabel>Studies</IonLabel>
-        <IonButton routerLink={paths.studyCreate} data-tour={"StudyList-1"}>
+        <IonButton routerLink={paths.studyCreate} data-tour={`${TourId.StudyList}-1`}>
           New
         </IonButton>
       </IonListHeader>
@@ -82,7 +83,7 @@ const StudyList: React.FC = () => {
           </IonText>
         ) : (
           <>
-            <IonList data-tour={"StudyList-2"}>
+            <IonList data-tour={`${TourId.StudyList}-2`}>
               {concatenatedSubmissions.map((submission) => (
                 <IonItem
                   key={submission.id}

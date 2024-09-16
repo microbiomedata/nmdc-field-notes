@@ -14,12 +14,14 @@ import {
 } from "./theme/colorPalette";
 import { produce } from "immer";
 import { Network } from "@capacitor/network";
+import { TourId } from "./components/CustomTourProvider/CustomTourProvider";
 
 enum StorageKey {
   REFRESH_TOKEN = "refreshToken",
   LOGGED_IN_USER = "loggedInUser",
   COLOR_PALETTE_MODE = "colorPaletteMode",
   HIDDEN_SLOTS = "hiddenSlots",
+  DISMISSED_TOUR_IDS = "dismissedTourIds",
 }
 
 interface StoreContextValue {
@@ -38,6 +40,10 @@ interface StoreContextValue {
     className: string,
     hiddenSlots: string[],
   ) => void;
+
+  checkWhetherTourIsDismissed: (tourId: TourId) => boolean;
+  dismissTour: (tourId: TourId | null) => void;
+  undismissTour: (tourId: TourId | null) => void;
 }
 
 const StoreContext = createContext<StoreContextValue>({
@@ -63,6 +69,16 @@ const StoreContext = createContext<StoreContextValue>({
   setHiddenSlotsForSchemaClass: () => {
     throw new Error("setHiddenSlotsForSchemaClass called outside of provider");
   },
+
+  checkWhetherTourIsDismissed: () => {
+    throw new Error("checkWhetherTourIsDismissed called outside of provider");
+  },
+  dismissTour: () => {
+    throw new Error("dismissTour called outside of provider");
+  },
+  undismissTour: () => {
+    throw new Error("undismissTour called outside of provider");
+  },
 });
 
 const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -72,6 +88,9 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
   const [hiddenSlots, setHiddenSlots] = useState<Record<string, string[]>>({});
+  const [dismissedTourIds, setDismissedTourIds] = useState<Set<TourId>>(
+    new Set(),
+  );
 
   // Initialize the store.
   useEffect(() => {
@@ -133,6 +152,15 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const hiddenSlotsFromStorage = await storage.get(StorageKey.HIDDEN_SLOTS);
       if (hiddenSlotsFromStorage) {
         setHiddenSlots(hiddenSlotsFromStorage);
+      }
+
+      // If persistent storage contains dismissed tour IDs, load them into the Context as a `Set`.
+      // Note: Although we use them as a `Set`, we persist them as an `Array`.
+      const dismissedTourIdsFromStorage = await storage.get(
+        StorageKey.DISMISSED_TOUR_IDS,
+      );
+      if (Array.isArray(dismissedTourIdsFromStorage)) {
+        setDismissedTourIds(new Set(dismissedTourIdsFromStorage));
       }
 
       // This should be done last so that we can block rendering until in-memory state is fully
@@ -255,6 +283,61 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   }
 
+  /**
+   * Returns `true` if the specified tour has been dismissed; otherwise returns `false`.
+   *
+   * @param tourId ID of the tour.
+   */
+  function checkWhetherTourIsDismissed(tourId: TourId) {
+    return dismissedTourIds.has(tourId);
+  }
+
+  /**
+   * Dismisses one specific tour, or all tours, and updates the Context and the store to reflect that.
+   *
+   * @param tourId ID of the tour you want to dismiss, or `null` to dismiss all tours.
+   */
+  async function dismissTour(tourId: TourId | null) {
+    const nextDismissedTourIds = new Set(dismissedTourIds);
+    if (tourId !== null) {
+      // Dismiss a single tour.
+      nextDismissedTourIds.add(tourId);
+    } else {
+      // Dismiss all tours.
+      Object.values(TourId).forEach((tourId_) =>
+        nextDismissedTourIds.add(tourId_),
+      );
+    }
+    setDismissedTourIds(nextDismissedTourIds);
+    if (store === null) {
+      console.warn("dismissTour called before storage initialization");
+      return;
+    } else {
+      return store.set(StorageKey.DISMISSED_TOUR_IDS, nextDismissedTourIds);
+    }
+  }
+
+  /**
+   * Undismisses one specific tour, or all tours, and updates the Context and the store to reflect that.
+   *
+   * @param tourId ID of the tour you want to undismiss, or `null` to dismiss all tours.
+   */
+  async function undismissTour(tourId: TourId | null) {
+    const nextDismissedTourIds = new Set(dismissedTourIds);
+    if (tourId !== null) {
+      nextDismissedTourIds.delete(tourId);
+    } else {
+      nextDismissedTourIds.clear();
+    }
+    setDismissedTourIds(nextDismissedTourIds);
+    if (store === null) {
+      console.warn("undismissTour called before storage initialization");
+      return;
+    } else {
+      return store.set(StorageKey.DISMISSED_TOUR_IDS, nextDismissedTourIds);
+    }
+  }
+
   return (
     <StoreContext.Provider
       value={{
@@ -270,6 +353,10 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
         getHiddenSlotsForSchemaClass,
         setHiddenSlotsForSchemaClass,
+
+        checkWhetherTourIsDismissed,
+        dismissTour,
+        undismissTour,
       }}
     >
       {children}
