@@ -80,7 +80,7 @@ const StudyList: React.FC = () => {
           <IonText
             color="medium"
             className="ion-padding"
-            data-tour={"StudyList-2"}
+            data-tour={`${TourId.StudyList}-2`}
           >
             No studies yet
           </IonText>
