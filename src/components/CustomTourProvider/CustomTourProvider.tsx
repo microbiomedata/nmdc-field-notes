@@ -60,8 +60,7 @@ const CustomTourProvider: React.FC<ProviderProps> = ({
       // Ensure the highlighted element is not covered by our navbar.
       inViewThreshold={{ y: 80 }}
       disableInteraction={disableInteraction}
-      // If we're at the first step, hide the back arrow
-      // (but include an element to preserve the layout).
+      // If we're at the first step, hide the back arrow (but include the invisible element to preserve the layout).
       prevButton={(props) =>
         props.currentStep === 0 ? (
           <props.Button hideArrow={true} />
@@ -69,7 +68,7 @@ const CustomTourProvider: React.FC<ProviderProps> = ({
           <props.Button kind={"prev"} />
         )
       }
-      // If we're at the final step, show an "OK" button.
+      // If we're at the final step, show a "Dismiss" button.
       nextButton={(props) =>
         props.currentStep + 1 === props.stepsLength ? (
           <IonButton
