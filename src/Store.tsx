@@ -312,15 +312,14 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         nextPresentedTourIds.add(tourId_),
       );
     }
-    setPresentedTourIds(nextPresentedTourIds);
     if (store === null) {
       console.warn(
         "rememberTourHasBeenPresented called before storage initialization",
       );
-      return;
     } else {
-      return store.set(StorageKey.PRESENTED_TOUR_IDS, nextPresentedTourIds);
+      await store.set(StorageKey.PRESENTED_TOUR_IDS, nextPresentedTourIds);
     }
+    setPresentedTourIds(nextPresentedTourIds);
   }
 
   /**
@@ -335,15 +334,14 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     } else {
       nextPresentedTourIds.clear();
     }
-    setPresentedTourIds(nextPresentedTourIds);
     if (store === null) {
       console.warn(
         "forgetTourHasBeenPresented called before storage initialization",
       );
-      return;
     } else {
-      return store.set(StorageKey.PRESENTED_TOUR_IDS, nextPresentedTourIds);
+      await store.set(StorageKey.PRESENTED_TOUR_IDS, nextPresentedTourIds);
     }
+    setPresentedTourIds(nextPresentedTourIds);
   }
 
   return (
