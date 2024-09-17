@@ -1,0 +1,20 @@
+/**
+ * When in dark mode, add a "spotlight" effect to the highlighted element in
+ * order to make it stand out from the masked area.
+ *
+ * Note: By default, in dark mode, the "spotlight" effect (on the highlighted element)
+ *       doesn't occur, since our screens already have a dark background in dark mode
+ *       (so masking the background doesn't change its brightness by much). So, here,
+ *       I added some extra styling in an attempt to achieve a similar "spotlight"
+ *       effect in dark mode as that which occurs organically in light mode.
+ *
+ * References:
+ * - https://docs.react.tours/tour/props#maskclassname
+ * - https://docs.react.tours/tour/props#highlightedmaskclassname
+ */
+:global(:root.ion-palette-dark) {
+  .highlightedArea {
+    fill: #ffffff !important;
+    opacity: 20%;
+  }
+}

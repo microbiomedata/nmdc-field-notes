@@ -14,12 +14,14 @@ import {
 } from "./theme/colorPalette";
 import { produce } from "immer";
 import { Network } from "@capacitor/network";
+import { TourId } from "./components/CustomTourProvider/AppTourProvider";
 
 enum StorageKey {
   REFRESH_TOKEN = "refreshToken",
   LOGGED_IN_USER = "loggedInUser",
   COLOR_PALETTE_MODE = "colorPaletteMode",
   HIDDEN_SLOTS = "hiddenSlots",
+  PRESENTED_TOUR_IDS = "presentedTourIds",
 }
 
 interface StoreContextValue {
@@ -38,6 +40,10 @@ interface StoreContextValue {
     className: string,
     hiddenSlots: string[],
   ) => void;
+
+  checkWhetherTourHasBeenPresented: (tourId: TourId) => boolean;
+  rememberTourHasBeenPresented: (tourId: TourId | null) => void;
+  forgetTourHasBeenPresented: (tourId: TourId | null) => void;
 }
 
 const StoreContext = createContext<StoreContextValue>({
@@ -63,6 +69,18 @@ const StoreContext = createContext<StoreContextValue>({
   setHiddenSlotsForSchemaClass: () => {
     throw new Error("setHiddenSlotsForSchemaClass called outside of provider");
   },
+
+  checkWhetherTourHasBeenPresented: () => {
+    throw new Error(
+      "checkWhetherTourHasBeenPresented called outside of provider",
+    );
+  },
+  rememberTourHasBeenPresented: () => {
+    throw new Error("rememberTourHasBeenPresented called outside of provider");
+  },
+  forgetTourHasBeenPresented: () => {
+    throw new Error("forgetTourHasBeenPresented called outside of provider");
+  },
 });
 
 const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -72,6 +90,9 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
   const [hiddenSlots, setHiddenSlots] = useState<Record<string, string[]>>({});
+  const [presentedTourIds, setPresentedTourIds] = useState<Set<TourId>>(
+    new Set(),
+  );
 
   // Initialize the store.
   useEffect(() => {
@@ -133,6 +154,19 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const hiddenSlotsFromStorage = await storage.get(StorageKey.HIDDEN_SLOTS);
       if (hiddenSlotsFromStorage) {
         setHiddenSlots(hiddenSlotsFromStorage);
+      }
+
+      // If persistent storage contains presented tour IDs, load them into the Context.
+      //
+      // Note: If we were storing our `Set` into browser storage directly, we'd have to convert it into an array first.
+      //       However, this `storage` object seems to be able to store and retrieve a `Set` as-is.
+      //       So, we currently do not translate our `Set` into an `Array` and vice versa.
+      //
+      const presentedTourIdsFromStorage = await storage.get(
+        StorageKey.PRESENTED_TOUR_IDS,
+      );
+      if (presentedTourIdsFromStorage instanceof Set) {
+        setPresentedTourIds(presentedTourIdsFromStorage);
       }
 
       // This should be done last so that we can block rendering until in-memory state is fully
@@ -255,6 +289,61 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   }
 
+  /**
+   * Returns `true` if the specified tour has been presented; otherwise returns `false`.
+   *
+   * @param tourId ID of the tour.
+   */
+  function checkWhetherTourHasBeenPresented(tourId: TourId) {
+    return presentedTourIds.has(tourId);
+  }
+
+  /**
+   * Remembers that a tour, or all tours, has been presented; and updates the Context and the store to reflect that.
+   *
+   * @param tourId ID of the tour you want to remember has been presented, or `null` to remember it for all tours.
+   */
+  async function rememberTourHasBeenPresented(tourId: TourId | null) {
+    const nextPresentedTourIds = new Set(presentedTourIds);
+    if (tourId !== null) {
+      nextPresentedTourIds.add(tourId);
+    } else {
+      Object.values(TourId).forEach((tourId_) =>
+        nextPresentedTourIds.add(tourId_),
+      );
+    }
+    if (store === null) {
+      console.warn(
+        "rememberTourHasBeenPresented called before storage initialization",
+      );
+    } else {
+      await store.set(StorageKey.PRESENTED_TOUR_IDS, nextPresentedTourIds);
+    }
+    setPresentedTourIds(nextPresentedTourIds);
+  }
+
+  /**
+   * Forgets that a tour, or all tours, have been presented; and updates the Context and the store to reflect that.
+   *
+   * @param tourId ID of the tour you want to forget has been presented, or `null` to remember it for all tours.
+   */
+  async function forgetTourHasBeenPresented(tourId: TourId | null) {
+    const nextPresentedTourIds = new Set(presentedTourIds);
+    if (tourId !== null) {
+      nextPresentedTourIds.delete(tourId);
+    } else {
+      nextPresentedTourIds.clear();
+    }
+    if (store === null) {
+      console.warn(
+        "forgetTourHasBeenPresented called before storage initialization",
+      );
+    } else {
+      await store.set(StorageKey.PRESENTED_TOUR_IDS, nextPresentedTourIds);
+    }
+    setPresentedTourIds(nextPresentedTourIds);
+  }
+
   return (
     <StoreContext.Provider
       value={{
@@ -270,6 +359,10 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
         getHiddenSlotsForSchemaClass,
         setHiddenSlotsForSchemaClass,
+
+        checkWhetherTourHasBeenPresented,
+        rememberTourHasBeenPresented,
+        forgetTourHasBeenPresented,
       }}
     >
       {children}

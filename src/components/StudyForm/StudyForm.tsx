@@ -14,8 +14,41 @@ import { SubmissionMetadataCreate, TEMPLATES } from "../../api";
 import { Controller, useForm } from "react-hook-form";
 import { useStore } from "../../Store";
 import { colorWand as autoFill } from "ionicons/icons";
-
+import { StepType } from "@reactour/tour";
 import styles from "./StudyForm.module.css";
+import { useAppTour } from "../CustomTourProvider/hooks";
+import { TourId } from "../CustomTourProvider/AppTourProvider";
+
+// Make steps for the tour.
+const steps: Array<StepType> = [
+  {
+    selector: `[data-tour="${TourId.StudyForm}-1"]`,
+    content: (
+      <>
+        You can fill in the fields according to the guidance shown. Fields
+        marked with <RequiredMark /> are required.
+      </>
+    ),
+  },
+  {
+    selector: `[data-tour="${TourId.StudyForm}-2"]`,
+    content: (
+      <>
+        Here, you can select a template that reflects the kind of environment
+        you&apos;ll be collecting samples from.
+      </>
+    ),
+  },
+  {
+    selector: `[data-tour="${TourId.StudyForm}-3"]`,
+    content: (
+      <>
+        Finally, once all the required fields are filled in, you can tap
+        &quot;Save&quot; to create the study.
+      </>
+    ),
+  },
+];
 
 interface StudyFormProps {
   disabled?: boolean;
@@ -42,6 +75,8 @@ const StudyForm: React.FC<StudyFormProps> = ({
   submission,
   onSave,
 }) => {
+  useAppTour(TourId.StudyForm, steps);
+
   const { loggedInUser } = useStore();
 
   const { handleSubmit, control, formState, setValue } =
@@ -62,6 +97,7 @@ const StudyForm: React.FC<StudyFormProps> = ({
           render={({ field, fieldState }) => {
             return (
               <IonInput
+                data-tour={`${TourId.StudyForm}-1`}
                 className={`${(fieldState.isTouched || formState.isSubmitted) && "ion-touched"} ${fieldState.invalid && "ion-invalid"}`}
                 labelPlacement="floating"
                 helperText="Provide a study name to associate with your samples."
@@ -230,6 +266,7 @@ const StudyForm: React.FC<StudyFormProps> = ({
           render={({ field, fieldState }) => (
             <>
               <IonSelect
+                data-tour={`${TourId.StudyForm}-2`}
                 className={`${(fieldState.isTouched || formState.isSubmitted) && "ion-touched"} ${fieldState.invalid && "ion-invalid"}`}
                 labelPlacement="floating"
                 onIonDismiss={field.onBlur}
@@ -260,6 +297,7 @@ const StudyForm: React.FC<StudyFormProps> = ({
         />
 
         <IonButton
+          data-tour={`${TourId.StudyForm}-3`}
           expand="block"
           className="ion-margin-top"
           type="submit"

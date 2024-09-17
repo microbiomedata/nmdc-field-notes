@@ -6,6 +6,7 @@ import QueryClientProvider from "./QueryClientProvider";
 import NetworkStatusProvider from "./NetworkStatus";
 import Router from "./Router";
 import StoreProvider from "./Store";
+import AppTourProvider from "./components/CustomTourProvider/AppTourProvider";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -49,11 +50,13 @@ const App: React.FC = () => {
     <NetworkStatusProvider>
       <StoreProvider>
         <QueryClientProvider>
-          <IonApp>
-            <ColorSchemePreferenceMonitor />
-            <DataPrefetcher />
-            <Router />
-          </IonApp>
+          <AppTourProvider steps={[]}>
+            <IonApp>
+              <ColorSchemePreferenceMonitor />
+              <DataPrefetcher />
+              <Router />
+            </IonApp>
+          </AppTourProvider>
         </QueryClientProvider>
       </StoreProvider>
     </NetworkStatusProvider>

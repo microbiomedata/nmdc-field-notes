@@ -18,8 +18,28 @@ import { getSubmissionSamples } from "../../utils";
 import paths from "../../paths";
 import NoneOr from "../NoneOr/NoneOr";
 import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
+import { StepType } from "@reactour/tour";
+import { useAppTour } from "../CustomTourProvider/hooks";
+import { TourId } from "../CustomTourProvider/AppTourProvider";
+
+// Make steps for the tour.
+// Reference: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+const steps: Array<StepType> = [
+  {
+    selector: `[data-tour="${TourId.StudyList}-1"]`,
+    content: "You can tap here to create a new study.",
+  },
+  {
+    selector: `[data-tour="${TourId.StudyList}-2"]`,
+    content:
+      "Here is where you'll see any studies created through the app or the NMDC Submission Portal. You can tap on a study to edit it or update its samples.",
+    padding: { mask: [40, 0, 12, 0] }, // increases vertical padding so "Studies" header is also highlighted and the body has some margin below it
+  },
+];
 
 const StudyList: React.FC = () => {
+  useAppTour(TourId.StudyList, steps);
+
   const submissionList = useSubmissionList();
   const concatenatedSubmissions = useMemo(() => {
     if (!submissionList.data) {
@@ -44,65 +64,72 @@ const StudyList: React.FC = () => {
 
       <IonListHeader>
         <IonLabel>Studies</IonLabel>
-        <IonButton routerLink={paths.studyCreate}>New</IonButton>
+        <IonButton
+          routerLink={paths.studyCreate}
+          data-tour={`${TourId.StudyList}-1`}
+        >
+          New
+        </IonButton>
       </IonListHeader>
 
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent />
       </IonRefresher>
 
-      {submissionList.data &&
-        (concatenatedSubmissions.length === 0 ? (
-          <IonText color="medium" className="ion-padding">
-            No studies yet
-          </IonText>
-        ) : (
-          <>
-            <IonList>
-              {concatenatedSubmissions.map((submission) => (
-                <IonItem
-                  key={submission.id}
-                  routerLink={paths.studyView(submission.id)}
-                >
-                  <IonLabel>
-                    <h3>
-                      <NoneOr placeholder="No study name">
-                        {submission.metadata_submission.studyForm.studyName}
-                      </NoneOr>
-                    </h3>
-                    <p>
-                      <NoneOr placeholder="No template selected">
-                        {submission.metadata_submission.templates[0]}
-                      </NoneOr>
-                      {" • "}
-                      <Pluralize
-                        count={getSubmissionSamples(submission).length}
-                        singular="Sample"
-                        showCount
-                      />
-                    </p>
-                  </IonLabel>
-                </IonItem>
-              ))}
-            </IonList>
+      <span data-tour={`${TourId.StudyList}-2`}>
+        {submissionList.data &&
+          (concatenatedSubmissions.length === 0 ? (
+            <IonText color="medium" className="ion-padding">
+              No studies yet
+            </IonText>
+          ) : (
+            <>
+              <IonList>
+                {concatenatedSubmissions.map((submission) => (
+                  <IonItem
+                    key={submission.id}
+                    routerLink={paths.studyView(submission.id)}
+                  >
+                    <IonLabel>
+                      <h3>
+                        <NoneOr placeholder="No study name">
+                          {submission.metadata_submission.studyForm.studyName}
+                        </NoneOr>
+                      </h3>
+                      <p>
+                        <NoneOr placeholder="No template selected">
+                          {submission.metadata_submission.templates[0]}
+                        </NoneOr>
+                        {" • "}
+                        <Pluralize
+                          count={getSubmissionSamples(submission).length}
+                          singular="Sample"
+                          showCount
+                        />
+                      </p>
+                    </IonLabel>
+                  </IonItem>
+                ))}
+              </IonList>
 
-            {submissionList.hasNextPage && (
-              <IonButton
-                fill="clear"
-                expand="block"
-                className="ion-padding-horizontal ion-padding-bottom"
-                disabled={submissionList.isFetching}
-                onClick={() => submissionList.fetchNextPage()}
-              >
-                {submissionList.isFetchingNextPage ? (
-                  <IonSpinner />
-                ) : (
-                  "Load More"
-                )}
-              </IonButton>
-            )}
-          </>
-        ))}
+              {submissionList.hasNextPage && (
+                <IonButton
+                  fill="clear"
+                  expand="block"
+                  className="ion-padding-horizontal ion-padding-bottom"
+                  disabled={submissionList.isFetching}
+                  onClick={() => submissionList.fetchNextPage()}
+                >
+                  {submissionList.isFetchingNextPage ? (
+                    <IonSpinner />
+                  ) : (
+                    "Load More"
+                  )}
+                </IonButton>
+              )}
+            </>
+          ))}
+      </span>
     </>
   );
 };

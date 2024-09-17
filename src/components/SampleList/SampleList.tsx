@@ -23,6 +23,17 @@ import { useMiniSearch } from "react-minisearch";
 import { getSubmissionSamples } from "../../utils";
 import { produce } from "immer";
 import Banner from "../Banner/Banner";
+import { StepType } from "@reactour/tour";
+import { useAppTour } from "../CustomTourProvider/hooks";
+import { TourId } from "../CustomTourProvider/AppTourProvider";
+
+// Make steps for the tour.
+const steps: Array<StepType> = [
+  {
+    selector: `[data-tour="${TourId.SampleList}-1"]`,
+    content: "You can tap here to add samples to the study.",
+  },
+];
 
 interface SampleListProps {
   submission: SubmissionMetadata;
@@ -37,6 +48,8 @@ const SampleList: React.FC<SampleListProps> = ({
   onSampleCreate,
   sampleCreateFailureMessage,
 }) => {
+  useAppTour(TourId.SampleList, steps);
+
   const searchElement = React.useRef<HTMLIonSearchbarElement>(null);
 
   const [isCollapsed, setIsCollapsed] = React.useState(true);
@@ -115,7 +128,12 @@ const SampleList: React.FC<SampleListProps> = ({
     <>
       <IonListHeader>
         <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
-        <IonButton onClick={onSampleCreate}>New</IonButton>
+        <IonButton
+          onClick={onSampleCreate}
+          data-tour={`${TourId.SampleList}-1`}
+        >
+          New
+        </IonButton>
       </IonListHeader>
 
       {sampleCreateFailureMessage && (
