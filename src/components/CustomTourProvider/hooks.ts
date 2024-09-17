@@ -6,7 +6,7 @@ import { useIonViewDidEnter } from "@ionic/react";
 /**
  * Custom React hook that initializes a Reactour tour having the specified steps.
  */
-export const useLocalTour = (tourId: TourId, steps: Array<StepType>) => {
+export const useAppTour = (tourId: TourId, steps: Array<StepType>) => {
   const { setIsOpen, setSteps, setCurrentStep } = useTour();
   const { checkWhetherTourHasBeenPresented, rememberTourHasBeenPresented } =
     useStore();

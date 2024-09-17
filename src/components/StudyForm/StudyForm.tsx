@@ -16,7 +16,7 @@ import { useStore } from "../../Store";
 import { colorWand as autoFill } from "ionicons/icons";
 import { StepType } from "@reactour/tour";
 import styles from "./StudyForm.module.css";
-import { useLocalTour } from "../CustomTourProvider/hooks";
+import { useAppTour } from "../CustomTourProvider/hooks";
 import { TourId } from "../CustomTourProvider/AppTourProvider";
 
 // Make steps for the tour.
@@ -62,7 +62,7 @@ const StudyForm: React.FC<StudyFormProps> = ({
   submission,
   onSave,
 }) => {
-  useLocalTour(TourId.StudyForm, steps);
+  useAppTour(TourId.StudyForm, steps);
 
   const { loggedInUser } = useStore();
 

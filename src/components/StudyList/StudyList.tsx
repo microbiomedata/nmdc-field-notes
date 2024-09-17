@@ -19,7 +19,7 @@ import paths from "../../paths";
 import NoneOr from "../NoneOr/NoneOr";
 import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
 import { StepType } from "@reactour/tour";
-import { useLocalTour } from "../CustomTourProvider/hooks";
+import { useAppTour } from "../CustomTourProvider/hooks";
 import { TourId } from "../CustomTourProvider/AppTourProvider";
 
 // Make steps for the tour.
@@ -37,7 +37,7 @@ const steps: Array<StepType> = [
 ];
 
 const StudyList: React.FC = () => {
-  useLocalTour(TourId.StudyList, steps);
+  useAppTour(TourId.StudyList, steps);
 
   const submissionList = useSubmissionList();
   const concatenatedSubmissions = useMemo(() => {

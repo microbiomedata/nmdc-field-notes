@@ -24,7 +24,7 @@ import { getSubmissionSamples } from "../../utils";
 import { produce } from "immer";
 import Banner from "../Banner/Banner";
 import { StepType } from "@reactour/tour";
-import { useLocalTour } from "../CustomTourProvider/hooks";
+import { useAppTour } from "../CustomTourProvider/hooks";
 import { TourId } from "../CustomTourProvider/AppTourProvider";
 
 // Make steps for the tour.
@@ -48,7 +48,7 @@ const SampleList: React.FC<SampleListProps> = ({
   onSampleCreate,
   sampleCreateFailureMessage,
 }) => {
-  useLocalTour(TourId.SampleList, steps);
+  useAppTour(TourId.SampleList, steps);
 
   const searchElement = React.useRef<HTMLIonSearchbarElement>(null);
 

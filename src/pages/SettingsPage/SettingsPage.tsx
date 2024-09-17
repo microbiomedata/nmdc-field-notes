@@ -6,7 +6,7 @@ import SettingsUserList from "../../components/SettingsUserList/SettingsUserList
 import SettingsAboutList from "../../components/SettingsAboutList/SettingsAboutList";
 import SettingsAppearanceList from "../../components/SettingsAppearanceList/SettingsAppearanceList";
 import { StepType } from "@reactour/tour";
-import { useLocalTour } from "../../components/CustomTourProvider/hooks";
+import { useAppTour } from "../../components/CustomTourProvider/hooks";
 import { TourId } from "../../components/CustomTourProvider/AppTourProvider";
 
 // Make steps for the tour.
@@ -34,7 +34,7 @@ const steps: Array<StepType> = [
 ];
 
 const SettingsPage: React.FC = () => {
-  useLocalTour(TourId.SettingsPage, steps);
+  useAppTour(TourId.SettingsPage, steps);
 
   return (
     <IonPage>
