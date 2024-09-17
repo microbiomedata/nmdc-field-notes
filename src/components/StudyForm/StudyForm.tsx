@@ -23,17 +23,30 @@ import { TourId } from "../CustomTourProvider/AppTourProvider";
 const steps: Array<StepType> = [
   {
     selector: `[data-tour="${TourId.StudyForm}-1"]`,
-    content: "Fill in the required fields according to the guidance shown.",
+    content: (
+      <>
+        You can fill in the fields according to the guidance shown. Fields
+        marked with <RequiredMark /> are required.
+      </>
+    ),
   },
   {
     selector: `[data-tour="${TourId.StudyForm}-2"]`,
-    content:
-      "Select an environment template based upon what you'll be sampling.",
+    content: (
+      <>
+        Here, you can select a template that reflects the kind of environment
+        you&apos;ll be collecting samples from.
+      </>
+    ),
   },
   {
     selector: `[data-tour="${TourId.StudyForm}-3"]`,
-    content:
-      'Once all the required fields are filled in, tap "Save" to create the study.',
+    content: (
+      <>
+        Finally, once all the required fields are filled in, you can tap
+        &quot;Save&quot; to create the study.
+      </>
+    ),
   },
 ];
 

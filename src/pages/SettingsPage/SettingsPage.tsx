@@ -18,18 +18,34 @@ const steps: Array<StepType> = [
   },
   {
     selector: `[data-tour="${TourId.SettingsPage}-2"]`,
-    content:
-      "In the User section, you can see who you're logged in as. You can tap the button to log out.",
+    content: "Here, you can see who you're logged in as. You can also log out.",
   },
   {
     selector: `[data-tour="${TourId.SettingsPage}-3"]`,
-    content:
-      "In the Appearance section, you can switch between light and dark themes. You can also specify which fields you want to be visible in each template.",
+    content: (
+      <>
+        <p style={{ marginBlockStart: 0 }}>
+          Here, you can switch between light and dark themes.
+        </p>
+        <p>
+          Also, you can specify which fields you want to be visible in each
+          environment template.
+        </p>
+        <p>
+          Lastly, you can reset these on-screen tours so that they appear again
+          throughout the app.
+        </p>
+      </>
+    ),
   },
   {
     selector: `[data-tour="${TourId.SettingsPage}-4"]`,
-    content:
-      "This section is about the app, itself. It contains the app's version number.",
+    content: (
+      <>
+        Finally, this section is about the app, itself. It contains the
+        app&apos;s version number.
+      </>
+    ),
   },
 ];
 

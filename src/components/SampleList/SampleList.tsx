@@ -31,7 +31,7 @@ import { TourId } from "../CustomTourProvider/AppTourProvider";
 const steps: Array<StepType> = [
   {
     selector: `[data-tour="${TourId.SampleList}-1"]`,
-    content: "Tap here to add samples to the study.",
+    content: "You can tap here to add samples to the study.",
   },
 ];
 

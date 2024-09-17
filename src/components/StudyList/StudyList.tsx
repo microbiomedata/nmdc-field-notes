@@ -27,7 +27,7 @@ import { TourId } from "../CustomTourProvider/AppTourProvider";
 const steps: Array<StepType> = [
   {
     selector: `[data-tour="${TourId.StudyList}-1"]`,
-    content: "Tap here to create a new study.",
+    content: "You can tap here to create a new study.",
   },
   {
     selector: `[data-tour="${TourId.StudyList}-2"]`,
