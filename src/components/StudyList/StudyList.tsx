@@ -19,8 +19,8 @@ import paths from "../../paths";
 import NoneOr from "../NoneOr/NoneOr";
 import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
 import { StepType } from "@reactour/tour";
-import { useAppTour } from "../CustomTourProvider/hooks";
-import { TourId } from "../CustomTourProvider/AppTourProvider";
+import { useAppTour } from "../AppTourProvider/hooks";
+import { TourId } from "../AppTourProvider/AppTourProvider";
 
 // Make steps for the tour.
 // Reference: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes

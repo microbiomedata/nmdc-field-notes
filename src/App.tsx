@@ -6,7 +6,7 @@ import QueryClientProvider from "./QueryClientProvider";
 import NetworkStatusProvider from "./NetworkStatus";
 import Router from "./Router";
 import StoreProvider from "./Store";
-import AppTourProvider from "./components/CustomTourProvider/AppTourProvider";
+import AppTourProvider from "./components/AppTourProvider/AppTourProvider";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
