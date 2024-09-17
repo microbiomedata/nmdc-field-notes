@@ -17,7 +17,7 @@ import { colorWand as autoFill } from "ionicons/icons";
 import { StepType } from "@reactour/tour";
 import styles from "./StudyForm.module.css";
 import { useLocalTour } from "../CustomTourProvider/hooks";
-import { TourId } from "../CustomTourProvider/CustomTourProvider";
+import { TourId } from "../CustomTourProvider/AppTourProvider";
 
 // Make steps for the tour.
 const steps: Array<StepType> = [

@@ -1,5 +1,5 @@
 import { StepType, useTour } from "@reactour/tour";
-import { TourId } from "./CustomTourProvider";
+import { TourId } from "./AppTourProvider";
 import { useStore } from "../../Store";
 import { useIonViewDidEnter } from "@ionic/react";
 

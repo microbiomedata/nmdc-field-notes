@@ -7,7 +7,7 @@ import SettingsAboutList from "../../components/SettingsAboutList/SettingsAboutL
 import SettingsAppearanceList from "../../components/SettingsAppearanceList/SettingsAppearanceList";
 import { StepType } from "@reactour/tour";
 import { useLocalTour } from "../../components/CustomTourProvider/hooks";
-import { TourId } from "../../components/CustomTourProvider/CustomTourProvider";
+import { TourId } from "../../components/CustomTourProvider/AppTourProvider";
 
 // Make steps for the tour.
 const steps: Array<StepType> = [

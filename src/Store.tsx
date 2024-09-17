@@ -14,7 +14,7 @@ import {
 } from "./theme/colorPalette";
 import { produce } from "immer";
 import { Network } from "@capacitor/network";
-import { TourId } from "./components/CustomTourProvider/CustomTourProvider";
+import { TourId } from "./components/CustomTourProvider/AppTourProvider";
 
 enum StorageKey {
   REFRESH_TOKEN = "refreshToken",

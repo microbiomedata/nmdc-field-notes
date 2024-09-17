@@ -1,6 +1,6 @@
 import React from "react";
 import { TourProvider, ProviderProps } from "@reactour/tour";
-import styles from "./CustomTourProvider.module.css";
+import styles from "./AppTourProvider.module.css";
 import { IonButton } from "@ionic/react";
 
 export enum TourId {
@@ -15,7 +15,7 @@ export enum TourId {
  *
  * Reference: https://docs.react.tours/tour/props
  */
-const CustomTourProvider: React.FC<ProviderProps> = ({
+const AppTourProvider: React.FC<ProviderProps> = ({
   showBadge = false,
   showCloseButton = false,
   // Note: We disable interaction by default; because interacting with highlighted `select` elements is currently buggy
@@ -96,4 +96,4 @@ const CustomTourProvider: React.FC<ProviderProps> = ({
   );
 };
 
-export default CustomTourProvider;
+export default AppTourProvider;

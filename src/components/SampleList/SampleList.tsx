@@ -25,7 +25,7 @@ import { produce } from "immer";
 import Banner from "../Banner/Banner";
 import { StepType } from "@reactour/tour";
 import { useLocalTour } from "../CustomTourProvider/hooks";
-import { TourId } from "../CustomTourProvider/CustomTourProvider";
+import { TourId } from "../CustomTourProvider/AppTourProvider";
 
 // Make steps for the tour.
 const steps: Array<StepType> = [
