@@ -1,0 +1,15 @@
+.searchAndFilterContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.filterContainer {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.searchButton {
+  margin-left: 10px;
+}

@@ -13,7 +13,10 @@ import {
 import SectionHeader from "../SectionHeader/SectionHeader";
 import NoneOr from "../NoneOr/NoneOr";
 import SampleList from "../SampleList/SampleList";
-import { getSubmissionSamples } from "../../utils";
+import {
+  getSubmissionSamples,
+  getSubmissionSamplesForTemplate,
+} from "../../utils";
 import { produce } from "immer";
 import paths from "../../paths";
 import { useNetworkStatus } from "../../NetworkStatus";
@@ -73,7 +76,7 @@ const StudyView: React.FC<StudyViewProps> = ({
     }
   }, [openSlotSelectorModalOnEnter, templateVisibleSlots]);
 
-  const handleSampleCreate = async () => {
+  const handleSampleCreate = async (template: string) => {
     if (!submission.data) {
       return;
     }
@@ -90,13 +93,13 @@ const StudyView: React.FC<StudyViewProps> = ({
       const samples = getSubmissionSamples(draft, {
         createSampleDataFieldIfMissing: true,
       });
-      samples.push({});
+      samples[template].push({});
     });
     updateMutation.mutate(updatedSubmission, {
       onSuccess: (result) => {
-        const samples = getSubmissionSamples(result);
+        const samples = getSubmissionSamplesForTemplate(result, template);
         router.push(
-          paths.sample(submissionId, samples.length - 1),
+          paths.sample(submissionId, template, samples.length - 1),
           "forward",
           "push",
         );

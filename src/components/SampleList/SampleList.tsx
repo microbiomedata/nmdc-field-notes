@@ -1,18 +1,17 @@
 import React, { useEffect, useMemo } from "react";
 import {
+  AlertInput,
   IonButton,
   IonChip,
-  IonCol,
-  IonGrid,
   IonIcon,
   IonItem,
   IonLabel,
   IonList,
   IonListHeader,
   IonNote,
-  IonRow,
   IonSearchbar,
   SearchbarInputEventDetail,
+  useIonAlert,
 } from "@ionic/react";
 import paths from "../../paths";
 import { search as searchIcon } from "ionicons/icons";
@@ -20,12 +19,13 @@ import NoneOr from "../NoneOr/NoneOr";
 import { IndexedSampleData, SubmissionMetadata } from "../../api";
 import { IonSearchbarCustomEvent } from "@ionic/core/dist/types/components";
 import { useMiniSearch } from "react-minisearch";
-import { getSubmissionSamples } from "../../utils";
-import { produce } from "immer";
+import { getSubmissionTemplates, getSubmissionSamples } from "../../utils";
 import Banner from "../Banner/Banner";
 import { StepType } from "@reactour/tour";
 import { useAppTour } from "../AppTourProvider/hooks";
 import { TourId } from "../AppTourProvider/AppTourProvider";
+
+import styles from "./SampleList.module.css";
 
 // Make steps for the tour.
 const steps: Array<StepType> = [
@@ -38,7 +38,7 @@ const steps: Array<StepType> = [
 interface SampleListProps {
   submission: SubmissionMetadata;
   collapsedSize?: number;
-  onSampleCreate: () => void;
+  onSampleCreate: (template: string) => void;
   sampleCreateFailureMessage?: string;
 }
 
@@ -56,6 +56,11 @@ const SampleList: React.FC<SampleListProps> = ({
 
   const [isSearchVisible, setIsSearchVisible] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState<string | null>();
+  const [templateFilter, setTemplateFilter] = React.useState<string | null>(
+    null,
+  );
+
+  const [presentAlert] = useIonAlert();
 
   // Initialize the search index with no documents. The search index will be updated whenever the
   // submission samples change.
@@ -66,7 +71,7 @@ const SampleList: React.FC<SampleListProps> = ({
     addAll: searchIndexAddAll,
   } = useMiniSearch([] as IndexedSampleData[], {
     fields: ["samp_name"],
-    idField: "_index",
+    idField: "_flatIndex",
     searchOptions: {
       prefix: true,
       combineWith: "AND",
@@ -74,21 +79,26 @@ const SampleList: React.FC<SampleListProps> = ({
   });
 
   const samples = useMemo(() => {
-    return produce(
-      getSubmissionSamples(submission) as IndexedSampleData[],
-      (draft) => {
-        // Because the submission portal backend needs to be tolerant of storing "invalid" data, some
-        // samples could essentially be empty. Therefore, there are no existing fields we can treat as a
-        // key (or persistent identifier). The samples are essentially identified by their position in the
-        // array. However, because the SampleList component allows the user to filter samples, we need to
-        // keep track of the original index of each sample.
-        draft.forEach((sample, index) => {
-          sample["_index"] = index;
+    const samplesMap = getSubmissionSamples(submission);
+    const flattenedSamples: IndexedSampleData[] = [];
+    // Here is where we flatten out the {template: [samples]} structure into a single array for
+    // display. While flattening, we need to keep track of which template the sample was associated
+    // with (`_template`) and the sample's index within that template's sample array
+    // (`templateIndex`). These are used to construct the router link to the sample page. We also
+    // need a unique identifier for each sample (`_flatIndex`) so that we can use it as the key in
+    // the list of samples and in the search index.
+    let flatIndex = 0;
+    Object.entries(samplesMap).forEach(([template, samples]) => {
+      samples.forEach((sample, index) => {
+        flattenedSamples.push({
+          ...sample,
+          _flatIndex: flatIndex++,
+          _templateIndex: index,
+          _template: template,
         });
-        // Reverse so that the most recent samples are shown first
-        draft.reverse();
-      },
-    );
+      });
+    });
+    return flattenedSamples.reverse();
   }, [submission]);
 
   // Whenever the samples change, update the search index.
@@ -122,14 +132,45 @@ const SampleList: React.FC<SampleListProps> = ({
     setIsSearchVisible(false);
   };
 
-  const displaySamples = searchTerm ? searchResults || [] : samples;
+  const handleNewClick = () => {
+    const templates = getSubmissionTemplates(submission);
+    if (templates.length > 1) {
+      void presentAlert({
+        header: "Select Template",
+        message: "Select the template for the new sample.",
+        inputs: templates.map(
+          (template) =>
+            ({
+              label: template,
+              value: template,
+              type: "radio",
+            }) as AlertInput,
+        ),
+        buttons: [
+          "Cancel",
+          {
+            text: "OK",
+            handler: (template) => {
+              onSampleCreate(template);
+            },
+          },
+        ],
+      });
+    } else {
+      onSampleCreate(templates[0]);
+    }
+  };
+
+  const displaySamples = (searchTerm ? searchResults || [] : samples).filter(
+    (sample) => templateFilter == null || sample._template == templateFilter,
+  );
 
   return (
     <>
       <IonListHeader>
         <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
         <IonButton
-          onClick={onSampleCreate}
+          onClick={handleNewClick}
           data-tour={`${TourId.SampleList}-1`}
         >
           New
@@ -142,16 +183,24 @@ const SampleList: React.FC<SampleListProps> = ({
         </Banner>
       )}
 
-      <IonGrid className={isSearchVisible ? "ion-hide" : ""}>
-        <IonRow class="ion-justify-content-between">
-          <IonCol size="auto">
-            {submission.metadata_submission.templates.length > 0 && (
-              <IonChip outline>
-                Template: {submission.metadata_submission.templates[0]}
+      <div className={isSearchVisible ? "ion-hide" : ""}>
+        <div className={styles.searchAndFilterContainer}>
+          <div className={styles.filterContainer}>
+            {getSubmissionTemplates(submission).map((template) => (
+              <IonChip
+                key={template}
+                outline={templateFilter == null || template != templateFilter}
+                onClick={() =>
+                  setTemplateFilter(
+                    template == templateFilter ? null : template,
+                  )
+                }
+              >
+                Template: {template}
               </IonChip>
-            )}
-          </IonCol>
-          <IonCol size="auto">
+            ))}
+          </div>
+          <div className={styles.searchButton}>
             <IonButton
               title="show sample search"
               size="small"
@@ -160,9 +209,9 @@ const SampleList: React.FC<SampleListProps> = ({
             >
               <IonIcon icon={searchIcon} slot="icon-only"></IonIcon>
             </IonButton>
-          </IonCol>
-        </IonRow>
-      </IonGrid>
+          </div>
+        </div>
+      </div>
 
       <IonSearchbar
         title="sample search"
@@ -181,8 +230,12 @@ const SampleList: React.FC<SampleListProps> = ({
               .slice(0, isCollapsed ? collapsedSize : undefined)
               .map((result) => (
                 <IonItem
-                  key={result._index}
-                  routerLink={paths.sample(submission.id, result._index)}
+                  key={result._flatIndex}
+                  routerLink={paths.sample(
+                    submission.id,
+                    result._template,
+                    result._templateIndex,
+                  )}
                 >
                   <IonLabel>
                     <h3>

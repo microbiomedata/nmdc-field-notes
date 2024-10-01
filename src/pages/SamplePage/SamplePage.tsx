@@ -20,8 +20,11 @@ import {
 import { useParams } from "react-router";
 import paths from "../../paths";
 import { useSubmission, useSubmissionSchema } from "../../queries";
-import { getSubmissionSample, getSubmissionSamples } from "../../utils";
-import { SampleData, SampleDataValue, TEMPLATES } from "../../api";
+import {
+  getSubmissionSample,
+  getSubmissionSamplesForTemplate,
+} from "../../utils";
+import {SampleData, SampleDataValue, TemplateName, TEMPLATES} from "../../api";
 import SampleView from "../../components/SampleView/SampleView";
 import { SlotDefinition, SlotDefinitionName } from "../../linkml-metamodel";
 import SampleSlotEditModal from "../../components/SampleSlotEditModal/SampleSlotEditModal";
@@ -37,6 +40,7 @@ import MutationErrorBanner from "../../components/MutationErrorBanner/MutationEr
 interface SamplePageParams {
   submissionId: string;
   sampleIndex: string;
+  template: TemplateName;
 }
 
 const SamplePage: React.FC = () => {
@@ -46,7 +50,7 @@ const SamplePage: React.FC = () => {
   const [modalSlot, setModalSlot] = React.useState<SlotDefinition | null>(null);
   const [validationResults, setValidationResults] =
     React.useState<ValidationResults>();
-  const { submissionId, sampleIndex } = useParams<SamplePageParams>();
+  const { submissionId, sampleIndex, template } = useParams<SamplePageParams>();
   const sampleIndexInt = parseInt(sampleIndex);
   const {
     query: submission,
@@ -55,8 +59,8 @@ const SamplePage: React.FC = () => {
     unlockMutation,
   } = useSubmission(submissionId);
   const sample = useMemo(
-    () => getSubmissionSample(submission.data, sampleIndexInt),
-    [submission.data, sampleIndexInt],
+    () => getSubmissionSample(submission.data, template, sampleIndexInt),
+    [submission.data, template, sampleIndexInt],
   );
   const { isOnline } = useNetworkStatus();
 
@@ -67,8 +71,7 @@ const SamplePage: React.FC = () => {
     [sample],
   );
 
-  const packageName = submission.data?.metadata_submission.packageName;
-  const schemaClassName = packageName && TEMPLATES[packageName].schemaClass;
+  const schemaClassName = TEMPLATES[template].schemaClass;
   const validator = useMemo(() => {
     if (!schema.data?.schema || !schemaClassName) {
       return null;
@@ -89,7 +92,7 @@ const SamplePage: React.FC = () => {
       return;
     }
     const updatedSubmission = produce(submission.data, (draft) => {
-      const sample = getSubmissionSample(draft, sampleIndexInt);
+      const sample = getSubmissionSample(draft, template, sampleIndexInt);
       if (sample) {
         for (const [key, value] of Object.entries(values)) {
           if (value != null) {
@@ -159,12 +162,14 @@ const SamplePage: React.FC = () => {
       return;
     }
     // When the submission data updates (i.e. after saving), do a full revalidation
-    const results = validator.validate(getSubmissionSamples(submission.data));
+    const results = validator.validate(
+      getSubmissionSamplesForTemplate(submission.data, template),
+    );
     setValidationResults(results);
-  }, [validator, submission.data]);
+  }, [validator, template, submission.data]);
 
   const handleDeleteInitiate = () => {
-    presentAlert({
+    void presentAlert({
       header: "Delete Sample",
       message: "Are you sure you want to delete this sample?",
       buttons: [
@@ -176,7 +181,7 @@ const SamplePage: React.FC = () => {
               return;
             }
             const updatedSubmission = produce(submission.data, (draft) => {
-              const samples = getSubmissionSamples(draft);
+              const samples = getSubmissionSamplesForTemplate(draft, template);
               samples.splice(sampleIndexInt, 1);
             });
             updateMutation.mutate(updatedSubmission, {
@@ -256,17 +261,17 @@ const SamplePage: React.FC = () => {
           </Banner>
         )}
 
-        {schema.data && packageName && (
+        {schema.data && template && (
           <>
             <SampleView
               onSlotClick={handleSlotClick}
-              packageName={packageName}
+              template={template}
               sample={sample}
               schema={schema.data.schema}
               validationResults={validationResults?.[sampleIndexInt]}
               visibleSlots={
                 submission.data?.field_notes_metadata?.fieldVisibility?.[
-                  packageName
+                  template
                 ]
               }
             />

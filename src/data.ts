@@ -68,7 +68,7 @@ export const initMetadataSubmission = (): MetadataSubmission => ({
   addressForm: initAddressForm(),
   contextForm: initContextForm(),
   multiOmicsForm: initMultiOmicsForm(),
-  packageName: "",
+  packageName: "", // TODO: CHANGE DEFAULT WHEN BACKEND IS UPDATED
   sampleData: {},
   studyForm: initStudyForm(),
   templates: [],
