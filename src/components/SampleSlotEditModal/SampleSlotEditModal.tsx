@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import {
+  PermissibleValue,
   SchemaDefinition,
   SlotDefinition,
   SlotDefinitionName,
@@ -60,18 +61,40 @@ function getSelectState(
   getSlotValue: (slot: SlotDefinitionName) => SampleDataValue,
   goldEcosystemTree: GoldEcosystemTreeNode,
 ) {
-  if (
-    !schema ||
-    !slot ||
-    !(schema.enums && slot.range && slot.range in schema.enums)
-  ) {
-    return {
-      isSelectable: false,
-      permissibleValues: {},
-      warning: "",
-    };
+  const nonSelectableState = {
+    isSelectable: false,
+    permissibleValues: {} as Record<string, PermissibleValue>,
+    warning: "",
+  };
+  // If the slot is null or the schema doesn't have any enums, don't render a select control.
+  if (!slot || !schema.enums) {
+    return nonSelectableState;
   }
-  const schemaPermissibleValues = schema.enums[slot.range].permissible_values;
+
+  // If the slot has a range that is an enum, use that. Otherwise, if the slot has an `any_of`
+  // iterate over those expressions and collect any with enum ranges.
+  const slotRangeEnumNames: string[] = [];
+  if (slot.range && slot.range in schema.enums) {
+    slotRangeEnumNames.push(slot.range);
+  } else if (slot.any_of !== undefined) {
+    for (const anyOfExpression of slot.any_of) {
+      if (anyOfExpression.range && anyOfExpression.range in schema.enums) {
+        slotRangeEnumNames.push(anyOfExpression.range);
+      }
+    }
+  }
+
+  // If we didn't find any enum ranges, don't render a select control.
+  if (slotRangeEnumNames.length === 0) {
+    return nonSelectableState;
+  }
+  const schemaPermissibleValues: Record<string, PermissibleValue> = {};
+  for (const enumName of slotRangeEnumNames) {
+    Object.assign(
+      schemaPermissibleValues,
+      schema.enums[enumName].permissible_values,
+    );
+  }
   let permissibleValues = schemaPermissibleValues || {};
   let warning = "";
   const goldIndex = GOLD_ECOSYSTEM_SLOTS.indexOf(slot.name);
@@ -337,3 +360,5 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
 };
 
 export default SampleSlotEditModal;
+
+export { getSelectState };
