@@ -49,11 +49,15 @@ else
   log "New version number: $VERSION_NUMBER"
 fi
 
-# Run trapeze to propagate the new version and build number to native projects
+# Run trapeze to propagate the new version and build number to native project files
 log "Updating native projects"
 export FIELD_NOTES_VERSION_NUMBER=$VERSION_NUMBER
 export FIELD_NOTES_BUILD_NUMBER=$NEW_BUILD_NUMBER
 trapeze run trapeze.config.yaml -y
+
+# Rebuild the native projects with the new version and build number
+log "Rebuilding native projects"
+npm run build.native
 
 # Commit the changes to package.json, package-lock.json, and native projects
 COMMIT_MESSAGE="$VERSION_NUMBER ($NEW_BUILD_NUMBER)"
