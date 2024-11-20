@@ -4,36 +4,40 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
   IonModal,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { closeOutline } from "ionicons/icons";
 import RequiredMark from "../RequiredMark/RequiredMark";
 import SlotSelector from "../SlotSelector/SlotSelector";
 import { useSubmissionSchema } from "../../queries";
 import { groupClassSlots } from "../../utils";
 import { TEMPLATES } from "../../api";
-import { useStore } from "../../Store";
 
 import styles from "./SlotSelectorModal.module.css";
 
 export interface SlotSelectorModalProps {
-  onDismiss: () => void;
+  defaultSelectedSlots?: string[];
   isOpen: boolean;
-  packageName?: string;
+  onDismiss: () => void;
+  onSave: (selectedSlots: string[]) => void;
+  templateName?: string;
 }
 const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
-  onDismiss,
+  defaultSelectedSlots,
   isOpen,
-  packageName,
+  onDismiss,
+  onSave,
+  templateName,
 }) => {
   const [selectedSlots, setSelectedSlots] = React.useState<string[]>([]);
   const schema = useSubmissionSchema();
-  const { getHiddenSlotsForSchemaClass, setHiddenSlotsForSchemaClass } =
-    useStore();
 
-  const schemaClassName = packageName && TEMPLATES[packageName].schemaClass;
-  const templateName = packageName && TEMPLATES[packageName].displayName;
+  const schemaClassName = templateName && TEMPLATES[templateName].schemaClass;
+  const templateDisplayName =
+    templateName && TEMPLATES[templateName].displayName;
 
   const slotGroups = useMemo(
     () =>
@@ -42,41 +46,25 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
         : [],
     [schema.data, schemaClassName],
   );
-  const allSlotNames = useMemo(
-    () => slotGroups.flatMap((group) => group.slots.map((s) => s.name)),
-    [slotGroups],
-  );
 
-  // This translates a list of hidden slots from the store into a list of selected slots for the
-  // SlotSelector component. If there are no hidden slots, all slots are selected by default. The
-  // isOpen state is used to reset the selected slots when the modal is closed (i.e. don't keep
+  // The isOpen state is used to reset the selected slots when the modal is closed (i.e. don't keep
   // changes if the user cancels out of the modal).
   useEffect(() => {
-    if (isOpen && schemaClassName !== undefined) {
-      const hiddenSlotsFromStore =
-        getHiddenSlotsForSchemaClass(schemaClassName);
-      if (hiddenSlotsFromStore === undefined) {
-        setSelectedSlots(allSlotNames);
+    if (isOpen) {
+      if (defaultSelectedSlots === undefined) {
+        setSelectedSlots([]);
       } else {
-        setSelectedSlots(
-          allSlotNames.filter((s) => !hiddenSlotsFromStore.includes(s)),
-        );
+        setSelectedSlots(defaultSelectedSlots);
       }
     } else {
       setSelectedSlots([]);
     }
-  }, [getHiddenSlotsForSchemaClass, isOpen, schemaClassName, allSlotNames]);
+  }, [isOpen, defaultSelectedSlots]);
 
   // When the user taps the Save button, translate the selected slots back into a list of hidden
   // slots and save them to the store. Then close the modal.
   const handleSave = () => {
-    if (schemaClassName !== undefined) {
-      const hiddenSlots = allSlotNames.filter(
-        (s) => !selectedSlots.includes(s),
-      );
-      setHiddenSlotsForSchemaClass(schemaClassName, hiddenSlots);
-    }
-    onDismiss();
+    onSave(selectedSlots);
   };
 
   return (
@@ -89,7 +77,7 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton color="medium" onClick={onDismiss}>
-              Cancel
+              <IonIcon slot="icon-only" icon={closeOutline} />
             </IonButton>
           </IonButtons>
           <IonTitle>Select Fields</IonTitle>
@@ -104,7 +92,7 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
         <div className="ion-padding">
           <p>
             Select the fields you would like to see when viewing and editing
-            sample metadata for the <b>{templateName} template</b>. These
+            sample metadata for the <b>{templateDisplayName} template</b>. These
             choices can be updated any time in Settings.
           </p>
           <p>

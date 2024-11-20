@@ -179,8 +179,13 @@ export interface SubmissionMetadataCreate extends SubmissionMetadataBase {
 export interface SubmissionMetadataUpdate extends SubmissionMetadataBase {
   id: string;
   status?: string;
+  field_notes_metadata?: Nullable<FieldNotesMetadata>;
   // Map of ORCID iD to permission level
   permissions?: Record<string, string>;
+}
+
+export interface FieldNotesMetadata {
+  fieldVisibility?: Record<keyof typeof TEMPLATES, string[]>;
 }
 
 export interface SubmissionMetadata extends SubmissionMetadataCreate {
@@ -192,6 +197,7 @@ export interface SubmissionMetadata extends SubmissionMetadataCreate {
   lock_updated?: string;
   locked_by: Nullable<User>;
   permission_level?: string;
+  field_notes_metadata?: Nullable<FieldNotesMetadata>;
 }
 
 export interface PaginationOptions {
@@ -288,6 +294,11 @@ export class FetchClient {
   }
 }
 
+interface GetSubmissionListOptions extends PaginationOptions {
+  column_sort?: string;
+  sort_order?: "asc" | "desc";
+}
+
 class NmdcServerClient extends FetchClient {
   private refreshToken: string | null = null;
   private exchangeRefreshTokenCache: Promise<TokenResponse> | null = null;
@@ -340,13 +351,15 @@ class NmdcServerClient extends FetchClient {
     }
   }
 
-  async getSubmissionList(pagination: PaginationOptions = {}) {
-    pagination = {
+  async getSubmissionList(options: GetSubmissionListOptions = {}) {
+    options = {
       limit: 10,
       offset: 0,
-      ...pagination,
+      column_sort: "created",
+      sort_order: "desc",
+      ...options,
     };
-    const query = new URLSearchParams(pagination as Record<string, string>);
+    const query = new URLSearchParams(options as Record<string, string>);
     return await this.fetchJson<Paginated<SubmissionMetadata>>(
       `/api/metadata_submission?${query}`,
     );

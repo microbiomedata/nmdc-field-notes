@@ -264,6 +264,11 @@ const SamplePage: React.FC = () => {
               sample={sample}
               schema={schema.data.schema}
               validationResults={validationResults?.[sampleIndexInt]}
+              visibleSlots={
+                submission.data?.field_notes_metadata?.fieldVisibility?.[
+                  packageName!
+                ]
+              }
             />
             <SampleSlotEditModal
               defaultValue={modalSlot && sample?.[modalSlot.name]}
