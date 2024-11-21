@@ -301,7 +301,7 @@ const StudyForm: React.FC<StudyFormProps> = ({
           expand="block"
           className="ion-margin-top"
           type="submit"
-          disabled={disabled || (formState.isDirty && !formState.isValid)}
+          disabled={disabled || (formState.isSubmitted && !formState.isValid)}
         >
           {formState.isSubmitting ? "Saving" : "Save"}
         </IonButton>

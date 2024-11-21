@@ -8,6 +8,7 @@ import {
   IonRefresherContent,
   RefresherEventDetail,
   useIonRouter,
+  useIonViewDidEnter,
 } from "@ionic/react";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import NoneOr from "../NoneOr/NoneOr";
@@ -30,9 +31,13 @@ interface TemplateVisibleSlots {
 
 interface StudyViewProps {
   submissionId: string;
+  openSlotSelectorModalOnEnter?: boolean;
 }
 
-const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
+const StudyView: React.FC<StudyViewProps> = ({
+  submissionId,
+  openSlotSelectorModalOnEnter = false,
+}) => {
   const router = useIonRouter();
   const {
     query: submission,
@@ -57,6 +62,12 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
     }
     return fieldVisibilityInfo;
   }, [submission.data]);
+
+  useIonViewDidEnter(() => {
+    if (openSlotSelectorModalOnEnter) {
+      setModalTemplateVisibleSlots(templateVisibleSlots[0]);
+    }
+  }, [openSlotSelectorModalOnEnter, templateVisibleSlots]);
 
   const handleSampleCreate = async () => {
     if (!submission.data) {
@@ -236,6 +247,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
             }
           />
 
+          {/* TODO: lock/unlock submission when opening/closing the modal */}
           <SlotSelectorModal
             onSave={handleSlotSelectorSave}
             onDismiss={() => setModalTemplateVisibleSlots(undefined)}

@@ -12,13 +12,20 @@ import {
 import StudyView from "../../components/StudyView/StudyView";
 import paths from "../../paths";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
+import useNavigationState from "../../useNavigationState";
 
 interface StudyViewPageParams {
   submissionId: string;
 }
 
+export interface StudyViewPageLocationState {
+  openSlotSelectorModalOnEnter?: boolean;
+}
+
 const StudyViewPage: React.FC = () => {
   const { submissionId } = useParams<StudyViewPageParams>();
+  const state = useNavigationState<StudyViewPageLocationState>();
+
   return (
     <IonPage>
       <IonHeader>
@@ -35,7 +42,10 @@ const StudyViewPage: React.FC = () => {
         </ThemedToolbar>
       </IonHeader>
       <IonContent>
-        <StudyView submissionId={submissionId} />
+        <StudyView
+          submissionId={submissionId}
+          openSlotSelectorModalOnEnter={state?.openSlotSelectorModalOnEnter}
+        />
       </IonContent>
     </IonPage>
   );
