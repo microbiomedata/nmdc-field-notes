@@ -1,6 +1,5 @@
 import React from "react";
 import { SlotGroup } from "../../utils";
-import RequiredMark from "../RequiredMark/RequiredMark";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import { IonCheckbox, IonItem, IonLabel, IonList } from "@ionic/react";
 import { produce } from "immer";
@@ -105,6 +104,11 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
         </IonCheckbox>
       </SectionHeader>
       <IonList className="ion-padding-bottom">
+        {group.description && (
+          <div className="ion-padding-horizontal nmdc-text-sm">
+            {group.description}
+          </div>
+        )}
         {group.slots.map((slot) => (
           <IonItem key={slot.name}>
             <IonCheckbox
@@ -118,10 +122,7 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
               disabled={disabledSlots?.includes(slot.name)}
             >
               <IonLabel>
-                <h3>
-                  {slot.title || slot.name}
-                  {(slot.required || slot.key) && <RequiredMark />}
-                </h3>
+                <h3>{slot.title || slot.name}</h3>
                 <p>{slot.description}</p>
               </IonLabel>
             </IonCheckbox>

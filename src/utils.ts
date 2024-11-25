@@ -47,6 +47,7 @@ function compareByRank(a: { rank?: number }, b: { rank?: number }): number {
 
 export interface SlotGroup {
   name: string;
+  description?: string;
   title?: string;
   rank?: number;
   slots: SlotDefinition[];

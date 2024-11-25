@@ -249,6 +249,7 @@ const StudyView: React.FC<StudyViewProps> = ({
 
           {/* TODO: lock/unlock submission when opening/closing the modal */}
           <SlotSelectorModal
+            allowDismiss={modalTemplateVisibleSlots?.visibleSlots !== undefined}
             onSave={handleSlotSelectorSave}
             onDismiss={() => setModalTemplateVisibleSlots(undefined)}
             isOpen={modalTemplateVisibleSlots !== undefined}
