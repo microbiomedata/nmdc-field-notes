@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { SampleData, SampleDataValue, TEMPLATES } from "../../api";
-import { groupClassSlots } from "../../utils";
-import SectionHeader from "../SectionHeader/SectionHeader";
+import { sortSlots } from "../../utils";
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { SchemaDefinition, SlotDefinition } from "../../linkml-metamodel";
 import { warningOutline } from "ionicons/icons";
@@ -33,7 +32,15 @@ const SampleView: React.FC<SampleViewProps> = ({
   visibleSlots,
 }) => {
   const schemaClass = TEMPLATES[packageName].schemaClass;
-  const slotGroups = schemaClass ? groupClassSlots(schema, schemaClass) : [];
+  const slots: SlotDefinition[] = useMemo(() => {
+    const allSlots = Object.values(
+      schema.classes?.[schemaClass]?.attributes || {},
+    );
+    const visibleSlotsSet = allSlots.filter(
+      (slot) => !visibleSlots || visibleSlots.includes(slot.name),
+    );
+    return sortSlots(visibleSlotsSet);
+  }, [schema.classes, schemaClass, visibleSlots]);
 
   if (!sample) {
     return null;
@@ -41,33 +48,24 @@ const SampleView: React.FC<SampleViewProps> = ({
 
   return (
     <>
-      {slotGroups.map((group) => (
-        <React.Fragment key={group.name}>
-          <SectionHeader>{group.title}</SectionHeader>
-          <IonList className="ion-padding-bottom">
-            {group.slots.map(
-              (slot) =>
-                (visibleSlots === undefined ||
-                  visibleSlots.includes(slot.name)) && (
-                  <IonItem key={slot.name} onClick={() => onSlotClick(slot)}>
-                    {validationResults?.[slot.name] && (
-                      <IonIcon
-                        aria-hidden="true"
-                        icon={warningOutline}
-                        color="warning"
-                        slot="end"
-                      />
-                    )}
-                    <IonLabel>
-                      <h3>{slot.title || slot.name}</h3>
-                      <p>{formatSlotValue(sample?.[slot.name])}</p>
-                    </IonLabel>
-                  </IonItem>
-                ),
+      <IonList className="ion-padding-bottom">
+        {slots.map((slot) => (
+          <IonItem key={slot.name} onClick={() => onSlotClick(slot)}>
+            {validationResults?.[slot.name] && (
+              <IonIcon
+                aria-hidden="true"
+                icon={warningOutline}
+                color="warning"
+                slot="end"
+              />
             )}
-          </IonList>
-        </React.Fragment>
-      ))}
+            <IonLabel>
+              <h3>{slot.title || slot.name}</h3>
+              <p>{formatSlotValue(sample?.[slot.name])}</p>
+            </IonLabel>
+          </IonItem>
+        ))}
+      </IonList>
     </>
   );
 };

@@ -12,7 +12,7 @@ import {
 import { closeOutline } from "ionicons/icons";
 import SlotSelector from "../SlotSelector/SlotSelector";
 import { useSubmissionSchema } from "../../queries";
-import { SlotGroup } from "../../utils";
+import { SlotGroup, sortSlots } from "../../utils";
 import { TEMPLATES } from "../../api";
 import { SchemaDefinition } from "../../linkml-metamodel";
 
@@ -37,8 +37,6 @@ import { SchemaDefinition } from "../../linkml-metamodel";
 import slotVisibility from "./slotVisibility.json";
 
 import styles from "./SlotSelectorModal.module.css";
-
-const FIXED_ORDER_SLOTS = ["samp_name", "collection_date", "lat_lon"];
 
 function groupClassSlots(
   schemaDefinition: SchemaDefinition,
@@ -85,27 +83,7 @@ function groupClassSlots(
   });
   const groupedSlots: SlotGroup[] = [commonGroup, uncommonGroup, otherGroup];
   groupedSlots.forEach((group) => {
-    group.slots.sort((a, b) => {
-      // First sort the fixed slots to the top
-      const aFixedOrder = FIXED_ORDER_SLOTS.indexOf(a.name);
-      const bFixedOrder = FIXED_ORDER_SLOTS.indexOf(b.name);
-      if (aFixedOrder !== -1 && bFixedOrder !== -1) {
-        return aFixedOrder - bFixedOrder;
-      } else if (aFixedOrder !== -1) {
-        return -1;
-      } else if (bFixedOrder !== -1) {
-        return 1;
-      }
-
-      // Then sort alphabetically by title
-      const titleCompare = (a.title || "").localeCompare(b.title || "");
-      if (titleCompare !== 0) {
-        return titleCompare;
-      }
-
-      // Finally sort by name (since some oddball slots may not have a title)
-      return a.name.localeCompare(b.name);
-    });
+    sortSlots(group.slots);
   });
   return groupedSlots;
 }

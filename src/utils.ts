@@ -1,5 +1,5 @@
 import { SubmissionMetadata, TEMPLATES } from "./api";
-import { SchemaDefinition, SlotDefinition } from "./linkml-metamodel";
+import { SlotDefinition } from "./linkml-metamodel";
 
 export interface GetSubmissionSamplesOptions {
   createSampleDataFieldIfMissing?: boolean;
@@ -35,16 +35,6 @@ export function getSubmissionSample(
   return getSubmissionSamples(submission)[index];
 }
 
-function compareByRank(a: { rank?: number }, b: { rank?: number }): number {
-  if (a.rank === undefined) {
-    return -1;
-  }
-  if (b.rank === undefined) {
-    return 1;
-  }
-  return a.rank - b.rank;
-}
-
 export interface SlotGroup {
   name: string;
   description?: string;
@@ -52,54 +42,39 @@ export interface SlotGroup {
   rank?: number;
   slots: SlotDefinition[];
 }
-export function groupClassSlots(
-  schemaDefinition: SchemaDefinition,
-  className: string,
-): SlotGroup[] {
-  const classDefinition = schemaDefinition.classes?.[className];
-  if (!classDefinition) {
-    throw new Error(`Class ${className} not found in schema`);
-  }
-  const groupedSlots: SlotGroup[] = [];
-  if (!classDefinition.attributes) {
-    return groupedSlots;
-  }
-  Object.values(classDefinition.attributes).forEach((slot) => {
-    let slotGroup = groupedSlots.find((g) => g.name === slot.slot_group);
-    if (!slotGroup) {
-      // We need to add a new slot group to groupedSlots
-      const slotGroupSlot = slot.slot_group
-        ? (schemaDefinition.slots as Record<string, SlotDefinition>)[
-            slot.slot_group
-          ]
-        : undefined;
-      if (!slotGroupSlot) {
-        // The root-level grouping slot couldn't be found, put it in an "other" group
-        slotGroup = groupedSlots.find((g) => g.name === "other");
-        if (!slotGroup) {
-          slotGroup = {
-            name: "other",
-            title: "Other",
-            rank: 9999,
-            slots: [],
-          };
-          groupedSlots.push(slotGroup);
-        }
-      } else {
-        slotGroup = {
-          name: slotGroupSlot.name,
-          title: slotGroupSlot.title,
-          rank: slotGroupSlot.rank,
-          slots: [],
-        };
-        groupedSlots.push(slotGroup);
-      }
+
+const FIXED_ORDER_SLOTS = ["samp_name", "collection_date", "lat_lon"];
+
+/**
+ * Sort a list of slots according to our custom rules.
+ *
+ * This function sorts a list of slots for presentation in the app. First, it sorts the slots that
+ * are in the FIXED_ORDER_SLOTS array to the top. Then it sorts the remaining slots alphabetically.
+ *
+ * This ordering specifically ignores the ordering hints (`slot_group` and `rank`) that are present
+ * in the schema definition. That order was defined with the Submission Portal interface in mind. In
+ * the future, we can consider adding the Field Notes ordering hints to the schema definition, but
+ * it isn't immediately obvious what LinkML mechanism would be appropriate for that.
+ *
+ * @param slots
+ */
+export function sortSlots(slots: SlotDefinition[]): SlotDefinition[] {
+  return slots.sort((a, b) => {
+    // First sort the fixed slots to the top
+    const aFixedOrder = FIXED_ORDER_SLOTS.indexOf(a.name);
+    const bFixedOrder = FIXED_ORDER_SLOTS.indexOf(b.name);
+    if (aFixedOrder !== -1 && bFixedOrder !== -1) {
+      return aFixedOrder - bFixedOrder;
+    } else if (aFixedOrder !== -1) {
+      return -1;
+    } else if (bFixedOrder !== -1) {
+      return 1;
     }
-    slotGroup.slots.push(slot);
+
+    // Then sort alphabetically by title (if present) or name (some oddball slots may not have a
+    // title)
+    const aTitle = a.title || a.name;
+    const bTitle = b.title || b.name;
+    return aTitle.localeCompare(bTitle);
   });
-  groupedSlots.sort(compareByRank);
-  groupedSlots.forEach((group) => {
-    group.slots.sort(compareByRank);
-  });
-  return groupedSlots;
 }
