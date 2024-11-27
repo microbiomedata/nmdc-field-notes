@@ -92,7 +92,7 @@ export interface TemplateInfo {
   schemaClass: string;
   sampleDataSlot: string;
 }
-export const TEMPLATES: Record<string, TemplateInfo> = {
+export const TEMPLATES = {
   air: {
     displayName: "air",
     schemaClass: "AirInterface",
@@ -149,9 +149,10 @@ export const TEMPLATES: Record<string, TemplateInfo> = {
     sampleDataSlot: "water_data",
   },
 };
+export type TemplateName = keyof typeof TEMPLATES;
 
 export interface MetadataSubmission {
-  packageName: keyof typeof TEMPLATES;
+  packageName: TemplateName | "";
   contextForm: ContextForm;
   addressForm: AddressForm;
   templates: string[];
@@ -185,7 +186,7 @@ export interface SubmissionMetadataUpdate extends SubmissionMetadataBase {
 }
 
 export interface FieldNotesMetadata {
-  fieldVisibility?: Record<keyof typeof TEMPLATES, string[]>;
+  fieldVisibility?: Partial<Record<keyof typeof TEMPLATES, string[]>>;
 }
 
 export interface SubmissionMetadata extends SubmissionMetadataCreate {

@@ -20,11 +20,11 @@ import { useNetworkStatus } from "../../NetworkStatus";
 import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
 import MutationErrorBanner from "../MutationErrorBanner/MutationErrorBanner";
 import SlotSelectorModal from "../SlotSelectorModal/SlotSelectorModal";
-import { TEMPLATES } from "../../api";
+import { TemplateName, TEMPLATES } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
 
 interface TemplateVisibleSlots {
-  template: string;
+  template: TemplateName;
   templateDisplay: string;
   visibleSlots: string[] | undefined;
 }
@@ -52,13 +52,17 @@ const StudyView: React.FC<StudyViewProps> = ({
     const fieldVisibilityInfo: TemplateVisibleSlots[] = [];
     if (submission.data) {
       const packageName = submission.data.metadata_submission.packageName;
-      const template = TEMPLATES[packageName];
-      fieldVisibilityInfo.push({
-        template: packageName,
-        templateDisplay: template.displayName,
-        visibleSlots:
-          submission.data.field_notes_metadata?.fieldVisibility?.[packageName],
-      });
+      if (packageName !== "") {
+        const template = TEMPLATES[packageName];
+        fieldVisibilityInfo.push({
+          template: packageName,
+          templateDisplay: template.displayName,
+          visibleSlots:
+            submission.data.field_notes_metadata?.fieldVisibility?.[
+              packageName
+            ],
+        });
+      }
     }
     return fieldVisibilityInfo;
   }, [submission.data]);

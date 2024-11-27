@@ -13,39 +13,16 @@ import { closeOutline } from "ionicons/icons";
 import SlotSelector from "../SlotSelector/SlotSelector";
 import { useSubmissionSchema } from "../../queries";
 import { SlotGroup, sortSlots } from "../../utils";
-import { TEMPLATES } from "../../api";
-import { SchemaDefinition } from "../../linkml-metamodel";
-
-/**
- * This JSON file encodes which slots are commonly, uncommonly, or rarely measured in the field.
- * This was the output of a manual curation process. At some point we might consider encoding this
- * directly in the submission schema somehow. But for now, this is a simple way to get the job done.
- * The structure of the JSON file is:
- * {
- *   <slot_name>: {
- *     _default?: "common" | "uncommon",
- *     <template_class_name>?: "common" | "uncommon",
- *     ...
- *   },
- *   ...
- * }
- * Each key in the top-level object is a slot name. The value is an object that can contain a
- * "_default" key and/or keys for specific template class names (e.g. SoilInterface). The value of
- * these keys is either "common" or "uncommon". The setting in the "_default" key is used if there
- * is no specific setting for a given template class.
- */
-import slotVisibility from "./slotVisibility.json";
+import { TemplateName, TEMPLATES } from "../../api";
+import { SlotDefinition } from "../../linkml-metamodel";
+import slotVisibilities from "./slotVisibility";
 
 import styles from "./SlotSelectorModal.module.css";
 
 function groupClassSlots(
-  schemaDefinition: SchemaDefinition,
-  className: string,
+  slotDefinitions: SlotDefinition[],
+  templateName: TemplateName,
 ): SlotGroup[] {
-  const classDefinition = schemaDefinition.classes?.[className];
-  if (!classDefinition) {
-    throw new Error(`Class ${className} not found in schema`);
-  }
   const commonGroup: SlotGroup = {
     name: "common",
     description:
@@ -66,13 +43,10 @@ function groupClassSlots(
     title: "Other",
     slots: [],
   };
-  if (!classDefinition.attributes) {
-    return [];
-  }
-  Object.values(classDefinition.attributes).forEach((slot) => {
-    // @ts-expect-error next-lint
-    const visibility = slotVisibility[slot.name] || {};
-    const group = visibility[className] || visibility["_default"];
+
+  slotDefinitions.forEach((slot) => {
+    const visibility = slotVisibilities[slot.name] || {};
+    const group = visibility[templateName] || visibility["_default"];
     if (group === "common") {
       commonGroup.slots.push(slot);
     } else if (group === "uncommon") {
@@ -94,7 +68,7 @@ export interface SlotSelectorModalProps {
   isOpen: boolean;
   onDismiss: () => void;
   onSave: (selectedSlots: string[]) => void;
-  templateName?: string;
+  templateName?: TemplateName;
 }
 const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
   allowDismiss = true,
@@ -111,13 +85,26 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
   const templateDisplayName =
     templateName && TEMPLATES[templateName].displayName;
 
-  const slotGroups = useMemo(
-    () =>
-      schema.data && schemaClassName !== undefined
-        ? groupClassSlots(schema.data.schema, schemaClassName)
-        : [],
-    [schema.data, schemaClassName],
-  );
+  const slotGroups = useMemo(() => {
+    if (
+      schema.data === undefined ||
+      schemaClassName === undefined ||
+      templateName === undefined
+    ) {
+      return [];
+    }
+    const classDefinition = schema.data.schema.classes?.[schemaClassName];
+    if (!classDefinition) {
+      throw new Error(`Class ${schemaClassName} not found in schema`);
+    }
+    if (!classDefinition.attributes) {
+      return [];
+    }
+    return groupClassSlots(
+      Object.values(classDefinition.attributes),
+      templateName,
+    );
+  }, [schema.data, schemaClassName, templateName]);
 
   // The isOpen state is used to reset the selected slots when the modal is closed (i.e. don't keep
   // changes if the user cancels out of the modal).

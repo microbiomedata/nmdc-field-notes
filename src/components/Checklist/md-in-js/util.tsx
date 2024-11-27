@@ -1,12 +1,13 @@
 import config from "../../../config";
-import { TEMPLATES } from "../../../api";
+import { TemplateName, TEMPLATES } from "../../../api";
 
 // Generate schemas Markdown from the TEMPLATES
 export function createSchemasMD() {
   let schemasMD = "";
 
   Object.keys(TEMPLATES).forEach((schema) => {
-    schemasMD += `* [${TEMPLATES[schema].displayName}](${config.NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL}/${TEMPLATES[schema].schemaClass}/)\n`;
+    const template = TEMPLATES[schema as TemplateName];
+    schemasMD += `* [${template.displayName}](${config.NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL}/${template.schemaClass}/)\n`;
   });
 
   return schemasMD;

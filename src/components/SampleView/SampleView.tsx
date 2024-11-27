@@ -1,5 +1,10 @@
 import React, { useMemo } from "react";
-import { SampleData, SampleDataValue, TEMPLATES } from "../../api";
+import {
+  SampleData,
+  SampleDataValue,
+  TemplateName,
+  TEMPLATES,
+} from "../../api";
 import { sortSlots } from "../../utils";
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { SchemaDefinition, SlotDefinition } from "../../linkml-metamodel";
@@ -17,7 +22,7 @@ function formatSlotValue(value: SampleDataValue) {
 
 interface SampleViewProps {
   onSlotClick: (slot: SlotDefinition) => void;
-  packageName: string;
+  packageName: TemplateName;
   sample?: SampleData;
   schema: SchemaDefinition;
   validationResults?: Record<string, string>;

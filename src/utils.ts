@@ -12,7 +12,9 @@ export function getSubmissionSamples(
     return [];
   }
   const environmentalPackageName = submission.metadata_submission.packageName;
-  const sampleDataField = TEMPLATES[environmentalPackageName]?.sampleDataSlot;
+  const sampleDataField = environmentalPackageName
+    ? TEMPLATES[environmentalPackageName].sampleDataSlot
+    : undefined;
   if (!sampleDataField) {
     return [];
   }
