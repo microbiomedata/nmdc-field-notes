@@ -15,7 +15,7 @@ import { useSubmissionSchema } from "../../queries";
 import { SlotGroup, sortSlots } from "../../utils";
 import { TemplateName, TEMPLATES } from "../../api";
 import { SlotDefinition } from "../../linkml-metamodel";
-import slotVisibilities from "./slotVisibility";
+import slotVisibilities from "./slotVisibilities";
 
 import styles from "./SlotSelectorModal.module.css";
 

@@ -2,7 +2,7 @@ import { TemplateName } from "../../api";
 
 type VisibilityLevel = "common" | "uncommon";
 
-interface SlotVisibility
+interface SlotVisibilities
   extends Partial<Record<TemplateName, VisibilityLevel>> {
   _default?: VisibilityLevel;
 }
@@ -25,7 +25,7 @@ interface SlotVisibility
  * either "common" or "uncommon". The setting in the "_default" key is used if there is no specific
  * setting for a given template.
  */
-const slotVisibilities: Record<string, SlotVisibility> = {
+const slotVisibilities: Record<string, SlotVisibilities> = {
   agrochem_addition: {
     _default: "uncommon",
   },
