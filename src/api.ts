@@ -186,7 +186,7 @@ export interface SubmissionMetadataUpdate extends SubmissionMetadataBase {
 }
 
 export interface FieldNotesMetadata {
-  fieldVisibility?: Partial<Record<keyof typeof TEMPLATES, string[]>>;
+  fieldVisibility?: Partial<Record<TemplateName, string[]>>;
 }
 
 export interface SubmissionMetadata extends SubmissionMetadataCreate {
