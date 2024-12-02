@@ -1,6 +1,6 @@
 import { TemplateName } from "../../api";
 
-type VisibilityLevel = "common" | "uncommon";
+type VisibilityLevel = "common" | "occasional";
 
 interface SlotVisibilities
   extends Partial<Record<TemplateName, VisibilityLevel>> {
@@ -8,53 +8,53 @@ interface SlotVisibilities
 }
 
 /**
- * This object encodes which slots are commonly, uncommonly, or rarely measured in the field. This
- * was the output of a manual curation process. At some point we might consider encoding this
- * directly in the submission schema somehow. But for now, this is a simple way to get the job done.
- * The structure of the object is:
+ * This object encodes which slots are commonly, occasionally, or uncommonly measured at sample
+ * collection time. This was the output of a manual curation process. At some point we might
+ * consider encoding this directly in the submission schema somehow. But for now, this is a simple
+ * way to get the job done. The structure of the object is:
  * {
  *   <slot_name>: {
- *     _default?: "common" | "uncommon",
- *     <template_name>?: "common" | "uncommon",
+ *     _default?: "common" | "occasional",
+ *     <template_name>?: "common" | "occasional",
  *     ...
  *   },
  *   ...
  * }
  * Each key in the top-level object is a slot name. The value is an object that can contain a
  * "_default" key and/or keys for specific template names (e.g. soil). The value of these keys is
- * either "common" or "uncommon". The setting in the "_default" key is used if there is no specific
+ * either "common" or "occasional". The setting in the "_default" key is used if there is no specific
  * setting for a given template.
  */
 const slotVisibilities: Record<string, SlotVisibilities> = {
   agrochem_addition: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   air_PM_concen: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   air_temp_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   alt: {
     air: "common",
   },
   ances_data: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   antibiotic_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   bac_resp: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   barometric_press: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   biol_stat: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   biotic_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   blood_press_diast: {
     _default: "common",
@@ -63,37 +63,37 @@ const slotVisibilities: Record<string, SlotVisibilities> = {
     _default: "common",
   },
   bulk_elect_conductivity: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   carb_dioxide: {
-    air: "uncommon",
+    air: "occasional",
   },
   carb_monoxide: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   chem_administration: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   chem_mutagen: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   collection_date: {
     _default: "common",
   },
   collection_date_inc: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   collection_time: {
     _default: "common",
   },
   collection_time_inc: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   conduc: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   cult_root_med: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   cur_land_use: {
     _default: "common",
@@ -102,26 +102,26 @@ const slotVisibilities: Record<string, SlotVisibilities> = {
     _default: "common",
   },
   cur_vegetation_meth: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   density: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   depth: {
-    _default: "uncommon",
+    _default: "occasional",
     soil: "common",
     "host-associated": "common",
     sediment: "common",
     water: "common",
   },
   down_par: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   drainage_class: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   elev: {
-    _default: "uncommon",
+    _default: "occasional",
     soil: "common",
     air: "common",
     "microbial mat_biofilm": "common",
@@ -130,52 +130,52 @@ const slotVisibilities: Record<string, SlotVisibilities> = {
     water: "common",
   },
   experimental_factor_other: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   fertilizer_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   filter_method: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   fungicide_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   gaseous_environment: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   genetic_mod: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   geo_loc_name: {
     _default: "common",
   },
   gravidity: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   growth_facil: {
     _default: "common",
   },
   growth_habit: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   growth_hormone_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   herbicide_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   horizon_meth: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_age: {
     _default: "common",
   },
   host_body_habitat: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_body_product: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_body_site: {
     _default: "common",
@@ -184,172 +184,172 @@ const slotVisibilities: Record<string, SlotVisibilities> = {
     _default: "common",
   },
   host_color: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_common_name: {
     _default: "common",
   },
   host_disease_stat: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_dry_mass: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_genotype: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_height: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_last_meal: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_length: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_life_stage: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_phenotype: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_sex: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_shape: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_subject_id: {
     _default: "common",
   },
   host_subspecf_genlin: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_substrate: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_symbiont: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_tot_mass: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   host_wet_mass: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   humidity: {
     _default: "common",
   },
   humidity_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   infiltrations: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   isotope_exposure: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   lat_lon: {
     _default: "common",
   },
   light_intensity: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   light_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   local_class: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   local_class_meth: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   mechanical_damage: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   methane: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   mineral_nutr_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   misc_param: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   non_min_nutr_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   other_treatment: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   oxy_stat_samp: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   oxygen: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   pesticide_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   ph: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   ph_meth: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   ph_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   plant_growth_med: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   plant_product: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   plant_sex: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   plant_struc: {
     _default: "common",
   },
   pollutants: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   pressure: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   profile_position: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   radiation_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   rainfall_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   redox_potential: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   root_cond: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   samp_capt_status: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   samp_collec_device: {
-    _default: "uncommon",
+    _default: "occasional",
     soil: "common",
     sediment: "common",
     water: "common",
   },
   samp_collec_method: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   samp_dis_stage: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   samp_mat_process: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   samp_name: {
     _default: "common",
@@ -358,95 +358,95 @@ const slotVisibilities: Record<string, SlotVisibilities> = {
     _default: "common",
   },
   samp_store_temp: {
-    _default: "uncommon",
+    _default: "occasional",
     soil: "common",
     sediment: "common",
   },
   sediment_type: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   sieving: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   size_frac: {
-    air: "uncommon",
-    "microbial mat_biofilm": "uncommon",
-    "plant-associated": "uncommon",
-    sediment: "uncommon",
-    water: "uncommon",
+    air: "occasional",
+    "microbial mat_biofilm": "occasional",
+    "plant-associated": "occasional",
+    sediment: "occasional",
+    water: "occasional",
   },
   size_frac_low: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   size_frac_up: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   slope_aspect: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   slope_gradient: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   soil_horizon: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   solar_irradiance: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   standing_water_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   start_date_inc: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   start_time_inc: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   store_cond: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   temp: {
-    _default: "uncommon",
+    _default: "occasional",
     air: "common",
   },
   tidal_stage: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   tillage: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   tot_depth_water_col: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   turbidity: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   ventilation_rate: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   ventilation_type: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   water_cont_soil_meth: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   water_content: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   water_current: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   water_temp_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   watering_regm: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   wind_direction: {
-    _default: "uncommon",
+    _default: "occasional",
   },
   wind_speed: {
-    _default: "uncommon",
+    _default: "occasional",
   },
 };
 

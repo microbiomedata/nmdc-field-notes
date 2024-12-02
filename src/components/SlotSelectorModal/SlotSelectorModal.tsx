@@ -26,21 +26,27 @@ function groupClassSlots(
   const commonGroup: SlotGroup = {
     name: "common",
     description:
-      "These fields will commonly be measured or collected in the field.",
+      "The values for these fields are commonly measured at the time of sample collection. These " +
+      "fields will be selected automatically when setting up a new study.",
     title: "Common",
+    slots: [],
+  };
+  const occasionalGroup: SlotGroup = {
+    name: "occasional",
+    description:
+      "These fields may sometimes be measured at the time of sample collection. Review this list " +
+      "and select any fields that are relevant to your study.",
+    title: "Occasional",
     slots: [],
   };
   const uncommonGroup: SlotGroup = {
     name: "uncommon",
     description:
-      "These fields may sometimes be measured or collected in the field.",
+      "These fields are rarely measured at the time of sample collection. These field are more " +
+      "often entered after sampling via the " +
+      '<a target="_blank" rel="noopener noreferrer" href="https://nmdc-documentation.readthedocs.io/en/latest/tutorials/submission_portal.html">NMDC ' +
+      "Submission Portal</a>.",
     title: "Uncommon",
-    slots: [],
-  };
-  const otherGroup: SlotGroup = {
-    name: "other",
-    description: "These fields are rarely measured or collected in the field.",
-    title: "Other",
     slots: [],
   };
 
@@ -49,13 +55,17 @@ function groupClassSlots(
     const group = visibility[templateName] || visibility["_default"];
     if (group === "common") {
       commonGroup.slots.push(slot);
-    } else if (group === "uncommon") {
-      uncommonGroup.slots.push(slot);
+    } else if (group === "occasional") {
+      occasionalGroup.slots.push(slot);
     } else {
-      otherGroup.slots.push(slot);
+      uncommonGroup.slots.push(slot);
     }
   });
-  const groupedSlots: SlotGroup[] = [commonGroup, uncommonGroup, otherGroup];
+  const groupedSlots: SlotGroup[] = [
+    commonGroup,
+    occasionalGroup,
+    uncommonGroup,
+  ];
   groupedSlots.forEach((group) => {
     sortSlots(group.slots);
   });

@@ -105,9 +105,10 @@ const SlotSelector: React.FC<SlotSelectorProps> = ({
       </SectionHeader>
       <IonList className="ion-padding-bottom">
         {group.description && (
-          <div className="ion-padding-horizontal nmdc-text-sm">
-            {group.description}
-          </div>
+          <div
+            className="ion-padding-horizontal ion-padding-bottom nmdc-text-sm"
+            dangerouslySetInnerHTML={{ __html: group.description }}
+          />
         )}
         {group.slots.map((slot) => (
           <IonItem key={slot.name}>
