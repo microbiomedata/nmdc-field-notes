@@ -19,7 +19,7 @@ import slotVisibilities from "./slotVisibilities";
 
 import styles from "./SlotSelectorModal.module.css";
 
-function groupClassSlots(
+function groupTemplateSlots(
   slotDefinitions: SlotDefinition[],
   templateName: TemplateName,
 ): SlotGroup[] {
@@ -110,7 +110,7 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
     if (!classDefinition.attributes) {
       return [];
     }
-    return groupClassSlots(
+    return groupTemplateSlots(
       Object.values(classDefinition.attributes),
       templateName,
     );
