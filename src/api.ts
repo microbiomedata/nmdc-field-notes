@@ -148,7 +148,7 @@ export const TEMPLATES = {
     schemaClass: "WaterInterface",
     sampleDataSlot: "water_data",
   },
-};
+} as const;
 export type TemplateName = keyof typeof TEMPLATES;
 
 export interface MetadataSubmission {
