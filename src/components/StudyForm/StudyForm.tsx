@@ -1,8 +1,9 @@
 import React from "react";
 import {
   IonButton,
-  IonIcon,
   IonInput,
+  IonItem,
+  IonLabel,
   IonSelect,
   IonSelectOption,
   IonText,
@@ -13,7 +14,6 @@ import SectionHeader from "../SectionHeader/SectionHeader";
 import { SubmissionMetadataCreate, TEMPLATES } from "../../api";
 import { Controller, useForm } from "react-hook-form";
 import { useStore } from "../../Store";
-import { colorWand as autoFill } from "ionicons/icons";
 import { StepType } from "@reactour/tour";
 import styles from "./StudyForm.module.css";
 import { useAppTour } from "../AppTourProvider/hooks";
@@ -87,6 +87,17 @@ const StudyForm: React.FC<StudyFormProps> = ({
       disabled,
     });
 
+  const handlePIAutoFill = () => {
+    if (loggedInUser === null) {
+      return;
+    }
+    setValue("metadata_submission.studyForm.piName", loggedInUser.name);
+    if (loggedInUser.email) {
+      setValue("metadata_submission.studyForm.piEmail", loggedInUser.email);
+    }
+    setValue("metadata_submission.studyForm.piOrcid", loggedInUser.orcid);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSave)}>
       <div className="ion-padding">
@@ -153,112 +164,89 @@ const StudyForm: React.FC<StudyFormProps> = ({
 
       <SectionHeader>Principal Investigator</SectionHeader>
 
-      <div className="ion-padding">
-        <Controller
-          name="metadata_submission.studyForm.piName"
-          control={control}
-          render={({ field, fieldState }) => (
-            <IonInput
-              className={`${(fieldState.isTouched || formState.isSubmitted) && "ion-touched"} ${fieldState.invalid && "ion-invalid"}`}
-              label="Name"
-              helperText="The Principal Investigator who led the study and/or generated the data."
-              labelPlacement="floating"
-              type="text"
-              onIonBlur={field.onBlur}
-              onIonInput={field.onChange}
-              {...field}
-            >
-              {/* If the user is logged in, show a button they can press to use their name. */}
-              {loggedInUser !== null ? (
-                <IonButton
-                  fill={"clear"}
-                  slot={"end"}
-                  title={"Use my name"}
-                  aria-label={"Use my name"}
-                  onClick={() => setValue(field.name, loggedInUser.name)}
-                  disabled={field.value === loggedInUser.name}
-                >
-                  <IonIcon
-                    slot={"icon-only"}
-                    icon={autoFill}
-                    color={"primary"}
-                    aria-hidden={"true"}
-                  />
-                </IonButton>
-              ) : null}
-            </IonInput>
-          )}
-        />
+      <div className="ion-padding-bottom">
+        <div className="ion-padding-horizontal">
+          <Controller
+            name="metadata_submission.studyForm.piName"
+            control={control}
+            render={({ field, fieldState }) => (
+              <IonInput
+                className={`${(fieldState.isTouched || formState.isSubmitted) && "ion-touched"} ${fieldState.invalid && "ion-invalid"}`}
+                label="Name"
+                helperText="The Principal Investigator who led the study and/or generated the data."
+                labelPlacement="floating"
+                type="text"
+                onIonBlur={field.onBlur}
+                onIonInput={field.onChange}
+                {...field}
+              />
+            )}
+          />
 
-        <Controller
-          name="metadata_submission.studyForm.piEmail"
-          control={control}
-          rules={{
-            required: "This field is required",
-            validate: {
-              validEmail: (value: string) =>
-                EMAIL_REGEX.test(value) || "Not a valid email address",
-            },
-          }}
-          render={({ field, fieldState }) => (
-            <IonInput
-              className={`${(fieldState.isTouched || formState.isSubmitted) && "ion-touched"} ${fieldState.invalid && "ion-invalid"}`}
-              helperText="An email address for the Principal Investigator."
-              errorText={fieldState.error?.message}
-              labelPlacement="floating"
-              type="text"
-              onIonBlur={field.onBlur}
-              onIonInput={field.onChange}
-              {...field}
-            >
-              <div slot="label">
-                Email
-                <RequiredMark />
-              </div>
-            </IonInput>
-          )}
-        />
+          <Controller
+            name="metadata_submission.studyForm.piEmail"
+            control={control}
+            rules={{
+              required: "This field is required",
+              validate: {
+                validEmail: (value: string) =>
+                  EMAIL_REGEX.test(value) || "Not a valid email address",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <IonInput
+                className={`${(fieldState.isTouched || formState.isSubmitted) && "ion-touched"} ${fieldState.invalid && "ion-invalid"}`}
+                helperText="An email address for the Principal Investigator."
+                errorText={fieldState.error?.message}
+                labelPlacement="floating"
+                type="text"
+                onIonBlur={field.onBlur}
+                onIonInput={field.onChange}
+                {...field}
+              >
+                <div slot="label">
+                  Email
+                  <RequiredMark />
+                </div>
+              </IonInput>
+            )}
+          />
 
-        <Controller
-          name="metadata_submission.studyForm.piOrcid"
-          control={control}
-          render={({ field, fieldState }) => (
-            <IonInput
-              className={`${(fieldState.isTouched || formState.isSubmitted) && "ion-touched"} ${fieldState.invalid && "ion-invalid"}`}
-              label="ORCID iD"
-              helperText="ORCID iD of the Principal Investigator."
-              labelPlacement="floating"
-              type="text"
-              onIonBlur={field.onBlur}
-              onIonInput={field.onChange}
-              {...field}
-            >
-              {/* If the user is logged in, show a button they can press to use their ORCID iD. */}
-              {loggedInUser !== null ? (
-                <IonButton
-                  fill={"clear"}
-                  slot={"end"}
-                  title={"Use my ORCID iD"}
-                  aria-label={"Use my ORCID iD"}
-                  onClick={() => setValue(field.name, loggedInUser.orcid)}
-                  disabled={field.value === loggedInUser.orcid}
-                >
-                  <IonIcon
-                    slot={"icon-only"}
-                    icon={autoFill}
-                    color={"primary"}
-                    aria-hidden={"true"}
-                  />
-                </IonButton>
-              ) : null}
-            </IonInput>
-          )}
-        />
+          <Controller
+            name="metadata_submission.studyForm.piOrcid"
+            control={control}
+            render={({ field, fieldState }) => (
+              <IonInput
+                className={`${(fieldState.isTouched || formState.isSubmitted) && "ion-touched"} ${fieldState.invalid && "ion-invalid"}`}
+                label="ORCID iD"
+                helperText="ORCID iD of the Principal Investigator."
+                labelPlacement="floating"
+                type="text"
+                onIonBlur={field.onBlur}
+                onIonInput={field.onChange}
+                {...field}
+              />
+            )}
+          />
+        </div>
+        {loggedInUser !== null && (
+          <IonItem
+            button
+            detail={false}
+            type="button"
+            onClick={handlePIAutoFill}
+            tabIndex={-1}
+          >
+            <IonLabel color="primary">
+              <h3>I am the Study&apos;s Principal Investigator</h3>
+            </IonLabel>
+          </IonItem>
+        )}
       </div>
 
       <SectionHeader>Environment</SectionHeader>
 
-      <div className="ion-padding">
+      <div className="ion-padding-horizontal ion-padding-bottom">
         <Controller
           name="metadata_submission.packageName"
           rules={{ required: "This field is required" }}
@@ -295,17 +283,17 @@ const StudyForm: React.FC<StudyFormProps> = ({
             </>
           )}
         />
-
-        <IonButton
-          data-tour={`${TourId.StudyForm}-3`}
-          expand="block"
-          className="ion-margin-top"
-          type="submit"
-          disabled={disabled || (formState.isSubmitted && !formState.isValid)}
-        >
-          {formState.isSubmitting ? "Saving" : "Save"}
-        </IonButton>
       </div>
+
+      <IonButton
+        data-tour={`${TourId.StudyForm}-3`}
+        expand="block"
+        className="ion-padding-horizontal"
+        type="submit"
+        disabled={disabled || (formState.isSubmitted && !formState.isValid)}
+      >
+        {formState.isSubmitting ? "Saving" : "Save"}
+      </IonButton>
     </form>
   );
 };
