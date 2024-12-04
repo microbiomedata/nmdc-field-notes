@@ -6,7 +6,6 @@ import {
   IonHeader,
   IonPage,
   IonTitle,
-  useIonRouter,
   useIonToast,
 } from "@ionic/react";
 import StudyForm from "../../components/StudyForm/StudyForm";
@@ -18,9 +17,11 @@ import { checkmark } from "ionicons/icons";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import { useNetworkStatus } from "../../NetworkStatus";
 import FixedCenteredMessage from "../../components/FixedCenteredMessage/FixedCenteredMessage";
+import { StudyViewPageLocationState } from "../StudyViewPage/StudyViewPage";
+import useNavigateWithState from "../../useNavigateWithState";
 
 const StudyCreatePage: React.FC = () => {
-  const router = useIonRouter();
+  const navigate = useNavigateWithState<StudyViewPageLocationState>();
   const [present] = useIonToast();
   const submissionCreate = useSubmissionCreate();
   const submission = useMemo(initSubmission, []);
@@ -34,7 +35,13 @@ const StudyCreatePage: React.FC = () => {
           duration: 3000,
           icon: checkmark,
         });
-        router.push(paths.studyView(created.id), "forward", "replace");
+        navigate(
+          paths.studyView(created.id),
+          {
+            openSlotSelectorModalOnEnter: true,
+          },
+          true,
+        );
       },
     });
   };

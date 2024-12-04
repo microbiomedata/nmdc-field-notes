@@ -17,7 +17,6 @@ import GuidePage from "./pages/GuidePage/GuidePage";
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
 import RootPage from "./pages/RootPage/RootPage";
-import FieldVisibilitySettingsPage from "./pages/FieldVisibilitySettingsPage/FieldVisibilitySettingsPage";
 import paths, { IN } from "./paths";
 
 const Router: React.FC = () => {
@@ -76,11 +75,6 @@ const Router: React.FC = () => {
         </AuthRoute>
         <AuthRoute exact path={paths.studyCreate}>
           <StudyCreatePage />
-        </AuthRoute>
-
-        {/* SETTINGS ROUTES */}
-        <AuthRoute exact path={paths.fieldVisibilitySettings}>
-          <FieldVisibilitySettingsPage />
         </AuthRoute>
 
         <Route exact path={paths.root}>

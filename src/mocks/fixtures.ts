@@ -42,6 +42,11 @@ export function generateSubmission(
     },
     locked_by: null,
     source_client: "field_notes",
+    field_notes_metadata: {
+      fieldVisibility: {
+        soil: ["samp_name"],
+      },
+    },
   };
 }
 

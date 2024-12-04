@@ -7,15 +7,7 @@ import userEvent from "@testing-library/user-event";
 import { server, tokenExchangeError } from "./mocks/server";
 
 const TestStoreConsumer: React.FC = () => {
-  const {
-    login,
-    logout,
-    isLoggedIn,
-    loggedInUser,
-    store,
-    getHiddenSlotsForSchemaClass,
-    setHiddenSlotsForSchemaClass,
-  } = useStore();
+  const { login, logout, isLoggedIn, loggedInUser, store } = useStore();
 
   const handleLoginClick = async () => {
     await login("access-token", "refresh-token");
@@ -24,9 +16,6 @@ const TestStoreConsumer: React.FC = () => {
   const handleLogoutClick = async () => {
     await logout();
   };
-
-  const soilHiddenSlots = getHiddenSlotsForSchemaClass("soil");
-  const waterHiddenSlots = getHiddenSlotsForSchemaClass("water");
 
   return (
     <>
@@ -41,23 +30,6 @@ const TestStoreConsumer: React.FC = () => {
       </button>
       <button data-testid="logout-button" onClick={handleLogoutClick}>
         Log out
-      </button>
-
-      <div data-testid="hidden-slots-soil">
-        {soilHiddenSlots === undefined
-          ? "undefined"
-          : soilHiddenSlots.join(", ")}
-      </div>
-      <div data-testid="hidden-slots-water">
-        {waterHiddenSlots === undefined
-          ? "undefined"
-          : waterHiddenSlots.join(", ")}
-      </div>
-      <button
-        data-testid="set-hidden-slots-soil"
-        onClick={() => setHiddenSlotsForSchemaClass("soil", ["slot1", "slot2"])}
-      >
-        Set soil slots
       </button>
     </>
   );
@@ -84,9 +56,6 @@ const renderTestStoreConsumer = () => {
       loggedInUser: screen.getByTestId("logged-in-user"),
       loginButton: screen.getByTestId("login-button"),
       logoutButton: screen.getByTestId("logout-button"),
-      hiddenSlotsSoil: screen.getByTestId("hidden-slots-soil"),
-      hiddenSlotsWater: screen.getByTestId("hidden-slots-water"),
-      setHiddenSlotsSoil: screen.getByTestId("set-hidden-slots-soil"),
     },
   };
 };
@@ -196,48 +165,5 @@ describe("Store", () => {
     expect(elements.isLoggedIn.textContent).toBe("false");
     expect(elements.loggedInUser.textContent).toBe("");
     expect(setTokensSpy).not.toHaveBeenCalled();
-  });
-
-  it("getHiddenSlotsForSchemaClass should return undefined by default", async () => {
-    const { elements } = renderTestStoreConsumer();
-
-    await waitFor(() =>
-      expect(elements.storeStatus.textContent).toBe("store created"),
-    );
-    expect(elements.hiddenSlotsWater.textContent).toBe("undefined");
-    expect(elements.hiddenSlotsSoil.textContent).toBe("undefined");
-  });
-
-  it("getHiddenSlotsForSchemaClass should return values from storage if defined", async () => {
-    window.localStorage.setItem(
-      "nmdc_field_notes/app_store/hiddenSlots",
-      '{"soil":["slotA","slotB"]}',
-    );
-
-    const { elements } = renderTestStoreConsumer();
-
-    await waitFor(() =>
-      expect(elements.storeStatus.textContent).toBe("store created"),
-    );
-    expect(elements.hiddenSlotsSoil.textContent).toBe("slotA, slotB");
-    expect(elements.hiddenSlotsWater.textContent).toBe("undefined");
-  });
-
-  it("setHiddenSlotsForSchemaClass should update the store", async () => {
-    const { elements, user } = renderTestStoreConsumer();
-
-    await waitFor(() =>
-      expect(elements.storeStatus.textContent).toBe("store created"),
-    );
-    expect(elements.hiddenSlotsSoil.textContent).toBe("undefined");
-    expect(elements.hiddenSlotsWater.textContent).toBe("undefined");
-
-    await user.click(elements.setHiddenSlotsSoil);
-
-    expect(elements.hiddenSlotsSoil.textContent).toBe("slot1, slot2");
-    expect(elements.hiddenSlotsWater.textContent).toBe("undefined");
-    expect(
-      window.localStorage.getItem("nmdc_field_notes/app_store/hiddenSlots"),
-    ).toBe('{"soil":["slot1","slot2"]}');
   });
 });

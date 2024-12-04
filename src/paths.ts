@@ -18,7 +18,6 @@ const paths = {
     `${STUDY}/${submissionId}/sample/${sampleIndex}`,
   guide: `${IN}/guide`,
   settings: `${IN}${SETTINGS}`,
-  fieldVisibilitySettings: `${SETTINGS}/field-visibility`,
 };
 
 export default paths;
