@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import {
   SampleData,
   SampleDataValue,
+  SlotName,
   TemplateName,
   TEMPLATES,
 } from "../../api";
@@ -26,7 +27,7 @@ interface SampleViewProps {
   sample?: SampleData;
   schema: SchemaDefinition;
   validationResults?: Record<string, string>;
-  visibleSlots?: string[];
+  visibleSlots?: SlotName[];
 }
 const SampleView: React.FC<SampleViewProps> = ({
   onSlotClick,

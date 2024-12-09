@@ -151,6 +151,8 @@ export const TEMPLATES = {
 } as const;
 export type TemplateName = keyof typeof TEMPLATES;
 
+export type SlotName = string;
+
 export interface MetadataSubmission {
   packageName: TemplateName | "";
   contextForm: ContextForm;
@@ -187,7 +189,7 @@ export interface SubmissionMetadataUpdate extends SubmissionMetadataBase {
 }
 
 export interface FieldNotesMetadata {
-  fieldVisibility?: Partial<Record<TemplateName, string[]>>;
+  fieldVisibility?: Partial<Record<TemplateName, SlotName[]>>;
 }
 
 export interface SubmissionMetadata extends SubmissionMetadataCreate {

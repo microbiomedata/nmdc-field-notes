@@ -1,4 +1,4 @@
-import { TemplateName } from "../../api";
+import { SlotName, TemplateName } from "../../api";
 
 type VisibilityLevel = "common" | "occasional";
 
@@ -25,7 +25,7 @@ interface SlotVisibilities
  * either "common" or "occasional". The setting in the "_default" key is used if there is no specific
  * setting for a given template.
  */
-const slotVisibilities: Record<string, SlotVisibilities> = {
+const slotVisibilities: Record<SlotName, SlotVisibilities> = {
   agrochem_addition: {
     _default: "occasional",
   },

@@ -20,13 +20,13 @@ import { useNetworkStatus } from "../../NetworkStatus";
 import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
 import MutationErrorBanner from "../MutationErrorBanner/MutationErrorBanner";
 import SlotSelectorModal from "../SlotSelectorModal/SlotSelectorModal";
-import { TemplateName, TEMPLATES } from "../../api";
+import { SlotName, TemplateName, TEMPLATES } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
 
 interface TemplateVisibleSlots {
   template: TemplateName;
   templateDisplay: string;
-  visibleSlots: string[] | undefined;
+  visibleSlots: SlotName[] | undefined;
 }
 
 interface StudyViewProps {

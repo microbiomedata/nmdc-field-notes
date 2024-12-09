@@ -13,7 +13,7 @@ import { closeOutline } from "ionicons/icons";
 import SlotSelector from "../SlotSelector/SlotSelector";
 import { useSubmissionSchema } from "../../queries";
 import { SlotGroup, sortSlots } from "../../utils";
-import { TemplateName, TEMPLATES } from "../../api";
+import { SlotName, TemplateName, TEMPLATES } from "../../api";
 import { SlotDefinition } from "../../linkml-metamodel";
 import slotVisibilities from "./slotVisibilities";
 
@@ -74,10 +74,10 @@ function groupTemplateSlots(
 
 export interface SlotSelectorModalProps {
   allowDismiss?: boolean;
-  defaultSelectedSlots?: string[];
+  defaultSelectedSlots?: SlotName[];
   isOpen: boolean;
   onDismiss: () => void;
-  onSave: (selectedSlots: string[]) => void;
+  onSave: (selectedSlots: SlotName[]) => void;
   templateName?: TemplateName;
 }
 const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
@@ -88,7 +88,7 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
   onSave,
   templateName,
 }) => {
-  const [selectedSlots, setSelectedSlots] = React.useState<string[]>([]);
+  const [selectedSlots, setSelectedSlots] = React.useState<SlotName[]>([]);
   const schema = useSubmissionSchema();
 
   const schemaClassName = templateName && TEMPLATES[templateName].schemaClass;
