@@ -232,7 +232,7 @@ const StudyView: React.FC<StudyViewProps> = ({
                           singular={"field"}
                           showCount
                         />{" "}
-                        chosen
+                        selected
                       </>
                     )}
                   </p>
