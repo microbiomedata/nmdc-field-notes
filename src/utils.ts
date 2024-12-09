@@ -1,3 +1,4 @@
+import React from "react";
 import { SubmissionMetadata, TEMPLATES } from "./api";
 import { SlotDefinition } from "./linkml-metamodel";
 
@@ -39,7 +40,7 @@ export function getSubmissionSample(
 
 export interface SlotGroup {
   name: string;
-  description?: string;
+  description?: React.ReactNode;
   title?: string;
   rank?: number;
   slots: SlotDefinition[];

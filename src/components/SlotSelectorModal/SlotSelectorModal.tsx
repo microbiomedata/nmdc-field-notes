@@ -41,11 +41,20 @@ function groupTemplateSlots(
   };
   const uncommonGroup: SlotGroup = {
     name: "uncommon",
-    description:
-      "These fields are rarely measured at the time of sample collection. These field are more " +
-      "often entered after sampling via the " +
-      '<a target="_blank" rel="noopener noreferrer" href="https://nmdc-documentation.readthedocs.io/en/latest/tutorials/submission_portal.html">NMDC ' +
-      "Submission Portal</a>.",
+    description: (
+      <>
+        These fields are rarely measured at the time of sample collection. They
+        are more often entered after sampling via the{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://nmdc-documentation.readthedocs.io/en/latest/tutorials/submission_portal.html"
+        >
+          NMDC Submission Portal
+        </a>
+        .
+      </>
+    ),
     title: "Uncommon",
     slots: [],
   };
