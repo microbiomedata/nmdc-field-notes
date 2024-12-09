@@ -1,13 +1,15 @@
-import React from "react";
-import { SampleData, SampleDataValue, TEMPLATES } from "../../api";
-import { groupClassSlots } from "../../utils";
-import Banner from "../Banner/Banner";
-import SectionHeader from "../SectionHeader/SectionHeader";
-import { IonButton, IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
+import React, { useMemo } from "react";
+import {
+  SampleData,
+  SampleDataValue,
+  SlotName,
+  TemplateName,
+  TEMPLATES,
+} from "../../api";
+import { sortSlots } from "../../utils";
+import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { SchemaDefinition, SlotDefinition } from "../../linkml-metamodel";
 import { warningOutline } from "ionicons/icons";
-import { useStore } from "../../Store";
-import SlotSelectorModal from "../SlotSelectorModal/SlotSelectorModal";
 
 function formatSlotValue(value: SampleDataValue) {
   if (value == null) {
@@ -21,10 +23,11 @@ function formatSlotValue(value: SampleDataValue) {
 
 interface SampleViewProps {
   onSlotClick: (slot: SlotDefinition) => void;
-  packageName: string;
+  packageName: TemplateName;
   sample?: SampleData;
   schema: SchemaDefinition;
   validationResults?: Record<string, string>;
+  visibleSlots?: SlotName[];
 }
 const SampleView: React.FC<SampleViewProps> = ({
   onSlotClick,
@@ -32,18 +35,18 @@ const SampleView: React.FC<SampleViewProps> = ({
   sample,
   schema,
   validationResults,
+  visibleSlots,
 }) => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const { getHiddenSlotsForSchemaClass, setHiddenSlotsForSchemaClass } =
-    useStore();
-
   const schemaClass = TEMPLATES[packageName].schemaClass;
-  const hiddenSlots = getHiddenSlotsForSchemaClass(schemaClass);
-  const slotGroups = schemaClass ? groupClassSlots(schema, schemaClass) : [];
-
-  const handleDismiss = () => {
-    setHiddenSlotsForSchemaClass(schemaClass, []);
-  };
+  const slots: SlotDefinition[] = useMemo(() => {
+    const allSlots = Object.values(
+      schema.classes?.[schemaClass]?.attributes || {},
+    );
+    const visibleSlotsSet = allSlots.filter(
+      (slot) => !visibleSlots || visibleSlots.includes(slot.name),
+    );
+    return sortSlots(visibleSlotsSet);
+  }, [schema.classes, schemaClass, visibleSlots]);
 
   if (!sample) {
     return null;
@@ -51,73 +54,24 @@ const SampleView: React.FC<SampleViewProps> = ({
 
   return (
     <>
-      {hiddenSlots === undefined && (
-        <Banner color="primary">
-          <IonLabel>Too many fields?</IonLabel>
-          <IonButton
-            slot="end"
-            fill="clear"
-            onClick={() => setIsModalOpen(true)}
-          >
-            Customize List
-          </IonButton>
-          <IonButton slot="end" fill="clear" onClick={handleDismiss}>
-            Dismiss
-          </IonButton>
-        </Banner>
-      )}
-
-      {slotGroups.map((group) => (
-        <React.Fragment key={group.name}>
-          <SectionHeader>{group.title}</SectionHeader>
-          <IonList className="ion-padding-bottom">
-            {group.slots.map(
-              (slot) =>
-                (hiddenSlots === undefined ||
-                  !hiddenSlots.includes(slot.name)) && (
-                  <IonItem key={slot.name} onClick={() => onSlotClick(slot)}>
-                    {validationResults?.[slot.name] && (
-                      <IonIcon
-                        aria-hidden="true"
-                        icon={warningOutline}
-                        color="warning"
-                        slot="end"
-                      />
-                    )}
-                    <IonLabel>
-                      <h3>{slot.title || slot.name}</h3>
-                      <p>{formatSlotValue(sample?.[slot.name])}</p>
-                    </IonLabel>
-                  </IonItem>
-                ),
+      <IonList className="ion-padding-bottom">
+        {slots.map((slot) => (
+          <IonItem key={slot.name} onClick={() => onSlotClick(slot)}>
+            {validationResults?.[slot.name] && (
+              <IonIcon
+                aria-hidden="true"
+                icon={warningOutline}
+                color="warning"
+                slot="end"
+              />
             )}
-          </IonList>
-        </React.Fragment>
-      ))}
-
-      {hiddenSlots !== undefined && hiddenSlots.length > 0 && (
-        <IonList className="ion-padding-bottom">
-          <IonItem
-            lines="none"
-            button
-            detail={false}
-            onClick={() => setIsModalOpen(true)}
-          >
-            <IonLabel class="ion-text-wrap">
-              <p>
-                Not seeing a field you were looking for? Tap here to update
-                field visibility settings.
-              </p>
+            <IonLabel>
+              <h3>{slot.title || slot.name}</h3>
+              <p>{formatSlotValue(sample?.[slot.name])}</p>
             </IonLabel>
           </IonItem>
-        </IonList>
-      )}
-
-      <SlotSelectorModal
-        onDismiss={() => setIsModalOpen(false)}
-        isOpen={isModalOpen}
-        packageName={packageName}
-      />
+        ))}
+      </IonList>
     </>
   );
 };

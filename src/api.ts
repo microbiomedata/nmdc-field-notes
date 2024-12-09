@@ -92,7 +92,7 @@ export interface TemplateInfo {
   schemaClass: string;
   sampleDataSlot: string;
 }
-export const TEMPLATES: Record<string, TemplateInfo> = {
+export const TEMPLATES = {
   air: {
     displayName: "air",
     schemaClass: "AirInterface",
@@ -148,10 +148,13 @@ export const TEMPLATES: Record<string, TemplateInfo> = {
     schemaClass: "WaterInterface",
     sampleDataSlot: "water_data",
   },
-};
+} as const;
+export type TemplateName = keyof typeof TEMPLATES;
+
+export type SlotName = string;
 
 export interface MetadataSubmission {
-  packageName: keyof typeof TEMPLATES;
+  packageName: TemplateName | "";
   contextForm: ContextForm;
   addressForm: AddressForm;
   templates: string[];
@@ -180,8 +183,13 @@ export interface SubmissionMetadataCreate extends SubmissionMetadataBase {
 export interface SubmissionMetadataUpdate extends SubmissionMetadataBase {
   id: string;
   status?: string;
+  field_notes_metadata?: Nullable<FieldNotesMetadata>;
   // Map of ORCID iD to permission level
   permissions?: Record<string, string>;
+}
+
+export interface FieldNotesMetadata {
+  fieldVisibility?: Partial<Record<TemplateName, SlotName[]>>;
 }
 
 export interface SubmissionMetadata extends SubmissionMetadataCreate {
@@ -193,6 +201,7 @@ export interface SubmissionMetadata extends SubmissionMetadataCreate {
   lock_updated?: string;
   locked_by: Nullable<User>;
   permission_level?: string;
+  field_notes_metadata?: Nullable<FieldNotesMetadata>;
 }
 
 export interface PaginationOptions {
@@ -289,6 +298,11 @@ export class FetchClient {
   }
 }
 
+interface GetSubmissionListOptions extends PaginationOptions {
+  column_sort?: string;
+  sort_order?: "asc" | "desc";
+}
+
 class NmdcServerClient extends FetchClient {
   private refreshToken: string | null = null;
   private exchangeRefreshTokenCache: Promise<TokenResponse> | null = null;
@@ -341,13 +355,15 @@ class NmdcServerClient extends FetchClient {
     }
   }
 
-  async getSubmissionList(pagination: PaginationOptions = {}) {
-    pagination = {
+  async getSubmissionList(options: GetSubmissionListOptions = {}) {
+    options = {
       limit: 10,
       offset: 0,
-      ...pagination,
+      column_sort: "created",
+      sort_order: "desc",
+      ...options,
     };
-    const query = new URLSearchParams(pagination as Record<string, string>);
+    const query = new URLSearchParams(options as Record<string, string>);
     return await this.fetchJson<Paginated<SubmissionMetadata>>(
       `/api/metadata_submission?${query}`,
     );

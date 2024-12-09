@@ -256,14 +256,19 @@ const SamplePage: React.FC = () => {
           </Banner>
         )}
 
-        {schema.data && (
+        {schema.data && packageName && (
           <>
             <SampleView
               onSlotClick={handleSlotClick}
-              packageName={packageName!}
+              packageName={packageName}
               sample={sample}
               schema={schema.data.schema}
               validationResults={validationResults?.[sampleIndexInt]}
+              visibleSlots={
+                submission.data?.field_notes_metadata?.fieldVisibility?.[
+                  packageName
+                ]
+              }
             />
             <SampleSlotEditModal
               defaultValue={modalSlot && sample?.[modalSlot.name]}

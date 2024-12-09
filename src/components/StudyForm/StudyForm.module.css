@@ -1,4 +1,4 @@
 .errorMessage {
-  font-size: 0.75rem;
+  font-size: var(--nmdc-font-size-xs);
   color: var(--ion-color-danger);
 }

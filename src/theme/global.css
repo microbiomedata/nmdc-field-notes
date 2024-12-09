@@ -1,0 +1,15 @@
+.nmdc-text-xs {
+  font-size: var(--nmdc-font-size-xs);
+}
+
+.nmdc-text-sm {
+  font-size: var(--nmdc-font-size-sm);
+}
+
+.nmdc-text-lg {
+  font-size: var(--nmdc-font-size-lg);
+}
+
+.nmdc-text-xl {
+  font-size: var(--nmdc-font-size-xl);
+}

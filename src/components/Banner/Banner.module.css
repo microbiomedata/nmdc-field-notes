@@ -3,7 +3,7 @@ ion-list.banner {
 
   & ion-item {
     --min-height: auto;
-    font-size: 0.875rem;
+    font-size: var(--nmdc-font-size-sm);
   }
 
   & ion-button {

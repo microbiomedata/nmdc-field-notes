@@ -22,7 +22,7 @@ ion-toolbar.offlineToolbar {
 }
 
 .offlineWarning {
-  font-size: 0.875rem;
+  font-size: var(--nmdc-font-size-sm);
   display: flex;
   flex-direction: row;
   align-items: center;

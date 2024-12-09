@@ -12,7 +12,6 @@ import {
   ColorPaletteMode,
   isValidColorPaletteMode,
 } from "./theme/colorPalette";
-import { produce } from "immer";
 import { Network } from "@capacitor/network";
 import { TourId } from "./components/AppTourProvider/AppTourProvider";
 
@@ -20,7 +19,6 @@ enum StorageKey {
   REFRESH_TOKEN = "refreshToken",
   LOGGED_IN_USER = "loggedInUser",
   COLOR_PALETTE_MODE = "colorPaletteMode",
-  HIDDEN_SLOTS = "hiddenSlots",
   PRESENTED_TOUR_IDS = "presentedTourIds",
 }
 
@@ -34,12 +32,6 @@ interface StoreContextValue {
 
   colorPaletteMode: ColorPaletteMode | null;
   setColorPaletteMode: (colorPaletteMode: ColorPaletteMode) => void;
-
-  getHiddenSlotsForSchemaClass: (className: string) => string[] | undefined;
-  setHiddenSlotsForSchemaClass: (
-    className: string,
-    hiddenSlots: string[],
-  ) => void;
 
   checkWhetherTourHasBeenPresented: (tourId: TourId) => boolean;
   rememberTourHasBeenPresented: (tourId: TourId | null) => void;
@@ -63,13 +55,6 @@ const StoreContext = createContext<StoreContextValue>({
     throw new Error("setColorPaletteMode called outside of provider");
   },
 
-  getHiddenSlotsForSchemaClass: () => {
-    throw new Error("getHiddenSlotsForSchemaClass called outside of provider");
-  },
-  setHiddenSlotsForSchemaClass: () => {
-    throw new Error("setHiddenSlotsForSchemaClass called outside of provider");
-  },
-
   checkWhetherTourHasBeenPresented: () => {
     throw new Error(
       "checkWhetherTourHasBeenPresented called outside of provider",
@@ -89,7 +74,6 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
-  const [hiddenSlots, setHiddenSlots] = useState<Record<string, string[]>>({});
   const [presentedTourIds, setPresentedTourIds] = useState<Set<TourId>>(
     new Set(),
   );
@@ -149,12 +133,6 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         : ColorPaletteMode.System;
       setColorPaletteMode(sanitizedColorPaletteMode);
       applyColorPalette(sanitizedColorPaletteMode);
-
-      // If persistent storage contains hidden slots, load them into the Context.
-      const hiddenSlotsFromStorage = await storage.get(StorageKey.HIDDEN_SLOTS);
-      if (hiddenSlotsFromStorage) {
-        setHiddenSlots(hiddenSlotsFromStorage);
-      }
 
       // If persistent storage contains presented tour IDs, load them into the Context.
       //
@@ -256,40 +234,6 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   /**
-   * Returns a list of hidden slot names for the specified schema class or undefined if the given
-   * class name is not in the hidden slots map yet. The implication is that `undefined` means the
-   * user has not made any choice about which slots to hide for this schema class yet. Whereas an
-   * empty array means the user has made a choice to hide no slots for this schema class.
-   */
-  function getHiddenSlotsForSchemaClass(
-    className: string,
-  ): string[] | undefined {
-    return hiddenSlots[className];
-  }
-
-  /**
-   * Updates the hidden slots for the specified schema class in the Context and the store.
-   */
-  async function setHiddenSlotsForSchemaClass(
-    className: string,
-    slotNames: string[],
-  ) {
-    const updatedHiddenSlots = produce(hiddenSlots, (draft) => {
-      draft[className] = slotNames;
-    });
-
-    setHiddenSlots(updatedHiddenSlots);
-    if (store === null) {
-      console.warn(
-        "setHiddenSlotsForSchemaClass called before storage initialization",
-      );
-      return;
-    } else {
-      return store.set(StorageKey.HIDDEN_SLOTS, updatedHiddenSlots);
-    }
-  }
-
-  /**
    * Returns `true` if the specified tour has been presented; otherwise returns `false`.
    *
    * @param tourId ID of the tour.
@@ -356,9 +300,6 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
         colorPaletteMode: colorPaletteMode,
         setColorPaletteMode: _setColorPaletteMode,
-
-        getHiddenSlotsForSchemaClass,
-        setHiddenSlotsForSchemaClass,
 
         checkWhetherTourHasBeenPresented,
         rememberTourHasBeenPresented,

@@ -4,79 +4,148 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
   IonModal,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import RequiredMark from "../RequiredMark/RequiredMark";
+import { closeOutline } from "ionicons/icons";
 import SlotSelector from "../SlotSelector/SlotSelector";
 import { useSubmissionSchema } from "../../queries";
-import { groupClassSlots } from "../../utils";
-import { TEMPLATES } from "../../api";
-import { useStore } from "../../Store";
+import { SlotGroup, sortSlots } from "../../utils";
+import { SlotName, TemplateName, TEMPLATES } from "../../api";
+import { SlotDefinition } from "../../linkml-metamodel";
+import slotVisibilities from "./slotVisibilities";
 
 import styles from "./SlotSelectorModal.module.css";
 
+function groupTemplateSlots(
+  slotDefinitions: SlotDefinition[],
+  templateName: TemplateName,
+): SlotGroup[] {
+  const commonGroup: SlotGroup = {
+    name: "common",
+    description:
+      "The values for these fields are commonly measured at the time of sample collection. These " +
+      "fields will be selected automatically when setting up a new study.",
+    title: "Common",
+    slots: [],
+  };
+  const occasionalGroup: SlotGroup = {
+    name: "occasional",
+    description:
+      "These fields may sometimes be measured at the time of sample collection. Review this list " +
+      "and select any fields that are relevant to your study.",
+    title: "Occasional",
+    slots: [],
+  };
+  const uncommonGroup: SlotGroup = {
+    name: "uncommon",
+    description: (
+      <>
+        These fields are rarely measured at the time of sample collection. They
+        are more often entered after sampling via the{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://nmdc-documentation.readthedocs.io/en/latest/tutorials/submission_portal.html"
+        >
+          NMDC Submission Portal
+        </a>
+        .
+      </>
+    ),
+    title: "Uncommon",
+    slots: [],
+  };
+
+  slotDefinitions.forEach((slot) => {
+    const visibility = slotVisibilities[slot.name] || {};
+    const group = visibility[templateName] || visibility["_default"];
+    if (group === "common") {
+      commonGroup.slots.push(slot);
+    } else if (group === "occasional") {
+      occasionalGroup.slots.push(slot);
+    } else {
+      uncommonGroup.slots.push(slot);
+    }
+  });
+  const groupedSlots: SlotGroup[] = [
+    commonGroup,
+    occasionalGroup,
+    uncommonGroup,
+  ];
+  groupedSlots.forEach((group) => {
+    sortSlots(group.slots);
+  });
+  return groupedSlots;
+}
+
 export interface SlotSelectorModalProps {
-  onDismiss: () => void;
+  allowDismiss?: boolean;
+  defaultSelectedSlots?: SlotName[];
   isOpen: boolean;
-  packageName?: string;
+  onDismiss: () => void;
+  onSave: (selectedSlots: SlotName[]) => void;
+  templateName?: TemplateName;
 }
 const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
-  onDismiss,
+  allowDismiss = true,
+  defaultSelectedSlots,
   isOpen,
-  packageName,
+  onDismiss,
+  onSave,
+  templateName,
 }) => {
-  const [selectedSlots, setSelectedSlots] = React.useState<string[]>([]);
+  const [selectedSlots, setSelectedSlots] = React.useState<SlotName[]>([]);
   const schema = useSubmissionSchema();
-  const { getHiddenSlotsForSchemaClass, setHiddenSlotsForSchemaClass } =
-    useStore();
 
-  const schemaClassName = packageName && TEMPLATES[packageName].schemaClass;
-  const templateName = packageName && TEMPLATES[packageName].displayName;
+  const schemaClassName = templateName && TEMPLATES[templateName].schemaClass;
+  const templateDisplayName =
+    templateName && TEMPLATES[templateName].displayName;
 
-  const slotGroups = useMemo(
-    () =>
-      schema.data && schemaClassName !== undefined
-        ? groupClassSlots(schema.data.schema, schemaClassName)
-        : [],
-    [schema.data, schemaClassName],
-  );
-  const allSlotNames = useMemo(
-    () => slotGroups.flatMap((group) => group.slots.map((s) => s.name)),
-    [slotGroups],
-  );
+  const slotGroups = useMemo(() => {
+    if (
+      schema.data === undefined ||
+      schemaClassName === undefined ||
+      templateName === undefined
+    ) {
+      return [];
+    }
+    const classDefinition = schema.data.schema.classes?.[schemaClassName];
+    if (!classDefinition) {
+      throw new Error(`Class ${schemaClassName} not found in schema`);
+    }
+    if (!classDefinition.attributes) {
+      return [];
+    }
+    return groupTemplateSlots(
+      Object.values(classDefinition.attributes),
+      templateName,
+    );
+  }, [schema.data, schemaClassName, templateName]);
 
-  // This translates a list of hidden slots from the store into a list of selected slots for the
-  // SlotSelector component. If there are no hidden slots, all slots are selected by default. The
-  // isOpen state is used to reset the selected slots when the modal is closed (i.e. don't keep
+  // The isOpen state is used to reset the selected slots when the modal is closed (i.e. don't keep
   // changes if the user cancels out of the modal).
   useEffect(() => {
-    if (isOpen && schemaClassName !== undefined) {
-      const hiddenSlotsFromStore =
-        getHiddenSlotsForSchemaClass(schemaClassName);
-      if (hiddenSlotsFromStore === undefined) {
-        setSelectedSlots(allSlotNames);
+    if (isOpen) {
+      // If the modal is open and no defaultSelectedSlots were provided, preselect the first group
+      // (the "common" group) by default. Otherwise, use the provided defaultSelectedSlots.
+      if (defaultSelectedSlots === undefined) {
+        setSelectedSlots(slotGroups[0]?.slots.map((slot) => slot.name) || []);
       } else {
-        setSelectedSlots(
-          allSlotNames.filter((s) => !hiddenSlotsFromStore.includes(s)),
-        );
+        setSelectedSlots(defaultSelectedSlots);
       }
     } else {
+      // If the modal is closed, reset the selected slots to an empty list.
       setSelectedSlots([]);
     }
-  }, [getHiddenSlotsForSchemaClass, isOpen, schemaClassName, allSlotNames]);
+  }, [isOpen, defaultSelectedSlots, slotGroups]);
 
   // When the user taps the Save button, translate the selected slots back into a list of hidden
   // slots and save them to the store. Then close the modal.
   const handleSave = () => {
-    if (schemaClassName !== undefined) {
-      const hiddenSlots = allSlotNames.filter(
-        (s) => !selectedSlots.includes(s),
-      );
-      setHiddenSlotsForSchemaClass(schemaClassName, hiddenSlots);
-    }
-    onDismiss();
+    onSave(selectedSlots);
   };
 
   return (
@@ -87,11 +156,13 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
     >
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton color="medium" onClick={onDismiss}>
-              Cancel
-            </IonButton>
-          </IonButtons>
+          {allowDismiss && (
+            <IonButtons slot="start">
+              <IonButton color="medium" onClick={onDismiss}>
+                <IonIcon slot="icon-only" icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          )}
           <IonTitle>Select Fields</IonTitle>
           <IonButtons slot="end">
             <IonButton onClick={handleSave} strong={true}>
@@ -101,16 +172,9 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <div className="ion-padding">
-          <p>
-            Select the fields you would like to see when viewing and editing
-            sample metadata for the <b>{templateName} template</b>. These
-            choices can be updated any time in Settings.
-          </p>
-          <p>
-            <RequiredMark /> fields are required before finalizing a submission
-            with NMDC. Be careful about hiding them here.
-          </p>
+        <div className="ion-padding nmdc-text-sm">
+          Select the fields you would like to see when viewing and editing
+          sample metadata for the <b>{templateDisplayName} template</b>.
         </div>
         <SlotSelector
           slotGroups={slotGroups}

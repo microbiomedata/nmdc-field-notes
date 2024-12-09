@@ -97,3 +97,14 @@
   --ion-background-color: #000000;
   --ion-background-color-rgb: rgb(0, 0, 0);
 }
+
+/**
+  * Custom variables that aren't part of the Ionic theme, using the `--nmdc-` prefix
+  * to avoid naming conflicts.
+ */
+:root {
+  --nmdc-font-size-xs: 0.75rem;
+  --nmdc-font-size-sm: 0.875rem;
+  --nmdc-font-size-lg: 1.125rem;
+  --nmdc-font-size-xl: 1.25rem;
+}
