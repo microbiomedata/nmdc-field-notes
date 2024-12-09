@@ -8,8 +8,8 @@ interface SlotVisibilities
 }
 
 /**
- * This object encodes which slots are commonly, occasionally, or uncommonly measured at sample
- * collection time. This was the output of a manual curation process. At some point we might
+ * This object encodes which slots' values are commonly, occasionally, or uncommonly measured at
+ * sample collection time. This was the output of a manual curation process. At some point we might
  * consider encoding this directly in the submission schema somehow. But for now, this is a simple
  * way to get the job done. The structure of the object is:
  * {
