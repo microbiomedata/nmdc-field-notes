@@ -64,7 +64,10 @@ const Router: React.FC = () => {
         It is unclear why the /create routes need to be listed after the /:id routes. It
         seems backwards from what the react-router docs suggest, but it's what works.
         */}
-        <AuthRoute exact path={paths.sample(":submissionId", ":sampleIndex")}>
+        <AuthRoute
+          exact
+          path={paths.sample(":submissionId", ":template", ":sampleIndex")}
+        >
           <SamplePage />
         </AuthRoute>
         <AuthRoute exact path={paths.studyEdit(":submissionId")}>

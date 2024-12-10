@@ -17,11 +17,10 @@ import { checkmark } from "ionicons/icons";
 import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import { useNetworkStatus } from "../../NetworkStatus";
 import FixedCenteredMessage from "../../components/FixedCenteredMessage/FixedCenteredMessage";
-import { StudyViewPageLocationState } from "../StudyViewPage/StudyViewPage";
 import useNavigateWithState from "../../useNavigateWithState";
 
 const StudyCreatePage: React.FC = () => {
-  const navigate = useNavigateWithState<StudyViewPageLocationState>();
+  const navigate = useNavigateWithState();
   const [present] = useIonToast();
   const submissionCreate = useSubmissionCreate();
   const submission = useMemo(initSubmission, []);
@@ -35,13 +34,7 @@ const StudyCreatePage: React.FC = () => {
           duration: 3000,
           icon: checkmark,
         });
-        navigate(
-          paths.studyView(created.id),
-          {
-            openSlotSelectorModalOnEnter: true,
-          },
-          true,
-        );
+        navigate(paths.studyView(created.id), undefined, true);
       },
     });
   };

@@ -1,41 +1,141 @@
 import React from "react";
-import { SubmissionMetadata, TEMPLATES } from "./api";
+import { SampleData, SubmissionMetadata, TemplateName, TEMPLATES } from "./api";
 import { SlotDefinition } from "./linkml-metamodel";
+
+/**
+ * Get the templates associated with a submission.
+ *
+ * This function is mainly useful to ease the transition between the old format where the
+ * `packageName` field was a string and the new format where it is an array of strings.
+ * This function always returns an array of strings.
+ *
+ * @param submission
+ */
+export function getSubmissionTemplates(
+  submission?: SubmissionMetadata,
+): TemplateName[] {
+  if (!submission) {
+    return [];
+  }
+  const { packageName } = submission.metadata_submission;
+  if (typeof packageName === "string") {
+    if (packageName === "") {
+      return [];
+    } else {
+      return [packageName];
+    }
+  }
+  return packageName;
+}
 
 export interface GetSubmissionSamplesOptions {
   createSampleDataFieldIfMissing?: boolean;
 }
+
+/**
+ * Get the samples associated with a submission.
+ *
+ * Returns an object where the keys are the templates and the values are arrays of sample data
+ * objects for that template. If the `createSampleDataFieldIfMissing` option is set to true, it
+ * will modify the submission object to add missing template fields, defaulting to an empty array.
+ *
+ * @param submission
+ * @param options
+ */
 export function getSubmissionSamples(
   submission?: SubmissionMetadata,
   options: GetSubmissionSamplesOptions = {},
-) {
+): Partial<Record<TemplateName, SampleData[]>> {
   if (!submission) {
-    return [];
+    return {};
   }
-  const environmentalPackageName = submission.metadata_submission.packageName;
-  const sampleDataField = environmentalPackageName
-    ? TEMPLATES[environmentalPackageName].sampleDataSlot
-    : undefined;
-  if (!sampleDataField) {
-    return [];
-  }
-  if (
-    !(sampleDataField in submission.metadata_submission.sampleData) &&
-    options.createSampleDataFieldIfMissing
-  ) {
-    submission.metadata_submission.sampleData[sampleDataField] = [];
-  }
-  return submission.metadata_submission.sampleData[sampleDataField] || [];
+  const samples: Partial<Record<TemplateName, SampleData[]>> = {};
+  const templates = getSubmissionTemplates(submission);
+  templates.forEach((template) => {
+    const sampleDataSlot = TEMPLATES[template]?.sampleDataSlot;
+    if (!sampleDataSlot) {
+      return;
+    }
+    if (
+      !(sampleDataSlot in submission.metadata_submission.sampleData) &&
+      options.createSampleDataFieldIfMissing
+    ) {
+      submission.metadata_submission.sampleData[sampleDataSlot] = [];
+    }
+    samples[template] =
+      submission.metadata_submission.sampleData[sampleDataSlot] || [];
+  });
+  return samples;
 }
 
+/**
+ * Get the total number of samples associated with a submission across all templates.
+ *
+ * @param submission
+ */
+export function getSubmissionSamplesCount(
+  submission?: SubmissionMetadata,
+): number {
+  if (submission === undefined) {
+    return 0;
+  }
+  let count = 0;
+  const templates = getSubmissionTemplates(submission);
+  templates.forEach((template) => {
+    const sampleDataSlot = TEMPLATES[template]?.sampleDataSlot;
+    if (!sampleDataSlot) {
+      return;
+    }
+    const samples =
+      submission.metadata_submission.sampleData[sampleDataSlot] || [];
+    count += samples.length;
+  });
+  return count;
+}
+
+/**
+ * Get the samples associated with a specific template in a submission.
+ *
+ * @param submission
+ * @param template
+ */
+export function getSubmissionSamplesForTemplate(
+  submission?: SubmissionMetadata,
+  template?: TemplateName,
+): SampleData[] {
+  if (!submission || template === undefined) {
+    return [];
+  }
+  const samplesByTemplate = getSubmissionSamples(submission);
+  const templateSamples = samplesByTemplate[template];
+  if (templateSamples === undefined) {
+    return [];
+  }
+  return templateSamples;
+}
+
+/**
+ * Get a specific sample associated with a submission.
+ *
+ * The sample is identified by the template and the index within that template's sample array.
+ *
+ * @param submission
+ * @param template
+ * @param index
+ */
 export function getSubmissionSample(
   submission?: SubmissionMetadata,
+  template?: TemplateName,
   index?: number,
 ) {
-  if (!submission || index === undefined) {
+  if (!submission || template === undefined || index === undefined) {
     return undefined;
   }
-  return getSubmissionSamples(submission)[index];
+  const samplesForTemplate = getSubmissionSamples(submission)[template];
+  if (samplesForTemplate === undefined) {
+    return undefined;
+  }
+  return samplesForTemplate[index];
 }
 
 export interface SlotGroup {

@@ -14,7 +14,7 @@ import {
 } from "@ionic/react";
 import { SubmissionMetadata } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
-import { getSubmissionSamples } from "../../utils";
+import { getSubmissionSamplesCount, getSubmissionTemplates } from "../../utils";
 import paths from "../../paths";
 import NoneOr from "../NoneOr/NoneOr";
 import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
@@ -98,11 +98,11 @@ const StudyList: React.FC = () => {
                       </h3>
                       <p>
                         <NoneOr placeholder="No template selected">
-                          {submission.metadata_submission.templates[0]}
+                          {getSubmissionTemplates(submission).join(", ")}
                         </NoneOr>
                         {" • "}
                         <Pluralize
-                          count={getSubmissionSamples(submission).length}
+                          count={getSubmissionSamplesCount(submission)}
                           singular="Sample"
                           showCount
                         />

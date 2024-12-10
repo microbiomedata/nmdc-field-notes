@@ -23,7 +23,7 @@ function formatSlotValue(value: SampleDataValue) {
 
 interface SampleViewProps {
   onSlotClick: (slot: SlotDefinition) => void;
-  packageName: TemplateName;
+  template: TemplateName;
   sample?: SampleData;
   schema: SchemaDefinition;
   validationResults?: Record<string, string>;
@@ -31,13 +31,13 @@ interface SampleViewProps {
 }
 const SampleView: React.FC<SampleViewProps> = ({
   onSlotClick,
-  packageName,
+  template,
   sample,
   schema,
   validationResults,
   visibleSlots,
 }) => {
-  const schemaClass = TEMPLATES[packageName].schemaClass;
+  const schemaClass = TEMPLATES[template].schemaClass;
   const slots: SlotDefinition[] = useMemo(() => {
     const allSlots = Object.values(
       schema.classes?.[schemaClass]?.attributes || {},
