@@ -50,6 +50,9 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
   const templateVisibleSlots = useMemo(() => {
     const fieldVisibilityInfo: TemplateVisibleSlots[] = [];
     if (submission.data) {
+      if (!("field_notes_metadata" in submission.data)) {
+        return undefined;
+      }
       const templates = getSubmissionTemplates(submission.data);
       templates.forEach((templateName) => {
         const template = TEMPLATES[templateName];
@@ -71,7 +74,10 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
     // them has no visible slot information (this could be because it is a brand-new study or
     // because it was created via the submission portal and this is the first time opening it in the
     // app), open the slot selector for that template.
-    if (modalTemplateVisibleSlots !== undefined) {
+    if (
+      modalTemplateVisibleSlots !== undefined ||
+      templateVisibleSlots === undefined
+    ) {
       return;
     }
     for (const item of templateVisibleSlots) {
@@ -227,33 +233,37 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
             </IonItem>
           </IonList>
 
-          <SectionHeader>Templates</SectionHeader>
-          <IonList className="ion-padding-bottom">
-            {templateVisibleSlots.map((item) => (
-              <IonItem
-                key={item.template}
-                onClick={() => setModalTemplateVisibleSlots(item)}
-              >
-                <IonLabel>
-                  <h3>{item.templateDisplay}</h3>
-                  <p>
-                    {item.visibleSlots === undefined ? (
-                      "Not customized"
-                    ) : (
-                      <>
-                        <Pluralize
-                          count={item.visibleSlots.length}
-                          singular={"field"}
-                          showCount
-                        />{" "}
-                        selected
-                      </>
-                    )}
-                  </p>
-                </IonLabel>
-              </IonItem>
-            ))}
-          </IonList>
+          {templateVisibleSlots !== undefined && (
+            <>
+              <SectionHeader>Templates</SectionHeader>
+              <IonList className="ion-padding-bottom">
+                {templateVisibleSlots.map((item) => (
+                  <IonItem
+                    key={item.template}
+                    onClick={() => setModalTemplateVisibleSlots(item)}
+                  >
+                    <IonLabel>
+                      <h3>{item.templateDisplay}</h3>
+                      <p>
+                        {item.visibleSlots === undefined ? (
+                          "Not customized"
+                        ) : (
+                          <>
+                            <Pluralize
+                              count={item.visibleSlots.length}
+                              singular={"field"}
+                              showCount
+                            />{" "}
+                            selected
+                          </>
+                        )}
+                      </p>
+                    </IonLabel>
+                  </IonItem>
+                ))}
+              </IonList>
+            </>
+          )}
 
           <SampleList
             submission={submission.data}
