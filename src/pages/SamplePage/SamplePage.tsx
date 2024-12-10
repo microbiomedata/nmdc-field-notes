@@ -24,7 +24,12 @@ import {
   getSubmissionSample,
   getSubmissionSamplesForTemplate,
 } from "../../utils";
-import {SampleData, SampleDataValue, TemplateName, TEMPLATES} from "../../api";
+import {
+  SampleData,
+  SampleDataValue,
+  TemplateName,
+  TEMPLATES,
+} from "../../api";
 import SampleView from "../../components/SampleView/SampleView";
 import { SlotDefinition, SlotDefinitionName } from "../../linkml-metamodel";
 import SampleSlotEditModal from "../../components/SampleSlotEditModal/SampleSlotEditModal";
