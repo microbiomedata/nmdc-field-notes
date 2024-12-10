@@ -16,7 +16,7 @@ import {
 import paths from "../../paths";
 import { search as searchIcon } from "ionicons/icons";
 import NoneOr from "../NoneOr/NoneOr";
-import { IndexedSampleData, SubmissionMetadata } from "../../api";
+import { IndexedSampleData, SubmissionMetadata, TemplateName } from "../../api";
 import { IonSearchbarCustomEvent } from "@ionic/core/dist/types/components";
 import { useMiniSearch } from "react-minisearch";
 import { getSubmissionTemplates, getSubmissionSamples } from "../../utils";
@@ -38,7 +38,7 @@ const steps: Array<StepType> = [
 interface SampleListProps {
   submission: SubmissionMetadata;
   collapsedSize?: number;
-  onSampleCreate: (template: string) => void;
+  onSampleCreate: (template: TemplateName) => void;
   sampleCreateFailureMessage?: string;
 }
 
@@ -89,12 +89,13 @@ const SampleList: React.FC<SampleListProps> = ({
     // the list of samples and in the search index.
     let flatIndex = 0;
     Object.entries(samplesMap).forEach(([template, samples]) => {
+      const templateName = template as TemplateName;
       samples.forEach((sample, index) => {
         flattenedSamples.push({
           ...sample,
           _flatIndex: flatIndex++,
           _templateIndex: index,
-          _template: template,
+          _template: templateName,
         });
       });
     });

@@ -16,6 +16,7 @@ import SampleList from "../SampleList/SampleList";
 import {
   getSubmissionSamples,
   getSubmissionSamplesForTemplate,
+  getSubmissionTemplates,
 } from "../../utils";
 import { produce } from "immer";
 import paths from "../../paths";
@@ -54,18 +55,18 @@ const StudyView: React.FC<StudyViewProps> = ({
   const templateVisibleSlots = useMemo(() => {
     const fieldVisibilityInfo: TemplateVisibleSlots[] = [];
     if (submission.data) {
-      const packageName = submission.data.metadata_submission.packageName;
-      if (packageName !== "") {
-        const template = TEMPLATES[packageName];
+      const templates = getSubmissionTemplates(submission.data);
+      templates.forEach((templateName) => {
+        const template = TEMPLATES[templateName];
         fieldVisibilityInfo.push({
-          template: packageName,
+          template: templateName,
           templateDisplay: template.displayName,
           visibleSlots:
             submission.data.field_notes_metadata?.fieldVisibility?.[
-              packageName
+              templateName
             ],
         });
-      }
+      });
     }
     return fieldVisibilityInfo;
   }, [submission.data]);
@@ -76,7 +77,7 @@ const StudyView: React.FC<StudyViewProps> = ({
     }
   }, [openSlotSelectorModalOnEnter, templateVisibleSlots]);
 
-  const handleSampleCreate = async (template: string) => {
+  const handleSampleCreate = async (template: TemplateName) => {
     if (!submission.data) {
       return;
     }
@@ -93,7 +94,12 @@ const StudyView: React.FC<StudyViewProps> = ({
       const samples = getSubmissionSamples(draft, {
         createSampleDataFieldIfMissing: true,
       });
-      samples[template].push({});
+      const templateSamples = samples[template];
+      if (!templateSamples) {
+        samples[template] = [{}];
+      } else {
+        templateSamples.push({});
+      }
     });
     updateMutation.mutate(updatedSubmission, {
       onSuccess: (result) => {

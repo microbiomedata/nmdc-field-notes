@@ -1,6 +1,6 @@
 import React from "react";
 import { SampleData, SubmissionMetadata, TemplateName, TEMPLATES } from "./api";
-import { SchemaDefinition, SlotDefinition } from "./linkml-metamodel";
+import { SlotDefinition } from "./linkml-metamodel";
 
 /**
  * Get the templates associated with a submission.
@@ -19,7 +19,11 @@ export function getSubmissionTemplates(
   }
   const { packageName } = submission.metadata_submission;
   if (typeof packageName === "string") {
-    return [packageName];
+    if (packageName === "") {
+      return [];
+    } else {
+      return [packageName];
+    }
   }
   return packageName;
 }
@@ -41,11 +45,11 @@ export interface GetSubmissionSamplesOptions {
 export function getSubmissionSamples(
   submission?: SubmissionMetadata,
   options: GetSubmissionSamplesOptions = {},
-): Record<TemplateName, SampleData[]> {
+): Partial<Record<TemplateName, SampleData[]>> {
   if (!submission) {
     return {};
   }
-  const samples: Record<TemplateName, SampleData[]> = {};
+  const samples: Partial<Record<TemplateName, SampleData[]>> = {};
   const templates = getSubmissionTemplates(submission);
   templates.forEach((template) => {
     const sampleDataSlot = TEMPLATES[template]?.sampleDataSlot;
@@ -103,10 +107,11 @@ export function getSubmissionSamplesForTemplate(
     return [];
   }
   const samplesByTemplate = getSubmissionSamples(submission);
-  if (samplesByTemplate[template] === undefined) {
+  const templateSamples = samplesByTemplate[template];
+  if (templateSamples === undefined) {
     return [];
   }
-  return samplesByTemplate[template];
+  return templateSamples;
 }
 
 /**
@@ -126,7 +131,11 @@ export function getSubmissionSample(
   if (!submission || template === undefined || index === undefined) {
     return undefined;
   }
-  return getSubmissionSamples(submission)[template][index];
+  const samplesForTemplate = getSubmissionSamples(submission)[template];
+  if (samplesForTemplate === undefined) {
+    return undefined;
+  }
+  return samplesForTemplate[index];
 }
 
 export interface SlotGroup {

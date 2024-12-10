@@ -11,7 +11,7 @@ import {
 } from "@ionic/react";
 import RequiredMark from "../RequiredMark/RequiredMark";
 import SectionHeader from "../SectionHeader/SectionHeader";
-import { SubmissionMetadataCreate, TEMPLATES } from "../../api";
+import { SubmissionMetadataCreate, TemplateName, TEMPLATES } from "../../api";
 import { Controller, useForm } from "react-hook-form";
 import { useStore } from "../../Store";
 import { StepType } from "@reactour/tour";
@@ -283,7 +283,10 @@ const StudyForm: React.FC<StudyFormProps> = ({
                       "metadata_submission.templates",
                       newPackageName.concat(
                         templates.filter(
-                          (template) => !previousPackageName.includes(template),
+                          (template) =>
+                            !previousPackageName.includes(
+                              template as TemplateName,
+                            ),
                         ),
                       ),
                     );
