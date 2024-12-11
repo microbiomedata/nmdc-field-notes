@@ -71,7 +71,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
 
   useEffect(() => {
     // If the slot selector is not already open, iterate through the study's templates. If one of
-    // them has no visible slot information (this could be because it is a brand-new study or
+    // them has no slot visibility information (this could be because it is a brand-new study or
     // because it was created via the submission portal and this is the first time opening it in the
     // app), open the slot selector for that template.
     if (
