@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSubmission } from "../../queries";
 import {
   IonItem,
@@ -8,12 +8,15 @@ import {
   IonRefresherContent,
   RefresherEventDetail,
   useIonRouter,
-  useIonViewDidEnter,
 } from "@ionic/react";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import NoneOr from "../NoneOr/NoneOr";
 import SampleList from "../SampleList/SampleList";
-import { getSubmissionSamples } from "../../utils";
+import {
+  getSubmissionSamples,
+  getSubmissionSamplesForTemplate,
+  getSubmissionTemplates,
+} from "../../utils";
 import { produce } from "immer";
 import paths from "../../paths";
 import { useNetworkStatus } from "../../NetworkStatus";
@@ -31,13 +34,9 @@ interface TemplateVisibleSlots {
 
 interface StudyViewProps {
   submissionId: string;
-  openSlotSelectorModalOnEnter?: boolean;
 }
 
-const StudyView: React.FC<StudyViewProps> = ({
-  submissionId,
-  openSlotSelectorModalOnEnter = false,
-}) => {
+const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
   const router = useIonRouter();
   const {
     query: submission,
@@ -51,29 +50,45 @@ const StudyView: React.FC<StudyViewProps> = ({
   const templateVisibleSlots = useMemo(() => {
     const fieldVisibilityInfo: TemplateVisibleSlots[] = [];
     if (submission.data) {
-      const packageName = submission.data.metadata_submission.packageName;
-      if (packageName !== "") {
-        const template = TEMPLATES[packageName];
+      if (!("field_notes_metadata" in submission.data)) {
+        return undefined;
+      }
+      const templates = getSubmissionTemplates(submission.data);
+      templates.forEach((templateName) => {
+        const template = TEMPLATES[templateName];
         fieldVisibilityInfo.push({
-          template: packageName,
+          template: templateName,
           templateDisplay: template.displayName,
           visibleSlots:
             submission.data.field_notes_metadata?.fieldVisibility?.[
-              packageName
+              templateName
             ],
         });
-      }
+      });
     }
     return fieldVisibilityInfo;
   }, [submission.data]);
 
-  useIonViewDidEnter(() => {
-    if (openSlotSelectorModalOnEnter) {
-      setModalTemplateVisibleSlots(templateVisibleSlots[0]);
+  useEffect(() => {
+    // If the slot selector is not already open, iterate through the study's templates. If one of
+    // them has no slot visibility information (this could be because it is a brand-new study or
+    // because it was created via the submission portal and this is the first time opening it in the
+    // app), open the slot selector for that template.
+    if (
+      modalTemplateVisibleSlots !== undefined ||
+      templateVisibleSlots === undefined
+    ) {
+      return;
     }
-  }, [openSlotSelectorModalOnEnter, templateVisibleSlots]);
+    for (const item of templateVisibleSlots) {
+      if (item.visibleSlots === undefined) {
+        setModalTemplateVisibleSlots(item);
+        return;
+      }
+    }
+  }, [modalTemplateVisibleSlots, templateVisibleSlots]);
 
-  const handleSampleCreate = async () => {
+  const handleSampleCreate = async (template: TemplateName) => {
     if (!submission.data) {
       return;
     }
@@ -90,13 +105,18 @@ const StudyView: React.FC<StudyViewProps> = ({
       const samples = getSubmissionSamples(draft, {
         createSampleDataFieldIfMissing: true,
       });
-      samples.push({});
+      const templateSamples = samples[template];
+      if (!templateSamples) {
+        samples[template] = [{}];
+      } else {
+        templateSamples.push({});
+      }
     });
     updateMutation.mutate(updatedSubmission, {
       onSuccess: (result) => {
-        const samples = getSubmissionSamples(result);
+        const samples = getSubmissionSamplesForTemplate(result, template);
         router.push(
-          paths.sample(submissionId, samples.length - 1),
+          paths.sample(submissionId, template, samples.length - 1),
           "forward",
           "push",
         );
@@ -213,33 +233,37 @@ const StudyView: React.FC<StudyViewProps> = ({
             </IonItem>
           </IonList>
 
-          <SectionHeader>Templates</SectionHeader>
-          <IonList className="ion-padding-bottom">
-            {templateVisibleSlots.map((item) => (
-              <IonItem
-                key={item.template}
-                onClick={() => setModalTemplateVisibleSlots(item)}
-              >
-                <IonLabel>
-                  <h3>{item.templateDisplay}</h3>
-                  <p>
-                    {item.visibleSlots === undefined ? (
-                      "Not customized"
-                    ) : (
-                      <>
-                        <Pluralize
-                          count={item.visibleSlots.length}
-                          singular={"field"}
-                          showCount
-                        />{" "}
-                        selected
-                      </>
-                    )}
-                  </p>
-                </IonLabel>
-              </IonItem>
-            ))}
-          </IonList>
+          {templateVisibleSlots !== undefined && (
+            <>
+              <SectionHeader>Templates</SectionHeader>
+              <IonList className="ion-padding-bottom">
+                {templateVisibleSlots.map((item) => (
+                  <IonItem
+                    key={item.template}
+                    onClick={() => setModalTemplateVisibleSlots(item)}
+                  >
+                    <IonLabel>
+                      <h3>{item.templateDisplay}</h3>
+                      <p>
+                        {item.visibleSlots === undefined ? (
+                          "Not customized"
+                        ) : (
+                          <>
+                            <Pluralize
+                              count={item.visibleSlots.length}
+                              singular={"field"}
+                              showCount
+                            />{" "}
+                            selected
+                          </>
+                        )}
+                      </p>
+                    </IonLabel>
+                  </IonItem>
+                ))}
+              </IonList>
+            </>
+          )}
 
           <SampleList
             submission={submission.data}

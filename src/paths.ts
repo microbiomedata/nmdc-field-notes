@@ -14,8 +14,11 @@ const paths = {
   studyCreate: `${STUDY}/create`,
   studyView: (submissionId: string) => `${STUDY}/${submissionId}`,
   studyEdit: (submissionId: string) => `${STUDY}/${submissionId}/edit`,
-  sample: (submissionId: string, sampleIndex: string | number) =>
-    `${STUDY}/${submissionId}/sample/${sampleIndex}`,
+  sample: (
+    submissionId: string,
+    template: string,
+    sampleIndex: string | number,
+  ) => `${STUDY}/${submissionId}/sample/${template}/${sampleIndex}`,
   guide: `${IN}/guide`,
   settings: `${IN}${SETTINGS}`,
 };

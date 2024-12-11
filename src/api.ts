@@ -82,7 +82,9 @@ export interface SampleData {
 }
 
 export interface IndexedSampleData extends SampleData {
-  _index: number;
+  _flatIndex: number;
+  _templateIndex: number;
+  _template: TemplateName;
 }
 
 // This should eventually come from the schema itself
@@ -154,7 +156,7 @@ export type TemplateName = keyof typeof TEMPLATES;
 export type SlotName = string;
 
 export interface MetadataSubmission {
-  packageName: TemplateName | "";
+  packageName: TemplateName | TemplateName[] | "";
   contextForm: ContextForm;
   addressForm: AddressForm;
   templates: string[];

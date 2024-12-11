@@ -68,7 +68,7 @@ export const initMetadataSubmission = (): MetadataSubmission => ({
   addressForm: initAddressForm(),
   contextForm: initContextForm(),
   multiOmicsForm: initMultiOmicsForm(),
-  packageName: "",
+  packageName: "", // TODO: CHANGE DEFAULT VALUE TO EMPTY ARRAY WHEN BACKEND IS UPDATED
   sampleData: {},
   studyForm: initStudyForm(),
   templates: [],
