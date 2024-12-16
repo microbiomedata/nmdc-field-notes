@@ -112,6 +112,18 @@ By default, Ionic will use the web browser's user agent to determine whether to 
 
 > The `md` stands for [Material Design](https://material.google.com).
 
+#### Hiding the ReactQueryDevtools icon
+
+When running the app in _development_ mode, a colorful icon will be visible in the lower right corner of the screen. Clicking on that icon will reveal a devtools panel specific to the [React Query/TanStack Query](https://tanstack.com/query/v4/docs/framework/react/devtools) library the app was built with.
+
+In case you want to temporarily hide that icon from the UI (e.g. when taking screenshots for release notes), you can do so by either:
+
+- Temporarily commenting out the `<ReactQueryDevtools initialIsOpen={false} />` element (in `src/QueryClientProvider.tsx`); or
+- Temporarily running the app in _production_ mode:
+  ```shell
+  NODE_ENV=production npm run dev
+  ```
+
 ### Run linter
 
 Run the linter.
