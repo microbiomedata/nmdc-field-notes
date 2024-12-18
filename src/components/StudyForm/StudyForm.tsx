@@ -34,8 +34,8 @@ const steps: Array<StepType> = [
     selector: `[data-tour="${TourId.StudyForm}-2"]`,
     content: (
       <>
-        Here, you can select a template that reflects the kind of environment
-        you&apos;ll be collecting samples from.
+        Here, you can select the templates that reflect the kinds of
+        environments you&apos;ll be collecting samples from.
       </>
     ),
   },
@@ -296,7 +296,7 @@ const StudyForm: React.FC<StudyFormProps> = ({
                 {...field}
               >
                 <div slot="label">
-                  Template
+                  Templates
                   <RequiredMark />
                 </div>
                 {Object.entries(TEMPLATES).map(([key, template]) => (

@@ -91,11 +91,13 @@
 :root {
   --ion-background-color: #ffffff;
   --ion-background-color-rgb: rgb(255, 255, 255);
+  --ion-item-background: var(--ion-background-color);
 }
 
 :root.ion-palette-dark {
   --ion-background-color: #000000;
   --ion-background-color-rgb: rgb(0, 0, 0);
+  --ion-item-background: var(--ion-background-color);
 }
 
 /**
