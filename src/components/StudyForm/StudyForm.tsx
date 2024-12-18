@@ -34,7 +34,7 @@ const steps: Array<StepType> = [
     selector: `[data-tour="${TourId.StudyForm}-2"]`,
     content: (
       <>
-        Here, you can select the templates that reflects the kind of
+        Here, you can select the templates that reflect the kinds of
         environments you&apos;ll be collecting samples from.
       </>
     ),
