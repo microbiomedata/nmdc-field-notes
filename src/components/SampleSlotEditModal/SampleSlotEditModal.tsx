@@ -318,9 +318,14 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
               expand="block"
               onClick={async () => {
                 const position = await Geolocation.getCurrentPosition();
-                handleValueChange(
-                  position.coords.latitude + " " + position.coords.longitude,
-                );
+                // The submission schema allows up to 8 decimal places for lat/lon. The 8th decimal
+                // place is about 1 mm of precision. There's pretty much no chance that a user's
+                // device can provide that level of precision. The 6th decimal place is about 10 cm
+                // of precision. Even that is unlikely to be accurate, but it's at least plausible.
+                const decimalDigits = 6;
+                const lat = position.coords.latitude.toFixed(decimalDigits);
+                const lon = position.coords.longitude.toFixed(decimalDigits);
+                handleValueChange(lat + " " + lon);
               }}
             >
               Use GPS location
