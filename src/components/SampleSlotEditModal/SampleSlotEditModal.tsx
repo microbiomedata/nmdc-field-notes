@@ -18,6 +18,7 @@ import {
   IonRow,
   IonSelect,
   IonSelectOption,
+  IonSpinner,
   IonText,
   IonTextarea,
 } from "@ionic/react";
@@ -166,6 +167,11 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
   const modal = useRef<HTMLIonModalElement>(null);
   const [value, setValue] = useState<SampleDataValue>(defaultValue);
 
+  // State tracking for values that can be populated automatically but in an async manner (e.g.
+  // getting latitude and longitude coordinates from the device's GPS).
+  const [autoValueLoading, setAutoValueLoading] = useState(false);
+  const [autoValueError, setAutoValueError] = useState<string | null>(null);
+
   // Re-apply the default value when the slot changes.
   // See: https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
   const [previousSlot, setPreviousSlot] = useState<SlotDefinition | null>(slot);
@@ -225,7 +231,13 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
         updates[field] = null;
       }
     }
+    setAutoValueError(null);
     onSave(updates);
+  };
+
+  const handleModalDismiss = () => {
+    setAutoValueError(null);
+    onCancel();
   };
 
   return (
@@ -235,7 +247,7 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
       breakpoints={[0, 1]}
       initialBreakpoint={1}
       isOpen={slot !== null}
-      onIonModalDidDismiss={onCancel}
+      onIonModalDidDismiss={handleModalDismiss}
     >
       {errorBanner}
       {slot && (
@@ -283,6 +295,11 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
               )}
             </div>
           </div>
+          {autoValueError && (
+            <IonItem className={styles.inputMessage} lines="none">
+              <IonLabel color="danger">{autoValueError}</IonLabel>
+            </IonItem>
+          )}
           {selectState.warning && (
             <IonItem className={styles.inputMessage} lines="none">
               <IonText color="medium">{selectState.warning}</IonText>
@@ -315,14 +332,33 @@ const SampleSlotEditModal: React.FC<SampleSlotEditModalProps> = ({
           {slot.name === "lat_lon" && (
             <IonButton
               className="ion-padding-vertical"
+              disabled={autoValueLoading}
               expand="block"
               onClick={async () => {
-                const position = await Geolocation.getCurrentPosition();
-                handleValueChange(
-                  position.coords.latitude + " " + position.coords.longitude,
-                );
+                setAutoValueError(null);
+                setAutoValueLoading(true);
+                try {
+                  const position = await Geolocation.getCurrentPosition({
+                    enableHighAccuracy: true,
+                    timeout: 20000,
+                  });
+                  // The submission schema allows up to 8 decimal places for lat/lon. The 8th decimal
+                  // place is about 1 mm of precision. There's pretty much no chance that a user's
+                  // device can provide that level of precision. The 6th decimal place is about 10 cm
+                  // of precision. Even that is unlikely to be accurate, but it's at least plausible.
+                  const decimalDigits = 6;
+                  const lat = position.coords.latitude.toFixed(decimalDigits);
+                  const lon = position.coords.longitude.toFixed(decimalDigits);
+                  handleValueChange(lat + " " + lon);
+                  setAutoValueError(null);
+                } catch (e) {
+                  setAutoValueError("Unable to get GPS location");
+                } finally {
+                  setAutoValueLoading(false);
+                }
               }}
             >
+              {autoValueLoading && <IonSpinner className="ion-margin-end" />}
               Use GPS location
             </IonButton>
           )}
