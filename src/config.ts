@@ -18,6 +18,7 @@ interface Config {
   NMDC_SERVER_API_URL: string;
   NMDC_SUBMISSION_SCHEMA_DOCS_BASE_URL: string;
   SHOW_DEV_SITE_WARNING: boolean;
+  ENABLE_FIREBASE_ANALYTICS: boolean;
   SUPPORT_EMAIL: string;
 }
 
@@ -61,6 +62,12 @@ const config: Config = {
    * Whether to show a warning that the user is on a development site.
    */
   SHOW_DEV_SITE_WARNING: env.VITE_SHOW_DEV_SITE_WARNING === "true",
+
+  /**
+   * Whether to enable Firebase Analytics. This should generally be `false` for local environments
+   * so that we don't accidentally send analytics events during development.
+   */
+  ENABLE_FIREBASE_ANALYTICS: env.VITE_ENABLE_FIREBASE_ANALYTICS === "true",
 
   /**
    * Support email address.

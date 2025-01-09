@@ -26,6 +26,7 @@
     "rename.apk": "cp android/app/release/app-release.apk org.microbiomedata.fieldnotes-v$npm_package_version-build.$npm_package_config_buildNumber.apk"
   },
   "dependencies": {
+    "@capacitor-community/firebase-analytics": "^6.0.0",
     "@capacitor/android": "^6.0.0",
     "@capacitor/app": "^6.0.0",
     "@capacitor/browser": "^6.0.0",
