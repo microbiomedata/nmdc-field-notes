@@ -18,11 +18,13 @@ import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
 import RootPage from "./pages/RootPage/RootPage";
 import paths, { IN } from "./paths";
+import AnalyticsScreenViewListener from "./AnalyticsScreenViewListener";
 
 const Router: React.FC = () => {
   return (
     <IonReactRouter>
       <AppUrlListener />
+      <AnalyticsScreenViewListener />
       <IonRouterOutlet>
         <Route exact path={paths.token}>
           <TokenPage />
