@@ -5,10 +5,15 @@ PODS:
     - Capacitor
   - CapacitorBrowser (6.0.0):
     - Capacitor
-  - CapacitorCommunityFirebaseAnalytics (6.0.0):
-    - Capacitor
-    - FirebaseAnalytics
   - CapacitorCordova (6.0.0)
+  - CapacitorFirebaseAnalytics (6.3.1):
+    - Capacitor
+    - CapacitorFirebaseAnalytics/Lite (= 6.3.1)
+  - CapacitorFirebaseAnalytics/Analytics (6.3.1):
+    - Capacitor
+    - FirebaseAnalytics (~> 11.0)
+  - CapacitorFirebaseAnalytics/Lite (6.3.1):
+    - Capacitor
   - CapacitorGeolocation (6.0.0):
     - Capacitor
   - CapacitorHaptics (6.0.0):
@@ -108,8 +113,9 @@ DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorBrowser (from `../../node_modules/@capacitor/browser`)"
-  - "CapacitorCommunityFirebaseAnalytics (from `../../node_modules/@capacitor-community/firebase-analytics`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorFirebaseAnalytics (from `../../node_modules/@capacitor-firebase/analytics`)"
+  - "CapacitorFirebaseAnalytics/Analytics (from `../../node_modules/@capacitor-firebase/analytics`)"
   - "CapacitorGeolocation (from `../../node_modules/@capacitor/geolocation`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
@@ -135,10 +141,10 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/app"
   CapacitorBrowser:
     :path: "../../node_modules/@capacitor/browser"
-  CapacitorCommunityFirebaseAnalytics:
-    :path: "../../node_modules/@capacitor-community/firebase-analytics"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorFirebaseAnalytics:
+    :path: "../../node_modules/@capacitor-firebase/analytics"
   CapacitorGeolocation:
     :path: "../../node_modules/@capacitor/geolocation"
   CapacitorHaptics:
@@ -156,8 +162,8 @@ SPEC CHECKSUMS:
   Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
   CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
   CapacitorBrowser: 7e1e2cdbb3e372f09f0bad0c4c21a6d187b679ad
-  CapacitorCommunityFirebaseAnalytics: dd31faa0a3e6f4d00624080ee5b9439b484cd092
   CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
+  CapacitorFirebaseAnalytics: 8205f8274204183618e5be246b3d9cafe7429c88
   CapacitorGeolocation: 1f12bbe372b65116e851bd8e3a94cf0ef9bacebb
   CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
   CapacitorKeyboard: deacbd09d8d1029c3681197fb05d206b721d5f73
@@ -173,6 +179,6 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: da952ae44df34327223b9454f144f00d02f837c1
+PODFILE CHECKSUM: db4461176f8d3692474c3036ee706405cb6a9979
 
 COCOAPODS: 1.15.2

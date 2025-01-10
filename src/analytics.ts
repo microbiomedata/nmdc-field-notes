@@ -1,5 +1,6 @@
 import { Capacitor } from "@capacitor/core";
-import { FirebaseAnalytics } from "@capacitor-community/firebase-analytics";
+import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
+import { initializeApp } from "firebase/app";
 import config from "./config";
 
 const firebaseConfig = {
@@ -16,12 +17,13 @@ const firebaseConfig = {
  * Initialize Firebase and set the collection enabled status based on the app's configuration.
  */
 export async function initializeFirebase() {
-  // This step is only necessary for web platforms. Initialization is automatic on native platforms.
+  // This step is only necessary for the web platform. Initialization happens automatically on
+  // native platforms.
   if (Capacitor.getPlatform() === "web") {
-    await FirebaseAnalytics.initializeFirebase(firebaseConfig);
+    initializeApp(firebaseConfig);
   }
 
-  await FirebaseAnalytics.setCollectionEnabled({
+  await FirebaseAnalytics.setEnabled({
     enabled: config.ENABLE_FIREBASE_ANALYTICS,
   });
 }
@@ -42,11 +44,6 @@ export async function initializeFirebase() {
  *
  * @param path
  */
-export async function logScreenViewEvent(path: string) {
-  await FirebaseAnalytics.logEvent({
-    name: "screen_view",
-    params: {
-      firebase_screen: path,
-    },
-  });
+export async function setAnalyticsCurrentScreen(path: string) {
+  await FirebaseAnalytics.setCurrentScreen({ screenName: path });
 }
