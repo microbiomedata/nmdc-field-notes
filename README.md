@@ -179,13 +179,37 @@ If either (a) this is your first time running the simulator, or (b) you have add
 ionic capacitor sync ios
 ```
 
-Start the simulator with live reloading enabled.
+Start the simulator with live reloading enabled:
 
 ```shell
-ionic cap run ios --livereload --external
+npm run dev.ios
 ```
 
 The simulator may take a few minutes to start. Eventually, the console will say "`Deploying App.app to <uuid>`" and the simulator will appear.
+
+### (Optional) Run Android simulator
+
+If you haven't already, download and install Android Studio and an Android SDK following the instructions in the [Capacitor documentation](https://capacitorjs.com/docs/getting-started/environment-setup#android-requirements).
+
+If either (a) this is your first time running the simulator, or (b) you have added a Capacitor plugin since the last time you ran the simulator; run:
+
+```shell
+ionic capacitor sync android
+```
+
+Start the simulator with live reloading enabled:
+
+```shell
+npm run dev.android
+```
+
+If you are using a [local](#using-a-local-nmdc-server) `nmdc-server` instance, you must forward the port to the Android emulator. You can do this by running the following command **after** starting the Android emulator:
+
+```shell
+# Forward port 8000 on the Android emulator to port 8000 on the host machine.
+# Change the port number if your local nmdc-server is running on a different port.
+adb reverse tcp:8000 tcp:8000
+```
 
 ### Format code
 
