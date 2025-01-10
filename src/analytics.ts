@@ -47,3 +47,19 @@ export async function initializeFirebase() {
 export async function setAnalyticsCurrentScreen(path: string) {
   await FirebaseAnalytics.setCurrentScreen({ screenName: path });
 }
+
+/**
+ * Set or clear the user ID associated with future analytics events.
+ *
+ * Note that when viewing events in the Firebase DebugView, you will see the user ID being set on,
+ * for example, logging in. However, you will not see the user ID being cleared when logging out.
+ * This seems to be a bug with the DebugView itself and now how the event data is recorded according
+ * to these issues:
+ * - https://github.com/firebase/firebase-android-sdk/issues/3602
+ * - https://github.com/firebase/firebase-ios-sdk/issues/4856
+ *
+ * @param userId
+ */
+export async function setAnalyticsUserId(userId: string | null) {
+  await FirebaseAnalytics.setUserId({ userId });
+}

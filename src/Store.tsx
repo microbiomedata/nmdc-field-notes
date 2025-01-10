@@ -14,6 +14,7 @@ import {
 } from "./theme/colorPalette";
 import { Network } from "@capacitor/network";
 import { TourId } from "./components/AppTourProvider/AppTourProvider";
+import { setAnalyticsUserId } from "./analytics";
 
 enum StorageKey {
   REFRESH_TOKEN = "refreshToken",
@@ -95,6 +96,9 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const userFromStorage = await storage.get(StorageKey.LOGGED_IN_USER);
       if (userFromStorage) {
         setLoggedInUser(userFromStorage);
+        void setAnalyticsUserId(userFromStorage.id);
+      } else {
+        void setAnalyticsUserId(null);
       }
 
       // If persistent storage contains a refresh token, provide it to the API client.
@@ -165,6 +169,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   async function _updateLoggedInUser(storage: Storage | null) {
     const user = await nmdcServerClient.getCurrentUser();
     setLoggedInUser(user);
+    void setAnalyticsUserId(user.id);
     if (storage) {
       await storage.set(StorageKey.LOGGED_IN_USER, user);
     }
@@ -178,6 +183,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
    */
   async function _clearLoggedInUser(storage: Storage | null) {
     setLoggedInUser(null);
+    void setAnalyticsUserId(null);
     if (storage) {
       await storage.remove(StorageKey.LOGGED_IN_USER);
     }
