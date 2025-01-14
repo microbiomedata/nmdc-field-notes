@@ -15,15 +15,18 @@ const firebaseConfig = {
   measurementId: "G-1GV5DB2T8Y",
 };
 
+let initialized = false;
+
 /**
  * Initialize Firebase and set the collection enabled status based on the app's configuration.
  */
 export async function initializeFirebase() {
   // This step is only necessary for the web platform. Initialization happens automatically on
   // native platforms.
-  if (Capacitor.getPlatform() === "web") {
+  if (!initialized && Capacitor.getPlatform() === "web") {
     initializeApp(firebaseConfig);
   }
+  initialized = true;
 
   await FirebaseAnalytics.setEnabled({
     enabled: config.ENABLE_FIREBASE_ANALYTICS,
@@ -47,6 +50,9 @@ export async function initializeFirebase() {
  * @param path
  */
 export async function setAnalyticsCurrentScreen(path: string) {
+  if (!initialized) {
+    return;
+  }
   await FirebaseAnalytics.setCurrentScreen({ screenName: path });
 }
 
@@ -63,5 +69,8 @@ export async function setAnalyticsCurrentScreen(path: string) {
  * @param userId
  */
 export async function setAnalyticsUserId(userId: string | null) {
+  if (!initialized) {
+    return;
+  }
   await FirebaseAnalytics.setUserId({ userId });
 }
