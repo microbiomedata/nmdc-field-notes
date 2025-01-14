@@ -25,6 +25,10 @@ switch (process.env.NODE_ENV) {
     // PRODUCTION CONFIGURATION
     config = {
       ...baseConfig,
+      android: {
+        ...baseConfig.android,
+        flavor: "prod",
+      },
       ios: {
         ...baseConfig.ios,
         scheme: "App_Prod",
@@ -38,6 +42,10 @@ switch (process.env.NODE_ENV) {
       ...baseConfig,
       appId: baseConfig.appId + ".dev",
       appName: baseConfig.appName + " DEV",
+      android: {
+        ...baseConfig.android,
+        flavor: "dev",
+      },
       ios: {
         ...baseConfig.ios,
         scheme: "App",
