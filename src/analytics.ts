@@ -3,14 +3,16 @@ import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
 import { initializeApp } from "firebase/app";
 import config from "./config";
 
+// This is the config of the `nmdc-field-notes-dev` Firebase project. The production project config
+// is intentionally not included here. Traffic to any web version should be considered dev usage.
 const firebaseConfig = {
-  apiKey: "AIzaSyBbDrRDc3SV9W7ISMUl4vCzcYEh5rTXYFg",
-  authDomain: "nmdc-field-notes.firebaseapp.com",
-  projectId: "nmdc-field-notes",
-  storageBucket: "nmdc-field-notes.firebasestorage.app",
-  messagingSenderId: "619629267623",
-  appId: "1:619629267623:web:6a89e4b6f2082c9ffa2982",
-  measurementId: "G-2GJ02HE6L2",
+  apiKey: "AIzaSyBWBqL0HTO2kthzkIY9Cb29WBuZtiGagmU",
+  authDomain: "nmdc-field-notes-dev.firebaseapp.com",
+  projectId: "nmdc-field-notes-dev",
+  storageBucket: "nmdc-field-notes-dev.firebasestorage.app",
+  messagingSenderId: "1064768027275",
+  appId: "1:1064768027275:web:29b1100febfbaf3c85b28e",
+  measurementId: "G-1GV5DB2T8Y",
 };
 
 /**
