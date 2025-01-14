@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,6 +15,8 @@
 		431D15012D36DD3100B0B364 /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		431D15022D36DD3100B0B364 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
 		431D15032D36DD3100B0B364 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
+		438906382D36FA4D003AA239 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 438B82652D36EEA200EC1AE1 /* GoogleService-Info.plist */; };
+		438906392D36FA53003AA239 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 438B82682D36EEA800EC1AE1 /* GoogleService-Info.plist */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
 		504EC30D1FED79650016851F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
@@ -30,6 +32,8 @@
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		431D15082D36DD3100B0B364 /* App_Prod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App_Prod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		431D15092D36DD3100B0B364 /* App_Prod-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "App_Prod-Info.plist"; path = "/Users/PAKalita/Work/nmdc-field-notes/ios/App/App_Prod-Info.plist"; sourceTree = "<absolute>"; };
+		438B82652D36EEA200EC1AE1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		438B82682D36EEA800EC1AE1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -46,28 +50,6 @@
 		F6E9F531EF5EC983C324DC7C /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		43CEE8D32D36E19D0082B211 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"GoogleService-Info.plist",
-			);
-			target = 504EC3031FED79650016851F /* App */;
-		};
-		43CEE8D62D36E1D20082B211 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"GoogleService-Info.plist",
-			);
-			target = 431D14F72D36DD3100B0B364 /* App_Prod */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		43CEE8CF2D36E13D0082B211 /* dev */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (43CEE8D32D36E19D0082B211 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = dev; sourceTree = "<group>"; };
-		43CEE8D02D36E14B0082B211 /* prod */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (43CEE8D62D36E1D20082B211 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = prod; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		431D14FB2D36DD3100B0B364 /* Frameworks */ = {
@@ -99,11 +81,27 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		438B82662D36EEA200EC1AE1 /* dev */ = {
+			isa = PBXGroup;
+			children = (
+				438B82652D36EEA200EC1AE1 /* GoogleService-Info.plist */,
+			);
+			path = dev;
+			sourceTree = SOURCE_ROOT;
+		};
+		438B82692D36EEA800EC1AE1 /* prod */ = {
+			isa = PBXGroup;
+			children = (
+				438B82682D36EEA800EC1AE1 /* GoogleService-Info.plist */,
+			);
+			path = prod;
+			sourceTree = SOURCE_ROOT;
+		};
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
-				43CEE8D02D36E14B0082B211 /* prod */,
-				43CEE8CF2D36E13D0082B211 /* dev */,
+				438B82692D36EEA800EC1AE1 /* prod */,
+				438B82662D36EEA200EC1AE1 /* dev */,
 				504EC3061FED79650016851F /* App */,
 				504EC3051FED79650016851F /* Products */,
 				7F8756D8B27F46E3366F6CEA /* Pods */,
@@ -238,6 +236,7 @@
 				431D15012D36DD3100B0B364 /* capacitor.config.json in Resources */,
 				431D15022D36DD3100B0B364 /* Main.storyboard in Resources */,
 				431D15032D36DD3100B0B364 /* config.xml in Resources */,
+				438906392D36FA53003AA239 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,6 +250,7 @@
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
+				438906382D36FA4D003AA239 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,10 +376,7 @@
 				INFOPLIST_FILE = "App_Prod-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = org.microbiomedata.fieldnotes;
@@ -402,10 +399,7 @@
 				INFOPLIST_FILE = "App_Prod-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.microbiomedata.fieldnotes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -517,8 +511,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -535,10 +528,7 @@
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = org.microbiomedata.fieldnotes.dev;
@@ -561,10 +551,7 @@
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.microbiomedata.fieldnotes.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
