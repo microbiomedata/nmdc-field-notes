@@ -23,7 +23,7 @@
     "build-storybook": "storybook build",
     "prerelease": "vitest run && npm run build.native",
     "release": "./scripts/release.sh",
-    "rename.apk": "cp android/app/release/app-release.apk org.microbiomedata.fieldnotes-v$npm_package_version-build.$npm_package_config_buildNumber.apk"
+    "rename.apk": "cp android/app/prod/release/app-prod-release.apk org.microbiomedata.fieldnotes-v$npm_package_version-build.$npm_package_config_buildNumber.apk"
   },
   "dependencies": {
     "@capacitor-firebase/analytics": "^6.3.1",

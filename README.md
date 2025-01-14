@@ -359,10 +359,12 @@ Creating a release involves three steps:
       ```shell
       ionic capacitor open ios
       ```
-   2. "[Create an archive of the app](https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases#Create-an-archive-of-your-app)" by clicking (in the toolbar) `Product` > `Archive`
-   3. "[Select the method of distribution](https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases#Select-a-method-for-distribution)" to be TestFlight & App Store
-   4. Click the "Validate App" button to validate the build with respect to App Store Connect
-   5. Click the "Distribute App" button to upload the build to App Store Connect
+   2. Select the `App_Prod` scheme by clicking (in the toolbar) `Product` > `Scheme` > `App_Prod`.
+   3. "[Create an archive of the app](https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases#Create-an-archive-of-your-app)" by clicking (in the toolbar) `Product` > `Archive`
+   4. "[Select the method of distribution](https://developer.apple.com/documentation/xcode/distributing-your-app-for-beta-testing-and-releases#Select-a-method-for-distribution)" to be TestFlight & App Store
+   5. Click the "Validate App" button to validate the build with respect to App Store Connect
+   6. Click the "Distribute App" button to upload the build to App Store Connect
+   7. Select the `App` scheme by clicking (in the toolbar) `Product` > `Scheme` > `App` (to return to the development scheme).
 2. Distribute the iOS build via TestFlight:
    1. Log in to [App Store Connect](https://appstoreconnect.apple.com/)
    2. Go to `Apps` > `NMDC Field Notes` > `TestFlight`
