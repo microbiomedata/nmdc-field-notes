@@ -8,8 +8,8 @@
   "type": "module",
   "scripts": {
     "dev": "ionic serve --host=127.0.0.1 --port=8100 --no-open",
-    "dev.android": "ionic capacitor run android --livereload --external",
-    "dev.ios": "ionic capacitor run ios --livereload",
+    "dev.android": "ionic capacitor run android --livereload --address 127.0.0.1",
+    "dev.ios": "ionic capacitor run ios --livereload --address 127.0.0.1",
     "build": "tsc && vite build",
     "build.native": "tsc && ionic capacitor sync",
     "format": "prettier . --write",

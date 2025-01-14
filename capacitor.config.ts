@@ -1,12 +1,11 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
-const config: CapacitorConfig = {
+const baseConfig: CapacitorConfig = {
   appId: "org.microbiomedata.fieldnotes",
   appName: "NMDC Field Notes",
   webDir: "dist",
   server: {
     androidScheme: "https",
-    cleartext: process.env.NODE_ENV !== "production",
   },
   plugins: {
     SplashScreen: {
@@ -17,5 +16,38 @@ const config: CapacitorConfig = {
     },
   },
 };
+
+let config: CapacitorConfig;
+
+switch (process.env.NODE_ENV) {
+  case "production":
+  case "prod":
+    // PRODUCTION CONFIGURATION
+    config = {
+      ...baseConfig,
+      ios: {
+        ...baseConfig.ios,
+        scheme: "App_Prod",
+      },
+    };
+    break;
+
+  default:
+    // DEVELOPMENT CONFIGURATION
+    config = {
+      ...baseConfig,
+      appId: baseConfig.appId + ".dev",
+      appName: baseConfig.appName + " DEV",
+      ios: {
+        ...baseConfig.ios,
+        scheme: "App",
+      },
+      server: {
+        ...baseConfig.server,
+        cleartext: true,
+      },
+    };
+    break;
+}
 
 export default config;
