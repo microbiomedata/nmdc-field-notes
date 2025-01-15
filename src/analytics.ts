@@ -155,6 +155,15 @@ export async function logSampleCreatedEvent(
   });
 }
 
+/**
+ * Log an event indicating that a sample was updated.
+ *
+ * @param submissionId
+ * @param template
+ * @param slotName
+ * @param previousValue
+ * @param value
+ */
 export async function logSampleUpdatedEvent(
   submissionId: string,
   template: string,
@@ -177,6 +186,12 @@ export async function logSampleUpdatedEvent(
   });
 }
 
+/**
+ * Log an event indicating that a sample was deleted.
+ *
+ * @param submissionId
+ * @param template
+ */
 export async function logSampleDeletedEvent(
   submissionId: string,
   template: string,
