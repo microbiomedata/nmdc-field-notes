@@ -203,11 +203,15 @@ Start the simulator with live reloading enabled:
 npm run dev.android
 ```
 
-If you are using a [local](#using-a-local-nmdc-server) `nmdc-server` instance, you must forward the port to the Android emulator. You can do this by running the following command **after** starting the Android emulator:
+Once the simulator is running and the app opens, you may see a message saying "The webpage at http://127.0.0.1:8100 could not be loaded because net::ERR_CONNECTION_REFUSED". In that case run the following while the simulator is running and then relaunch the app within the simulator:
 
 ```shell
-# Forward port 8000 on the Android emulator to port 8000 on the host machine.
-# Change the port number if your local nmdc-server is running on a different port.
+adb reverse tcp:8100 tcp:8100
+```
+
+If you are using a [local](#using-a-local-nmdc-server) `nmdc-server` instance, you must forward the port to the Android simulator. Assuming your local `nmdc-server` is running on port 8000 (the default), run the following after the simulator has started:
+
+```shell
 adb reverse tcp:8000 tcp:8000
 ```
 
