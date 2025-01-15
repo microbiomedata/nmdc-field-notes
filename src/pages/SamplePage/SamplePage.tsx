@@ -41,6 +41,7 @@ import Banner from "../../components/Banner/Banner";
 import { useNetworkStatus } from "../../NetworkStatus";
 import { useIsSubmissionEditable } from "../../useIsSubmissionEditable";
 import MutationErrorBanner from "../../components/MutationErrorBanner/MutationErrorBanner";
+import { logSampleDeletedEvent, logSampleUpdatedEvent } from "../../analytics";
 
 interface SamplePageParams {
   submissionId: string;
@@ -96,6 +97,7 @@ const SamplePage: React.FC = () => {
     if (!modalSlot || !submission.data) {
       return;
     }
+    const previousValue = sample?.[modalSlot.name];
     const updatedSubmission = produce(submission.data, (draft) => {
       const sample = getSubmissionSample(draft, template, sampleIndexInt);
       if (sample) {
@@ -109,7 +111,16 @@ const SamplePage: React.FC = () => {
       }
     });
     updateMutation.mutate(updatedSubmission, {
-      onSuccess: () => setModalSlot(null),
+      onSuccess: () => {
+        void logSampleUpdatedEvent(
+          submissionId,
+          template,
+          modalSlot.name,
+          previousValue,
+          values[modalSlot.name],
+        );
+        setModalSlot(null);
+      },
     });
     if (!isOnline) {
       // If we're offline, the `updateMutation` will stay in a paused state and not fire `onSuccess`
@@ -190,8 +201,10 @@ const SamplePage: React.FC = () => {
               samples.splice(sampleIndexInt, 1);
             });
             updateMutation.mutate(updatedSubmission, {
-              onSuccess: () =>
-                router.push(paths.studyView(submissionId), "back"),
+              onSuccess: () => {
+                void logSampleDeletedEvent(submissionId, template);
+                router.push(paths.studyView(submissionId), "back");
+              },
             });
           },
         },

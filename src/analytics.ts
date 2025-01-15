@@ -2,6 +2,7 @@ import { Capacitor } from "@capacitor/core";
 import { FirebaseAnalytics } from "@capacitor-firebase/analytics";
 import { initializeApp } from "firebase/app";
 import config from "./config";
+import { SampleDataValue } from "./api";
 
 // This is the config of the `nmdc-field-notes-dev` Firebase project. The production project config
 // is intentionally not included here. Traffic to any web version should be considered dev usage.
@@ -92,7 +93,7 @@ export async function logSubmissionCreatedEvent(
     name: "submission_created",
     params: {
       submission_id: submissionId,
-      templates: templates.join(","), // Arrays are not supported as event parameter values
+      templates: templates.toString(), // Arrays are not supported as event parameter values
     },
   });
 }
@@ -128,6 +129,66 @@ export async function logSubmissionDeletedEvent(submissionId: string) {
     name: "submission_deleted",
     params: {
       submission_id: submissionId,
+    },
+  });
+}
+
+/**
+ * Log an event indicating that a sample was created.
+ *
+ * @param submissionId
+ * @param template
+ */
+export async function logSampleCreatedEvent(
+  submissionId: string,
+  template: string,
+) {
+  if (!initialized) {
+    return;
+  }
+  await FirebaseAnalytics.logEvent({
+    name: "sample_created",
+    params: {
+      submission_id: submissionId,
+      template,
+    },
+  });
+}
+
+export async function logSampleUpdatedEvent(
+  submissionId: string,
+  template: string,
+  slotName: string,
+  previousValue: SampleDataValue,
+  value: SampleDataValue,
+) {
+  if (!initialized) {
+    return;
+  }
+  await FirebaseAnalytics.logEvent({
+    name: "sample_updated",
+    params: {
+      submission_id: submissionId,
+      template,
+      slot_name: slotName,
+      previous_value: previousValue == null ? null : previousValue.toString(),
+      value: value == null ? null : value.toString(),
+    },
+  });
+}
+
+export async function logSampleDeletedEvent(
+  submissionId: string,
+  template: string,
+) {
+  if (!initialized) {
+    return;
+  }
+  await FirebaseAnalytics.logEvent({
+    name: "sample_deleted",
+    params: {
+      submission_id: submissionId,
+      template,
     },
   });
 }
