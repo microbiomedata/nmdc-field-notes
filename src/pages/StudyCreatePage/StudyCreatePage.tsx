@@ -18,6 +18,7 @@ import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import { useNetworkStatus } from "../../NetworkStatus";
 import FixedCenteredMessage from "../../components/FixedCenteredMessage/FixedCenteredMessage";
 import useNavigateWithState from "../../useNavigateWithState";
+import { logSubmissionCreatedEvent } from "../../analytics";
 
 const StudyCreatePage: React.FC = () => {
   const navigate = useNavigateWithState();
@@ -34,6 +35,10 @@ const StudyCreatePage: React.FC = () => {
           duration: 3000,
           icon: checkmark,
         });
+        void logSubmissionCreatedEvent(
+          created.id,
+          created.metadata_submission.templates,
+        );
         navigate(paths.studyView(created.id), undefined, true);
       },
     });

@@ -74,3 +74,60 @@ export async function setAnalyticsUserId(userId: string | null) {
   }
   await FirebaseAnalytics.setUserId({ userId });
 }
+
+/**
+ * Log an event indicating that a submission was created.
+ *
+ * @param submissionId
+ * @param templates
+ */
+export async function logSubmissionCreatedEvent(
+  submissionId: string,
+  templates: string[],
+) {
+  if (!initialized) {
+    return;
+  }
+  await FirebaseAnalytics.logEvent({
+    name: "submission_created",
+    params: {
+      submission_id: submissionId,
+      templates: templates.join(","), // Arrays are not supported as event parameter values
+    },
+  });
+}
+
+/**
+ * Log an event indicating that a submission was updated via the study form. This is not logged when
+ * samples are added or removed.
+ *
+ * @param submissionId
+ */
+export async function logSubmissionUpdatedEvent(submissionId: string) {
+  if (!initialized) {
+    return;
+  }
+  await FirebaseAnalytics.logEvent({
+    name: "submission_updated",
+    params: {
+      submission_id: submissionId,
+    },
+  });
+}
+
+/**
+ * Log an event indicating that a submission was deleted.
+ *
+ * @param submissionId
+ */
+export async function logSubmissionDeletedEvent(submissionId: string) {
+  if (!initialized) {
+    return;
+  }
+  await FirebaseAnalytics.logEvent({
+    name: "submission_deleted",
+    params: {
+      submission_id: submissionId,
+    },
+  });
+}
