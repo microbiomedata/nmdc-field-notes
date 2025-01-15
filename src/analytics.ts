@@ -77,12 +77,12 @@ export async function setAnalyticsUserId(userId: string | null) {
 }
 
 /**
- * Log an event indicating that a submission was created.
+ * Log an event indicating that a study was created.
  *
  * @param submissionId
  * @param templates
  */
-export async function logSubmissionCreatedEvent(
+export async function logStudyCreatedEvent(
   submissionId: string,
   templates: string[],
 ) {
@@ -90,7 +90,7 @@ export async function logSubmissionCreatedEvent(
     return;
   }
   await FirebaseAnalytics.logEvent({
-    name: "submission_created",
+    name: "study_created",
     params: {
       submission_id: submissionId,
       templates: templates.toString(), // Arrays are not supported as event parameter values
@@ -99,17 +99,17 @@ export async function logSubmissionCreatedEvent(
 }
 
 /**
- * Log an event indicating that a submission was updated via the study form. This is not logged when
- * samples are added or removed.
+ * Log an event indicating that a study was updated via the study form. This is not logged when
+ * samples are added or removed from the study.
  *
  * @param submissionId
  */
-export async function logSubmissionUpdatedEvent(submissionId: string) {
+export async function logStudyUpdatedEvent(submissionId: string) {
   if (!initialized) {
     return;
   }
   await FirebaseAnalytics.logEvent({
-    name: "submission_updated",
+    name: "study_updated",
     params: {
       submission_id: submissionId,
     },
@@ -117,16 +117,16 @@ export async function logSubmissionUpdatedEvent(submissionId: string) {
 }
 
 /**
- * Log an event indicating that a submission was deleted.
+ * Log an event indicating that a study was deleted.
  *
  * @param submissionId
  */
-export async function logSubmissionDeletedEvent(submissionId: string) {
+export async function logStudyDeletedEvent(submissionId: string) {
   if (!initialized) {
     return;
   }
   await FirebaseAnalytics.logEvent({
-    name: "submission_deleted",
+    name: "study_deleted",
     params: {
       submission_id: submissionId,
     },
