@@ -12,7 +12,7 @@ const AnalyticsScreenViewListener: React.FC = () => {
     });
 
     return () => {
-      console.debug("Detaching route listener");
+      console.debug("Detaching screen_view listener");
       removeListener();
     };
   }, [history]);

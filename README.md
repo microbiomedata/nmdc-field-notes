@@ -300,7 +300,7 @@ npm run dev.ios
 
 The app's XCode project is already configured to use [Firebase's DebugView](https://firebase.google.com/docs/analytics/debugview) via the `-FIRDebugEnabled` flag. Once your device simulator is running, navigate to the DebugView page in the Firebase console for the "NMDC Field Notes DEV" project. You should see events being logged in real-time.
 
-> Sometimes seems to take a few minutes and/or a page reload for the first events to appear.
+> Sometimes, it seems to take a few minutes and/or a page reload for the first events to appear.
 
 If you use an Android simulator:
 
