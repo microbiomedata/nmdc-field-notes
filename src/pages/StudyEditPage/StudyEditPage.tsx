@@ -33,6 +33,7 @@ import Banner from "../../components/Banner/Banner";
 import { useNetworkStatus } from "../../NetworkStatus";
 import { useIsSubmissionEditable } from "../../useIsSubmissionEditable";
 import MutationErrorBanner from "../../components/MutationErrorBanner/MutationErrorBanner";
+import { logStudyDeletedEvent, logStudyUpdatedEvent } from "../../analytics";
 
 interface StudyEditPageParams {
   submissionId: string;
@@ -75,6 +76,7 @@ const StudyEditPage: React.FC = () => {
           duration: 3000,
           icon: checkmark,
         });
+        void logStudyUpdatedEvent(submissionId);
       },
     });
   };
@@ -92,7 +94,10 @@ const StudyEditPage: React.FC = () => {
             handler: () => {
               isDeleting.current = true;
               deleteMutation.mutate(submissionId, {
-                onSuccess: () => router.push(paths.home, "back"),
+                onSuccess: () => {
+                  void logStudyDeletedEvent(submissionId);
+                  router.push(paths.home, "back");
+                },
               });
             },
           },

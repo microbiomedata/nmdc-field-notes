@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1064768027275",
+    "project_id": "nmdc-field-notes-dev",
+    "storage_bucket": "nmdc-field-notes-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064768027275:android:999dcb427e490b7f85b28e",
+        "android_client_info": {
+          "package_name": "org.microbiomedata.fieldnotes.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjW-vz83y148Dp8cKsfCQK-G7vNRYloic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

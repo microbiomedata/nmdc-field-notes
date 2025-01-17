@@ -25,6 +25,7 @@ import MutationErrorBanner from "../MutationErrorBanner/MutationErrorBanner";
 import SlotSelectorModal from "../SlotSelectorModal/SlotSelectorModal";
 import { SlotName, TemplateName, TEMPLATES } from "../../api";
 import Pluralize from "../Pluralize/Pluralize";
+import { logSampleCreatedEvent } from "../../analytics";
 
 interface TemplateVisibleSlots {
   template: TemplateName;
@@ -114,6 +115,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
     });
     updateMutation.mutate(updatedSubmission, {
       onSuccess: (result) => {
+        void logSampleCreatedEvent(submissionId, template);
         const samples = getSubmissionSamplesForTemplate(result, template);
         router.push(
           paths.sample(submissionId, template, samples.length - 1),

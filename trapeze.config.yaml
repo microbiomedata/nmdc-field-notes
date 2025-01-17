@@ -11,3 +11,6 @@ platforms:
       App:
         buildNumber: $FIELD_NOTES_BUILD_NUMBER
         version: $FIELD_NOTES_VERSION_NUMBER
+      App_Prod:
+        buildNumber: $FIELD_NOTES_BUILD_NUMBER
+        version: $FIELD_NOTES_VERSION_NUMBER
