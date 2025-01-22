@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "org.microbiomedata.fieldnotes",
       "sha256_cert_fingerprints": [
-        "61:52:55:19:5C:6E:AF:E2:C4:20:49:37:9F:F6:01:74:7E:00:E6:51:E4:96:F4:0A:DE:1B:09:65:A8:D3:0F:B3"
+        "61:52:55:19:5C:6E:AF:E2:C4:20:49:37:9F:F6:01:74:7E:00:E6:51:E4:96:F4:0A:DE:1B:09:65:A8:D3:0F:B3",
+        "95:50:9C:8D:84:DD:29:C2:09:7B:BB:74:C3:D3:92:BF:E6:29:87:36:E0:8A:EB:50:6D:F5:E1:18:92:74:9D:B6"
       ]
     }
   }
