@@ -6,7 +6,6 @@ const paths = {
   root: "/",
   home: `${IN}${STUDY}`,
   checklist: "/checklist",
-  tour: "/tour",
   welcome: "/welcome",
   login: "/login",
   token: "/token",

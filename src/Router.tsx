@@ -10,7 +10,6 @@ import HomePage from "./pages/HomePage/HomePage";
 import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
 import StudyCreatePage from "./pages/StudyCreatePage/StudyCreatePage";
 import TabNavigator from "./components/TabNavigator/TabNavigator";
-import PlaceholderPage from "./pages/PlaceholderPage";
 import StudyEditPage from "./pages/StudyEditPage/StudyEditPage";
 import SamplePage from "./pages/SamplePage/SamplePage";
 import GuidePage from "./pages/GuidePage/GuidePage";
@@ -34,9 +33,6 @@ const Router: React.FC = () => {
         </Route>
         <Route exact path={paths.checklist}>
           <ChecklistPage />
-        </Route>
-        <Route exact path={paths.tour}>
-          <PlaceholderPage title={"Tour"} body={"Take a tour of the app"} />
         </Route>
 
         {/*
