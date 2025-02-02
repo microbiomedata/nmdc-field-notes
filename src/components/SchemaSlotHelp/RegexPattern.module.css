@@ -1,3 +1,21 @@
 .pattern {
   font-family: monospace;
 }
+
+.pattern b {
+  color: var(--ion-background-color-step-600);
+}
+
+.pattern i {
+  color: var(--ion-color-success-tint);
+  background: var(--ion-background-color-step-100);
+}
+
+.pattern i b {
+  background: var(--ion-background-color-step-300);
+}
+
+.pattern u {
+  text-decoration: none;
+  color: var(--ion-color-warning-shade);
+}
