@@ -2,7 +2,7 @@ import React from "react";
 import { SlotDefinition } from "../../linkml-metamodel";
 import { IonAccordion, IonAccordionGroup, IonItem, IonLabel } from "@ionic/react";
 import Pluralize from "../Pluralize/Pluralize";
-import styles from "./SchemaSlotHelp.module.css";
+import RegexPattern from "./RegexPattern";
 
 interface SchemaSlotHelpProps {
   slot: SlotDefinition;
@@ -99,8 +99,8 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
                     }
                   />
                 </p>
-                {hasPattern && <p className={styles.pattern}>{pattern}</p>}
-                {hasStructuredPatternSyntax && <p className={styles.pattern}>{structuredPatternSyntax}</p>}
+                {hasPattern && <RegexPattern pattern={pattern} />}
+                {hasStructuredPatternSyntax && <RegexPattern pattern={structuredPatternSyntax} />}
               </div>
             </IonAccordion>
           </IonAccordionGroup>
