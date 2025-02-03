@@ -80,7 +80,7 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
             <IonItem className={"ion-no-padding"} slot={"header"}>
               <IonLabel>Technical format requirements</IonLabel>
             </IonItem>
-            <div className={"ion-no-padding ion-padding-bottom"} slot={"content"}>
+            <div className={"ion-padding-start ion-padding-end ion-padding-bottom"} slot={"content"}>
               <p>The value must conform to this regular expression pattern:</p>
               <RegexPattern pattern={pattern} />
             </div>
