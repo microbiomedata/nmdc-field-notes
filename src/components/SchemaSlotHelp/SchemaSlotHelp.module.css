@@ -10,5 +10,5 @@
  * - https://ionicframework.com/docs/api/item#css-shadow-parts-1
  */
 .accordionItem::part(native) {
-    background-color: inherit;
+  background-color: inherit;
 }

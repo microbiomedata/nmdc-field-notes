@@ -4,8 +4,9 @@
 }
 
 /**
- * When in dark mode, use a darker background color for the pattern than in light mode,
- * given that the pattern's text color will be brighter when in dark mode.
+ * When in dark mode, use a dark gray background instead of a light gray one. That's because,
+ * in dark mode, the text will be lighter than it is in light mode, and we want the contrast
+ * to be sufficient in both modes.
  */
 :global(:root.ion-palette-dark) {
   .pattern {
