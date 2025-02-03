@@ -75,20 +75,17 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
 
       {/* If we have any pattern information, display it in this section. */}
       {typeof pattern === "string" ? (
-        <>
-          <h4>Format</h4>
-          <IonAccordionGroup>
-            <IonAccordion>
-              <IonItem slot={"header"}>
-                <IonLabel>Requirements</IonLabel>
-              </IonItem>
-              <div className={"ion-padding"} slot={"content"}>
-                <p>The value must conform to this regular expression pattern:</p>
-                <RegexPattern pattern={pattern} />
-              </div>
-            </IonAccordion>
-          </IonAccordionGroup>
-        </>
+        <IonAccordionGroup>
+          <IonAccordion>
+            <IonItem className={"ion-no-padding"} slot={"header"}>
+              <IonLabel>Technical format requirements</IonLabel>
+            </IonItem>
+            <div className={"ion-no-padding ion-padding-bottom"} slot={"content"}>
+              <p>The value must conform to this regular expression pattern:</p>
+              <RegexPattern pattern={pattern} />
+            </div>
+          </IonAccordion>
+        </IonAccordionGroup>
       ) : null}
     </>
   );
