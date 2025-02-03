@@ -1,7 +1,6 @@
 import React from "react";
 import { SlotDefinition } from "../../linkml-metamodel";
 import { IonAccordion, IonAccordionGroup, IonItem, IonLabel } from "@ionic/react";
-import Pluralize from "../Pluralize/Pluralize";
 import RegexPattern from "./RegexPattern";
 
 interface SchemaSlotHelpProps {
@@ -14,9 +13,6 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
 }) => {
   // Get any pattern information present in this slot definition.
   const pattern = slot.pattern;
-  const hasPattern = typeof pattern === "string";
-  const structuredPatternSyntax = slot.structured_pattern?.syntax;
-  const hasStructuredPatternSyntax = typeof structuredPatternSyntax === "string";
 
   // Process other types of guidance present on this slot's specification.
   const guidanceParagraphs: string[] = [];
@@ -77,8 +73,8 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
         </>
       )}
 
-      {/* If we have any patterns information, display it in this section. */}
-      {hasPattern || hasStructuredPatternSyntax ? (
+      {/* If we have any pattern information, display it in this section. */}
+      {typeof pattern === "string" ? (
         <>
           <h4>Format</h4>
           <IonAccordionGroup>
@@ -87,20 +83,8 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
                 <IonLabel>Requirements</IonLabel>
               </IonItem>
               <div className={"ion-padding"} slot={"content"}>
-                <p>
-                  {/* TODO: Check what this looks like when both types of patterns are present (is that allowed?). */}
-                  <Pluralize
-                    count={hasPattern && hasStructuredPatternSyntax ? 2 : 1}
-                    singular={
-                      "The value must conform to this regular expression pattern:"
-                    }
-                    plural={
-                      "The value must conform to these regular expression patterns:"
-                    }
-                  />
-                </p>
-                {hasPattern && <RegexPattern pattern={pattern} />}
-                {hasStructuredPatternSyntax && <RegexPattern pattern={structuredPatternSyntax} />}
+                <p>The value must conform to this regular expression pattern:</p>
+                <RegexPattern pattern={pattern} />
               </div>
             </IonAccordion>
           </IonAccordionGroup>
