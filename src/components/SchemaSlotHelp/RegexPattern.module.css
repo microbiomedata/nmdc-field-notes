@@ -2,3 +2,13 @@
   font-family: monospace;
   background-color: var(--ion-color-light);
 }
+
+/**
+ * When in dark mode, use a darker background color for the pattern than in light mode,
+ * given that the pattern's text color will be brighter when in dark mode.
+ */
+:global(:root.ion-palette-dark) {
+  .pattern {
+    background-color: var(--ion-color-dark);
+  }
+}

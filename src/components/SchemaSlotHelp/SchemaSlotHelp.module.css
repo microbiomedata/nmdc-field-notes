@@ -1,0 +1,14 @@
+/**
+ * Override the background color of the `<button>` element within the accordion item header,
+ * so that the accordion item header does not have a different background from its container.
+ *
+ * Note: In dark mode, by default, the accordion item header has a pitch black background,
+ *       compared to the dark gray background of its container.
+ *
+ * References:
+ * - https://ionicframework.com/docs/theming/css-shadow-parts
+ * - https://ionicframework.com/docs/api/item#css-shadow-parts-1
+ */
+.accordionItem::part(native) {
+    background-color: inherit;
+}

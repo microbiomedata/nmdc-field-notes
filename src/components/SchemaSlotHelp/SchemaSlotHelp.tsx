@@ -2,6 +2,7 @@ import React from "react";
 import { SlotDefinition } from "../../linkml-metamodel";
 import { IonAccordion, IonAccordionGroup, IonItem, IonLabel } from "@ionic/react";
 import RegexPattern from "./RegexPattern";
+import styles from "./SchemaSlotHelp.module.css";
 
 interface SchemaSlotHelpProps {
   slot: SlotDefinition;
@@ -77,7 +78,7 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
       {typeof pattern === "string" ? (
         <IonAccordionGroup>
           <IonAccordion>
-            <IonItem className={"ion-no-padding"} slot={"header"}>
+            <IonItem className={`ion-no-padding ${styles.accordionItem}`} slot={"header"}>
               <IonLabel>Technical format requirements</IonLabel>
             </IonItem>
             <div className={"ion-padding-start ion-padding-end ion-padding-bottom"} slot={"content"}>
