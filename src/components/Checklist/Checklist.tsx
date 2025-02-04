@@ -12,7 +12,7 @@ const Checklist: React.FC = () => {
       <div className={styles.info}>
         <Markdown>{fieldworkChecklist.info}</Markdown>
       </div>
-      {/* Render each section in its own accordion. */}
+      {/* Render each section. */}
       {fieldworkChecklist.sections.map((s) => (
         <div key={s.title}>
           <SectionHeader>{s.title}</SectionHeader>

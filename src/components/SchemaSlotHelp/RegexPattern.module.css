@@ -1,0 +1,15 @@
+.pattern {
+  font-family: monospace;
+  background-color: var(--ion-color-light);
+}
+
+/**
+ * When in dark mode, use a dark gray background instead of a light gray one. That's because,
+ * in dark mode, the text will be lighter than it is in light mode, and we want the contrast
+ * to be sufficient in both modes.
+ */
+:global(:root.ion-palette-dark) {
+  .pattern {
+    background-color: var(--ion-color-dark);
+  }
+}

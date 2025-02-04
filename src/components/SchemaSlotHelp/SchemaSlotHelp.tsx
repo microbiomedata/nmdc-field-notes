@@ -1,5 +1,13 @@
 import React from "react";
 import { SlotDefinition } from "../../linkml-metamodel";
+import {
+  IonAccordion,
+  IonAccordionGroup,
+  IonItem,
+  IonLabel,
+} from "@ionic/react";
+import RegexPattern from "./RegexPattern";
+import styles from "./SchemaSlotHelp.module.css";
 
 interface SchemaSlotHelpProps {
   slot: SlotDefinition;
@@ -9,15 +17,13 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
   slot,
   containingObjectName = "record",
 }) => {
+  // Get any pattern information present in this slot definition.
+  const pattern = slot.pattern;
+
+  // Process other types of guidance present on this slot's specification.
   const guidanceParagraphs: string[] = [];
   if (slot.comments && slot.comments.length) {
     guidanceParagraphs.concat(...slot.comments);
-  }
-  if (slot.pattern) {
-    guidanceParagraphs.push("Pattern as regular expression: " + slot.pattern);
-  }
-  if (slot.structured_pattern) {
-    guidanceParagraphs.push("Pattern hint: " + slot.structured_pattern.syntax);
   }
   const hasMinValue = slot.minimum_value != null;
   const hasMaxValue = slot.maximum_value != null;
@@ -72,6 +78,27 @@ const SchemaSlotHelp: React.FC<SchemaSlotHelpProps> = ({
           </ul>
         </>
       )}
+
+      {/* If we have any pattern information, display it in this section. */}
+      {typeof pattern === "string" ? (
+        <IonAccordionGroup>
+          <IonAccordion>
+            <IonItem
+              className={`ion-no-padding ${styles.accordionItem}`}
+              slot={"header"}
+            >
+              <IonLabel>Technical format requirements</IonLabel>
+            </IonItem>
+            <div
+              className={"ion-padding-start ion-padding-end ion-padding-bottom"}
+              slot={"content"}
+            >
+              <p>The value must conform to this regular expression pattern:</p>
+              <RegexPattern pattern={pattern} />
+            </div>
+          </IonAccordion>
+        </IonAccordionGroup>
+      ) : null}
     </>
   );
 };
