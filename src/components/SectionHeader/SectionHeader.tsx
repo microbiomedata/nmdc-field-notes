@@ -8,7 +8,7 @@ export enum Variant {
 
 interface Props extends HTMLAttributes<PropsWithChildren> {
   /** Which variant of the component you want to render (variants are styled differently from one another). */
-  variant: Variant;
+  variant?: Variant;
 }
 
 const SectionHeader: React.FC<Props> = ({
