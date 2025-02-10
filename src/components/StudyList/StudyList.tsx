@@ -66,7 +66,7 @@ const StudyList: React.FC = () => {
       </QueryErrorBanner>
 
       <IonListHeader>
-        <IonLabel className={styles.ionLabel}>
+        <IonLabel>
           <SectionHeader className={styles.sectionHeaderWithinListHeader}>
             Studies
           </SectionHeader>
