@@ -19,7 +19,7 @@ const SectionHeader: React.FC<Props> = ({
   // Customize the `className` value based upon the specified variant.
   let classNameVal = `${styles.header} ion-margin ${className}`;
   if (variant === Variant.WithinListHeader) {
-    classNameVal = `${styles.header} ion-margin ${styles.withinListHeader} ${className}`;
+    classNameVal = `${styles.header} ${styles.withinListHeader} ${className}`;
   }
 
   return <div className={classNameVal}>{children}</div>;
