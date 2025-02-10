@@ -3,3 +3,25 @@
   font-weight: 700;
   color: var(--ion-color-primary);
 }
+
+/**
+ * Note: Both `<SectionHeader>` and `<IonListHeader>` have a non-zero `margin-left` value. When the former element is
+ *       nested within the latter, those `margin-left` values add up. This can cause the nested header to appear further
+ *       indented than the list items. This CSS class can be used to "cancel out" one of the contributing `margin-left`
+ *       values, so the nested header does not appear to be further indented than the list items.
+ */
+.withinListHeader {
+  margin-left: 0 !important;
+}
+
+/**
+ * Note: These styles apply only in iOS mode. These make it so (a) the header and the `<IonButton>` to its right are
+ *       bottom-aligned with one another, and (b) the `margin-top` of the `<SectionHeader>` does not contribute to
+ *       (i.e., increase) the vertical gap between the containing `<IonListHeader>` and the preceding element.
+ */
+:global(:root.ios) {
+  .withinListHeader {
+    margin-top: 0;
+    margin-bottom: 6px;
+  }
+}

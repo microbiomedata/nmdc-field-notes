@@ -21,9 +21,7 @@ import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
 import { StepType } from "@reactour/tour";
 import { useAppTour } from "../AppTourProvider/hooks";
 import { TourId } from "../AppTourProvider/AppTourProvider";
-import SectionHeader from "../SectionHeader/SectionHeader";
-
-import styles from "./StudyList.module.css";
+import SectionHeader, { Variant } from "../SectionHeader/SectionHeader";
 
 // Make steps for the tour.
 // Reference: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
@@ -67,7 +65,7 @@ const StudyList: React.FC = () => {
 
       <IonListHeader>
         <IonLabel>
-          <SectionHeader className={styles.sectionHeaderWithinListHeader}>
+          <SectionHeader variant={Variant.WithinListHeader}>
             Studies
           </SectionHeader>
         </IonLabel>
