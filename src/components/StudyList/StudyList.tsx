@@ -21,6 +21,9 @@ import QueryErrorBanner from "../QueryErrorBanner/QueryErrorBanner";
 import { StepType } from "@reactour/tour";
 import { useAppTour } from "../AppTourProvider/hooks";
 import { TourId } from "../AppTourProvider/AppTourProvider";
+import SectionHeader from "../SectionHeader/SectionHeader";
+
+import styles from "./StudyList.module.css";
 
 // Make steps for the tour.
 // Reference: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
@@ -63,7 +66,11 @@ const StudyList: React.FC = () => {
       </QueryErrorBanner>
 
       <IonListHeader>
-        <IonLabel>Studies</IonLabel>
+        <IonLabel className={styles.ionLabel}>
+          <SectionHeader className={styles.sectionHeaderWithinListHeader}>
+            Studies
+          </SectionHeader>
+        </IonLabel>
         <IonButton
           routerLink={paths.studyCreate}
           data-tour={`${TourId.StudyList}-1`}
