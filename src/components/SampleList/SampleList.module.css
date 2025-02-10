@@ -13,3 +13,26 @@
 .searchButton {
   margin-left: 10px;
 }
+
+/**
+ * Note: Both `<SectionHeader>` and `<IonListHeader>` have a non-zero `margin-left` value. When the former element is
+ *       nested within the latter, those `margin-left` values add up. This can cause the nested header to appear further
+ *       indented than headers on the screen that are _not_ nested within `<IonListHeader>` elements. This CSS class can
+ *       be used to "cancel out" one of the contributing `margin-left` values, so the nested header does not appear to
+ *       be further indented than non-nested headers.
+ */
+.sectionHeaderWithinListHeader {
+  margin-left: 0 !important;
+}
+
+/**
+ * Define additional styles, which apply only in iOS mode. These make it so (a) the header and the `<IonButton>` to its
+ * right are bottom-aligned with one another, and (b) the `margin-top` of the `<SectionHeader>` does not contribute
+ * to (i.e., increase) the vertical gap between the `<IonListHeader>` and the preceding element.
+ */
+:global(:root.ios) {
+  .sectionHeaderWithinListHeader {
+    margin-top: 0;
+    margin-bottom: 6px;
+  }
+}
