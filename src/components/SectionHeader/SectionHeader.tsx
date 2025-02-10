@@ -22,11 +22,7 @@ const SectionHeader: React.FC<Props> = ({
     classNameVal = `${styles.header} ion-margin ${styles.withinListHeader} ${className}`;
   }
 
-  return (
-    <div className={classNameVal}>
-      {children}
-    </div>
-  );
+  return <div className={classNameVal}>{children}</div>;
 };
 
 export default SectionHeader;
