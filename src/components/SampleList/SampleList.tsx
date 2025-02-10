@@ -172,7 +172,7 @@ const SampleList: React.FC<SampleListProps> = ({
       <IonListHeader>
         <IonLabel>
           <SectionHeader className={styles.sectionHeaderWithinListHeader}>
-            <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
+            Samples {samples && <>({samples.length})</>}
           </SectionHeader>
         </IonLabel>
         <IonButton
