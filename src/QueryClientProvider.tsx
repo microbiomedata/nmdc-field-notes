@@ -23,7 +23,7 @@ const queryClient = new QueryClient({
 addDefaultMutationFns(queryClient);
 
 const QueryClientProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const { store } = useStore();
+  const { store, isLoggedIn } = useStore();
   const persister = useMemo<Persister | null>(() => {
     if (!store) {
       return null;
@@ -45,10 +45,16 @@ const QueryClientProvider: React.FC<PropsWithChildren> = ({ children }) => {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{ persister: persister, maxAge: Infinity }}
+      // This is fired when the persisted queries are rehydrated. If the user is logged in, resume
+      // any paused mutations that were restored. If the user is not logged in, do nothing since the
+      // mutations would not succeed anyway. There is a similar call in TokenPage.tsx to handle
+      // resuming paused mutations after a successful login.
       onSuccess={() => {
-        queryClient.resumePausedMutations().then(() => {
-          void queryClient.invalidateQueries();
-        });
+        if (isLoggedIn) {
+          queryClient.resumePausedMutations().then(() => {
+            void queryClient.invalidateQueries();
+          });
+        }
       }}
     >
       {children}
