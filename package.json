@@ -53,6 +53,7 @@
     "minisearch": "^6.3.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
+    "react-error-boundary": "^5.0.0",
     "react-hook-form": "^7.51.0",
     "react-markdown": "^9.0.1",
     "react-minisearch": "^6.3.0",

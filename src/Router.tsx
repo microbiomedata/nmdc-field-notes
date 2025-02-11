@@ -18,6 +18,7 @@ import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
 import RootPage from "./pages/RootPage/RootPage";
 import paths, { IN } from "./paths";
 import AnalyticsScreenViewListener from "./AnalyticsScreenViewListener";
+import TokenRefreshErrorBoundary from "./components/TokenRefreshErrorBoundary/TokenRefreshErrorBoundary";
 
 const Router: React.FC = () => {
   return (
@@ -44,7 +45,9 @@ const Router: React.FC = () => {
         <Route path={IN}>
           <TabNavigator>
             <Route exact path={paths.home}>
-              <HomePage />
+              <TokenRefreshErrorBoundary>
+                <HomePage />
+              </TokenRefreshErrorBoundary>
             </Route>
 
             <Route exact path={paths.guide}>

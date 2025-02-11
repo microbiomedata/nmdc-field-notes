@@ -8,8 +8,13 @@ import { addDefaultMutationFns } from "./queries";
 import { useStore } from "./Store";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { RefreshTokenExchangeError } from "./api";
 
 const GARBAGE_COLLECTION_TIME = 1000 * 60 * 60 * 24 * 7; // 1 week
+
+function shouldThrowError(error: Error) {
+  return error instanceof RefreshTokenExchangeError;
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,6 +22,10 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 20, // 20 seconds
       gcTime: GARBAGE_COLLECTION_TIME,
       retry: 0,
+      throwOnError: shouldThrowError,
+    },
+    mutations: {
+      throwOnError: shouldThrowError,
     },
   },
 });
