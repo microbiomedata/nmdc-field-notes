@@ -34,7 +34,11 @@ const AppTourProvider: React.FC<ProviderProps> = ({
         popover: (base) => ({
           ...base,
           borderRadius: 4,
+          // Make the tour text be legible over its background.
           color: "var(--ion-color-primary-contrast)",
+          // Make the navigation dots have the same color as the "Dismiss" button's background.
+          // Reference: https://docs.react.tours/tour/examples#custom-styles
+          "--reactour-accent": "var(--ion-color-primary)",
         }),
         // Style the hole in the mask (seems to impact light mode only 🤷).
         maskArea: (base) => ({ ...base, rx: 4 }),
@@ -74,7 +78,6 @@ const AppTourProvider: React.FC<ProviderProps> = ({
           <IonButton
             size={"small"}
             fill={"solid"}
-            color={"light"}
             onClick={() => props.setIsOpen(false)}
           >
             Dismiss
