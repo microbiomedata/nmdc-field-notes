@@ -3,3 +3,14 @@
   font-weight: 700;
   color: var(--ion-color-primary);
 }
+
+/**
+ * Note: These styles apply only in iOS mode. These make it so that, when the `<SectionHeader>` (having this class)
+ *       is nested within an `<IonListHeader>` containing an `<IonButton>`, (a) the header text and the `<IonButton>`
+ *       are bottom-aligned with one another.
+ */
+:global(:root.ios) {
+  .withinListHeader {
+    margin-bottom: 6px;
+  }
+}

@@ -24,6 +24,7 @@ import Banner from "../Banner/Banner";
 import { StepType } from "@reactour/tour";
 import { useAppTour } from "../AppTourProvider/hooks";
 import { TourId } from "../AppTourProvider/AppTourProvider";
+import SectionHeader, { Variant } from "../SectionHeader/SectionHeader";
 
 import styles from "./SampleList.module.css";
 
@@ -169,7 +170,11 @@ const SampleList: React.FC<SampleListProps> = ({
   return (
     <>
       <IonListHeader>
-        <IonLabel>Samples {samples && <>({samples.length})</>}</IonLabel>
+        <IonLabel>
+          <SectionHeader variant={Variant.WithinListHeader}>
+            Samples {samples && <>({samples.length})</>}
+          </SectionHeader>
+        </IonLabel>
         <IonButton
           onClick={handleNewClick}
           data-tour={`${TourId.SampleList}-1`}
