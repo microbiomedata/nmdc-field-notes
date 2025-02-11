@@ -253,6 +253,13 @@ export class ApiError extends Error {
   }
 }
 
+export class RefreshTokenExchangeError extends Error {
+  constructor(message: string) {
+    super("Failed to exchange refresh token: " + message);
+    Object.setPrototypeOf(this, RefreshTokenExchangeError.prototype);
+  }
+}
+
 export class FetchClient {
   private readonly baseUrl: string;
   private readonly defaultOptions: RequestInit;
@@ -346,12 +353,24 @@ class NmdcServerClient extends FetchClient {
       if (
         endpoint.startsWith("/api/") && // Only attempt to refresh tokens for /api/ endpoints, not /auth/ or static files
         error instanceof ApiError &&
-        error.response.status === 401 &&
-        this.refreshToken !== null
+        error.response.status === 401
       ) {
-        const tokenResponse = await this.exchangeRefreshToken();
-        this.setTokens(tokenResponse.access_token);
-        return super.fetch(endpoint, options);
+        try {
+          const tokenResponse = await this.exchangeRefreshToken();
+          this.setTokens(tokenResponse.access_token);
+          return super.fetch(endpoint, options);
+        } catch (exchangeError) {
+          if (
+            exchangeError instanceof ApiError &&
+            exchangeError.response.status === 401
+          ) {
+            this.setTokens(null, null);
+            throw new RefreshTokenExchangeError(
+              exchangeError.response.statusText,
+            );
+          }
+          throw exchangeError;
+        }
       }
       throw error;
     }
@@ -447,7 +466,7 @@ class NmdcServerClient extends FetchClient {
       return this.exchangeRefreshTokenCache;
     }
     if (this.refreshToken === null) {
-      throw new Error("No refresh token found");
+      throw new RefreshTokenExchangeError("No refresh token found");
     }
     const response = this.fetchJson<TokenResponse>("/auth/refresh", {
       method: "POST",
