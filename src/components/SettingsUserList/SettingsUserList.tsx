@@ -5,7 +5,7 @@ import paths from "../../paths";
 import { initiateLogin } from "../../auth";
 
 const SettingsUserList: React.FC = () => {
-  const { loggedInUser, logout } = useStore();
+  const { refreshTokenExpiration, loggedInUser, logout } = useStore();
   const router = useIonRouter();
 
   const handleLogout = async () => {
@@ -25,6 +25,12 @@ const SettingsUserList: React.FC = () => {
             <IonLabel>
               <h3>Name</h3>
               <p>{loggedInUser.name}</p>
+            </IonLabel>
+          </IonItem>
+          <IonItem>
+            <IonLabel>
+              <h3>Session expires</h3>
+              <p>{refreshTokenExpiration?.toLocaleString()}</p>
             </IonLabel>
           </IonItem>
           <IonItem type="button" onClick={handleLogout}>
