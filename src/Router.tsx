@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IonReactRouter } from "@ionic/react-router";
 import { IonRouterOutlet } from "@ionic/react";
 import { Redirect, Route } from "react-router-dom";
@@ -19,12 +19,14 @@ import RootPage from "./pages/RootPage/RootPage";
 import paths, { IN } from "./paths";
 import AnalyticsScreenViewListener from "./AnalyticsScreenViewListener";
 import TokenRefreshErrorBoundary from "./components/TokenRefreshErrorBoundary/TokenRefreshErrorBoundary";
+import RefreshTokenExpirationMonitor from "./components/RefreshTokenExpirationMonitor/RefreshTokenExpirationMonitor";
 
 const Router: React.FC = () => {
   return (
     <IonReactRouter>
       <AppUrlListener />
       <AnalyticsScreenViewListener />
+      <RefreshTokenExpirationMonitor />
       <IonRouterOutlet>
         <Route exact path={paths.token}>
           <TokenPage />
