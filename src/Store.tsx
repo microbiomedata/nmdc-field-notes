@@ -1,6 +1,7 @@
 import React, {
   createContext,
   PropsWithChildren,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -15,6 +16,7 @@ import {
 import { Network } from "@capacitor/network";
 import { TourId } from "./components/AppTourProvider/AppTourProvider";
 import { setAnalyticsUserId } from "./analytics";
+import { jwtDecode } from "jwt-decode";
 
 enum StorageKey {
   REFRESH_TOKEN = "refreshToken",
@@ -28,6 +30,7 @@ interface StoreContextValue {
 
   isLoggedIn: boolean;
   loggedInUser: User | null;
+  refreshTokenExpiration: Date | null;
   login: (accessToken: string, refreshToken: string) => Promise<void>;
   logout: () => Promise<void>;
 
@@ -44,6 +47,7 @@ const StoreContext = createContext<StoreContextValue>({
 
   isLoggedIn: false,
   loggedInUser: null,
+  refreshTokenExpiration: null,
   login: () => {
     throw new Error("login called outside of provider");
   },
@@ -73,10 +77,26 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [store, setStore] = useState<Storage | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+  const [refreshTokenExpiration, _setRefreshTokenExpiration] =
+    useState<Date | null>(null);
   const [colorPaletteMode, setColorPaletteMode] =
     useState<ColorPaletteMode | null>(null);
   const [presentedTourIds, setPresentedTourIds] = useState<Set<TourId>>(
     new Set(),
+  );
+
+  const setRefreshTokenExpiration = useCallback(
+    (refreshToken: string | null) => {
+      if (refreshToken === null) {
+        _setRefreshTokenExpiration(null);
+      } else {
+        const decoded = jwtDecode(refreshToken);
+        if (decoded.exp) {
+          _setRefreshTokenExpiration(new Date(decoded.exp * 1000));
+        }
+      }
+    },
+    [],
   );
 
   // Initialize the store.
@@ -105,6 +125,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const refreshToken = await storage.get(StorageKey.REFRESH_TOKEN);
       if (refreshToken) {
         nmdcServerClient.setRefreshToken(refreshToken);
+        setRefreshTokenExpiration(refreshToken);
       }
 
       // If the user is online, attempt to exchange the refresh token for an access token. If
@@ -157,7 +178,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
 
     init().then(() => console.debug("Storage is initialized"));
-  }, []);
+  }, [setRefreshTokenExpiration]);
 
   /**
    * Update the context to reflect the currently logged-in user. This is ultimately determined by
@@ -202,6 +223,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
    */
   async function login(accessToken: string, refreshToken: string) {
     nmdcServerClient.setTokens(accessToken, refreshToken);
+    setRefreshTokenExpiration(refreshToken);
     await _updateLoggedInUser(store);
     if (!store) {
       console.warn("login called before storage initialization");
@@ -216,6 +238,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
    */
   async function logout() {
     nmdcServerClient.setTokens(null, null);
+    setRefreshTokenExpiration(null);
     await _clearLoggedInUser(store);
     if (!store) {
       console.warn("logout called before storage initialization");
@@ -301,6 +324,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
         isLoggedIn,
         loggedInUser,
+        refreshTokenExpiration,
         login,
         logout,
 
