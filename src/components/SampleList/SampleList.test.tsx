@@ -32,7 +32,11 @@ const TestSampleList: React.FC<Props> = ({
   return (
     <>
       <button onClick={handleUpdateSubmission}>Update Submission</button>
-      <SampleList submission={submission} onSampleCreate={onSampleCreate} />
+      <SampleList
+        submission={submission}
+        onSampleCreate={onSampleCreate}
+        tourAllowed={false}
+      />
     </>
   );
 };
