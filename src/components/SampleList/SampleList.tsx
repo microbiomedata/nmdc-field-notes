@@ -41,6 +41,7 @@ interface SampleListProps {
   collapsedSize?: number;
   onSampleCreate: (template: TemplateName) => void;
   sampleCreateFailureMessage?: string;
+  tourAllowed?: boolean;
 }
 
 const SampleList: React.FC<SampleListProps> = ({
@@ -48,8 +49,9 @@ const SampleList: React.FC<SampleListProps> = ({
   collapsedSize = 5,
   onSampleCreate,
   sampleCreateFailureMessage,
+  tourAllowed = true,
 }) => {
-  useAppTour(TourId.SampleList, steps);
+  const { startTour } = useAppTour(TourId.SampleList, steps, false);
 
   const searchElement = React.useRef<HTMLIonSearchbarElement>(null);
 
@@ -119,6 +121,13 @@ const SampleList: React.FC<SampleListProps> = ({
       searchElement.current?.setFocus();
     }
   }, [isSearchVisible]);
+
+  // Attempt to start the tour when the tourAllowed prop changes.
+  useEffect(() => {
+    if (tourAllowed) {
+      startTour();
+    }
+  }, [tourAllowed, startTour]);
 
   const handleSearchInput = (
     event: IonSearchbarCustomEvent<SearchbarInputEventDetail>,
