@@ -17,6 +17,7 @@ export const initAddress = (): Address => ({
   phone: "",
   postalCode: "",
   state: "",
+  country: "",
 });
 
 export const initAddressForm = (): AddressForm => ({
