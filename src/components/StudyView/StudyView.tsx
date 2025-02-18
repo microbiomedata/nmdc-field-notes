@@ -47,6 +47,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
   const { isOnline } = useNetworkStatus();
   const [modalTemplateVisibleSlots, setModalTemplateVisibleSlots] =
     React.useState<TemplateVisibleSlots | undefined>(undefined);
+  const [toursAllowed, setToursAllowed] = React.useState(false);
 
   const templateVisibleSlots = useMemo(() => {
     const fieldVisibilityInfo: TemplateVisibleSlots[] = [];
@@ -84,9 +85,11 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
     for (const item of templateVisibleSlots) {
       if (item.visibleSlots === undefined) {
         setModalTemplateVisibleSlots(item);
+        setToursAllowed(false);
         return;
       }
     }
+    setToursAllowed(true);
   }, [modalTemplateVisibleSlots, templateVisibleSlots]);
 
   const handleSampleCreate = async (template: TemplateName) => {
@@ -268,6 +271,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
           )}
 
           <SampleList
+            tourAllowed={toursAllowed}
             submission={submission.data}
             onSampleCreate={handleSampleCreate}
             sampleCreateFailureMessage={
