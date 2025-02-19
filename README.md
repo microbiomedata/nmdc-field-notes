@@ -355,8 +355,10 @@ Creating a release involves three steps:
 
 #### Create and Distribute a new Android Build
 
+If this is your first time creating an Android build, follow these **one-time** keystore setup instructions before proceeding to the build/distribute instructions below.
+
 <details>
-<summary>One-time keystore setup</summary>
+<summary>Show/hide one-time keystore setup instructions</summary>
 
 1. Obtain two passwords from other developers: the keystore decryption password and the keystore password. Save these securely in a password manager.
 2. Download the encrypted keystore file from NERSC.
@@ -373,6 +375,8 @@ Creating a release involves three steps:
    ```
 
 </details>
+
+##### Create and Distribute an Android Build via GitHub
 
 1. Build the Android APK file.
    1. Open the Android project in Android Studio.
@@ -391,12 +395,50 @@ Creating a release involves three steps:
 2. Distribute the APK file via the GitHub Release.
    1. Make a copy of the APK file with the version and build numbers in the filename.
       ```shell
+      # Run this from the root directory of the repository:
       npm run rename.apk
       ```
    2. Edit the vX.Y.Z [GitHub Release](https://github.com/microbiomedata/nmdc-field-notes/releases) and attach the `org.microbiomedata.fieldnotes-vX.Y.Z-build.N.apk` file to it. **NOTE**: If this is a **build** release there may be one or more existing APK files attached to the release. This is by design.
-   3. Deleted the APK file from your local project root.
+   3. Delete the APK file from your local project root.
       ```shell
+      # Run this from the root directory of the repository:
       rm org.microbiomedata.fieldnotes-*.apk
+      ```
+
+##### Create and Distribute an Android Build via Google Play
+
+1. Build the Android AAB file.
+   1. If you haven't already done so, open the Android project in Android Studio.
+      ```shell
+      ionic capacitor open android
+      ```
+   2. In the toolbar, click `Build` > `Generate Signed App Bundle / APK...`
+   3. Select "**Android App Bundle**" and click "Next".
+   4. Enter the following information and click "Next".
+      - Key store path: `<project root>/android/org.microbiomedata.fieldnotes.keystore`
+      - Key store password: `<keystore password>`
+      - Key alias: `nmdc field notes`
+      - Key password: `<keystore password>`
+   5. Select the "release" build variant and click "Create".
+   6. Wait for the gradle build to complete. Look for notification saying "App bundle(s) generated successfully for module 'android.app.main' with 0 build variants."
+2. Distribute the AAB file via Google Play.
+   1. In your web browser, go to the [Google Play Console](https://play.google.com/console).
+   2. In the Google Play Console, under the "NMDC Field Notes" app, go to "Test and release" > "Testing" > "**Internal testing**".
+   3. On the "Internal testing" page, click the "Create new release" button in the upper right.
+   4. On the "Create internal testing release" page, click "Upload" and select the Android AAB file you generated earlier.
+      - It will be located at: `android/app/prod/release/app-prod-release.aab`
+      - It can take a minute or two for Google to "optimize" the file once uploaded.
+   5. Scroll down to the "Release details" section and customize the release name and description.
+      - Release name: Use the format `VERSION (BUILD)` instead of `BUILD (VERSION)`; e.g., use `0.1.0 (10)` instead of `10 (0.1.0)`
+      - Release notes: Replace "Enter or paste your release notes..." with any release notes you want to include.
+   6. Click "Next".
+   7. On the next page, if you see a warning about there being no "deobfuscation file" present, you can disregard that warning.
+   8. Click "Save and publish".
+      - In the confirmation dialog that appears, click "Save and publish".
+   9. Delete the AAB file from your local project file tree.
+      ```shell
+      # Run this from the root directory of the repository:
+      rm android/app/prod/release/app-prod-release.aab
       ```
 
 #### Create and Distribute a new iOS Build
