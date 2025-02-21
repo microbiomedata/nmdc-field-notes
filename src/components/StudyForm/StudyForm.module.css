@@ -2,3 +2,12 @@
   font-size: var(--nmdc-font-size-xs);
   color: var(--ion-color-danger);
 }
+
+.saveContainer {
+  position: sticky;
+  bottom: 0;
+  background-color: var(--ion-background-color-step-50);
+  z-index: 1000;
+  padding: 10px 0;
+  border-top: 1px solid var(--ion-background-color-step-100);
+}
