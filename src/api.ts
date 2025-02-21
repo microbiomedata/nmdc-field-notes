@@ -328,6 +328,10 @@ class NmdcServerClient extends FetchClient {
     this.refreshToken = refreshToken;
   }
 
+  hasRefreshToken() {
+    return this.refreshToken !== null;
+  }
+
   setTokens(accessToken: string | null, refreshToken?: string | null) {
     if (accessToken !== null) {
       this.setBearerToken(accessToken);

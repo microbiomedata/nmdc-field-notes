@@ -8,7 +8,7 @@ import { addDefaultMutationFns } from "./queries";
 import { useStore } from "./Store";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { RefreshTokenExchangeError } from "./api";
+import { nmdcServerClient, RefreshTokenExchangeError } from "./api";
 
 const GARBAGE_COLLECTION_TIME = 1000 * 60 * 60 * 24 * 7; // 1 week
 
@@ -16,7 +16,33 @@ function shouldThrowError(error: Error) {
   return error instanceof RefreshTokenExchangeError;
 }
 
-const queryClient = new QueryClient({
+/**
+ * A subclass of QueryClient where we can customize the behavior by overriding methods.
+ */
+class NmdcQueryClient extends QueryClient {
+  /**
+   * When the QueryClient is mounted, it sets up listeners to the focused and online states. When
+   * the app becomes focused or goes online, resumePausedMutations is called. However, for our
+   * purposes it is possible that the user gets logged out while there are paused mutation. This
+   * would happen if the user made edits while offline (producing paused mutations) and then was
+   * logged out because their refresh token expired. If the app goes back online at that point, we
+   * do not want to resume the paused mutations because they are guaranteed to fail. Therefore, we
+   * override this method to check if we have a refresh token (i.e. the user hasn't been logged out)
+   * before resuming paused mutations by calling the superclass method.
+   *
+   * While resumePausedMutations is a public method, its usage in the listeners set up during mount
+   * is not exactly documented. We should be careful about this when upgrading react-query.
+   * https://github.com/TanStack/query/blob/v5.66.8/packages/query-core/src/queryClient.ts#L84-L95
+   */
+  async resumePausedMutations() {
+    if (nmdcServerClient.hasRefreshToken()) {
+      return super.resumePausedMutations();
+    }
+    return Promise.resolve();
+  }
+}
+
+const queryClient = new NmdcQueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 20, // 20 seconds

@@ -9,6 +9,17 @@ import { Network } from "@capacitor/network";
 import { PluginListenerHandle } from "@capacitor/core";
 import { onlineManager } from "@tanstack/react-query";
 
+// First, set a no-op event listener for react-query's onlineManager. This removes the default event
+// listener that listens to `online` and `offline` events on the `window` object. We will manage
+// the online state manually below using Capacitor's Network API.
+//
+// Second, react-query assumes an online state by default, but because the app can be opened in an
+// offline state it's safer to assume an offline state by default.
+//
+// See: https://tanstack.com/query/latest/docs/reference/onlineManager
+onlineManager.setEventListener(() => undefined);
+onlineManager.setOnline(false);
+
 interface NetworkStatusContextValue {
   isOnline: boolean;
 }
@@ -33,17 +44,12 @@ const NetworkStatusProvider: React.FC<PropsWithChildren> = ({ children }) => {
         return;
       }
 
-      // React Query does **not** get notified of the initial online status. It assumes an active
-      // network connection by default. Since the app could be opened in an online state, we need to
-      // inform React Query of the initial online status.
-      // See: https://tanstack.com/query/latest/docs/reference/onlineManager
+      // Set the initial online status
       onlineManager.setOnline(initialStatus.connected);
       setIsOnline(initialStatus.connected);
 
+      // Update the online status when Capacitor's Network API reports a change
       listener = await Network.addListener("networkStatusChange", (status) => {
-        // When the network status changes, React Query **should** be capable of tracking the
-        // changes, but there shouldn't be any harm in manually updating the status here, just in
-        // case. Then we know that Capacitor and React Query are in sync.
         onlineManager.setOnline(status.connected);
         setIsOnline(status.connected);
       });

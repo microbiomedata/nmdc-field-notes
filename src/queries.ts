@@ -43,6 +43,8 @@ export const schemaKeys = {
 
 export function addDefaultMutationFns(queryClient: QueryClient) {
   queryClient.setMutationDefaults(submissionKeys.details(), {
+    retry: 3,
+    retryDelay: (attempt) => attempt * 1000 + 2000,
     mutationFn: async (updated: SubmissionMetadataUpdate) => {
       await queryClient.cancelQueries({
         queryKey: submissionKeys.detail(updated.id),
