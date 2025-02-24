@@ -143,8 +143,15 @@ export function useSubmissionList() {
   });
 }
 
-export function useSubmission(id: string) {
+export interface UseSubmissionOptions {
+  retryUpdates?: boolean;
+}
+export function useSubmission(id: string, options: UseSubmissionOptions = {}) {
   const queryClient = useQueryClient();
+  options = {
+    retryUpdates: true,
+    ...options,
+  };
 
   const updateSubmissionInQueryData = (data: SubmissionMetadata) => {
     // Update the individual submission entry
@@ -202,6 +209,10 @@ export function useSubmission(id: string) {
     },
   });
 
+  const mutationDefaults = queryClient.getMutationDefaults(
+    submissionKeys.details(),
+  );
+
   type SubmissionMetadataMutationContext = {
     previousData?: SubmissionMetadata;
   };
@@ -212,6 +223,7 @@ export function useSubmission(id: string) {
     SubmissionMetadataMutationContext
   >({
     mutationKey: submissionKeys.detail(id),
+    retry: options.retryUpdates ? mutationDefaults?.retry : 0,
     onMutate: async (updatedSubmission: SubmissionMetadata) => {
       // If there are previous mutations for this submission, remove them. The latest mutation should
       // contain the most up-to-date data.

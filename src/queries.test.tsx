@@ -203,7 +203,10 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
 
   // Second fetch data from the individual submission query. Wait for the background fetch to
   // complete before proceeding.
-  const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
+  const { result } = renderHook(
+    () => useSubmission(TEST_ID_1, { retryUpdates: false }),
+    { wrapper },
+  );
   await waitFor(() => expect(result.current.query.isFetching).toBe(false));
 
   // Update the submission data. There doesn't seem to be a good way to ensure that the onMutate()
