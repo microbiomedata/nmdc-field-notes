@@ -245,6 +245,14 @@ export function useSubmission(id: string) {
       }
       updateSubmissionInQueryData(context.previousData);
     },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: submissionKeys.detail(id),
+      });
+      return await queryClient.invalidateQueries({
+        queryKey: submissionKeys.list(),
+      });
+    },
   });
 
   const deleteMutation = useMutation<void, DefaultError, string>({
