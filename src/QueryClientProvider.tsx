@@ -19,7 +19,7 @@ function shouldThrowError(error: Error) {
 /**
  * A subclass of QueryClient where we can customize the behavior by overriding methods.
  */
-class NmdcQueryClient extends QueryClient {
+export class NmdcQueryClient extends QueryClient {
   /**
    * When the QueryClient is mounted, it sets up listeners to the focused and online states. When
    * the app becomes focused or goes online, resumePausedMutations is called. However, for our
