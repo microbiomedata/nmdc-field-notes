@@ -85,14 +85,25 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     new Set(),
   );
 
+  /**
+   * Extract the expiration date from a refresh token and set it in the context. If the provided
+   * value is `null`, can't be decoded, or doesn't contain an expiration date, set the expiration
+   * date to `null`.
+   */
   const setRefreshTokenExpiration = useCallback(
     (refreshToken: string | null) => {
       if (refreshToken === null) {
         _setRefreshTokenExpiration(null);
       } else {
-        const decoded = jwtDecode(refreshToken);
-        if (decoded.exp) {
-          _setRefreshTokenExpiration(new Date(decoded.exp * 1000));
+        try {
+          const decoded = jwtDecode(refreshToken);
+          if (decoded.exp) {
+            _setRefreshTokenExpiration(new Date(decoded.exp * 1000));
+          } else {
+            _setRefreshTokenExpiration(null);
+          }
+        } catch (e) {
+          _setRefreshTokenExpiration(null);
         }
       }
     },
