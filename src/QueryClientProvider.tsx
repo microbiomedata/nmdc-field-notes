@@ -25,7 +25,7 @@ function shouldThrowError(error: Error): boolean {
 export class NmdcQueryClient extends QueryClient {
   /**
    * Override the superclass's `resumePausedMutations` method, so we can intercept
-   * invocations of it and abort the resuming if the user lacks a refresh token. 
+   * invocations of it and abort the resuming if the user lacks a refresh token.
    *
    * When the QueryClient is mounted, it sets up listeners to the focused and online states. When
    * the app becomes focused or goes online, resumePausedMutations is called. However, for our
