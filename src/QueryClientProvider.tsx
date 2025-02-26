@@ -12,7 +12,10 @@ import { nmdcServerClient, RefreshTokenExchangeError } from "./api";
 
 const GARBAGE_COLLECTION_TIME = 1000 * 60 * 60 * 24 * 7; // 1 week
 
-function shouldThrowError(error: Error) {
+/**
+ * Determines whether the specified error is one we want to propagate.
+ */
+function shouldThrowError(error: Error): boolean {
   return error instanceof RefreshTokenExchangeError;
 }
 
@@ -21,6 +24,9 @@ function shouldThrowError(error: Error) {
  */
 export class NmdcQueryClient extends QueryClient {
   /**
+   * Override the superclass's `resumePausedMutations` method, so we can intercept
+   * invocations of it and abort the resuming if the user lacks a refresh token. 
+   *
    * When the QueryClient is mounted, it sets up listeners to the focused and online states. When
    * the app becomes focused or goes online, resumePausedMutations is called. However, for our
    * purposes it is possible that the user gets logged out while there are paused mutation. This
@@ -82,7 +88,7 @@ const QueryClientProvider: React.FC<PropsWithChildren> = ({ children }) => {
       persistOptions={{ persister: persister, maxAge: Infinity }}
       // This is fired when the persisted queries are rehydrated. If the user is logged in, resume
       // any paused mutations that were restored. If the user is not logged in, do nothing since the
-      // mutations would not succeed anyway. There is a similar call in TokenPage.tsx to handle
+      // mutations would not succeed anyway. There is a similar call in `TokenPage.tsx` to handle
       // resuming paused mutations after a successful login.
       onSuccess={() => {
         if (isLoggedIn) {

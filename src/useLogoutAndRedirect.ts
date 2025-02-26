@@ -13,7 +13,7 @@ function useLogoutAndRedirect() {
   const { logout, isLoggedIn } = useStore();
 
   const logoutAndRedirect = useCallback(async () => {
-    // This function may be invoked multiple times by a different components, but the process only
+    // This function may be invoked multiple times by different components, but the process only
     // needs to happen once (in particular we don't want multiple toasts to be shown). Check if the
     // user is already logged out and if so, return early.
     if (!isLoggedIn) {

@@ -98,6 +98,8 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         try {
           const decoded = jwtDecode(refreshToken);
           if (decoded.exp) {
+            // Note: We convert seconds to milliseconds here, since the `Date`
+            //       constructor is designed to receive a number of milliseconds.
             _setRefreshTokenExpiration(new Date(decoded.exp * 1000));
           } else {
             _setRefreshTokenExpiration(null);
