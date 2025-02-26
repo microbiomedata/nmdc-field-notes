@@ -1,9 +1,5 @@
 import React, { ReactNode } from "react";
-import {
-  onlineManager,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { onlineManager, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import {
   addDefaultMutationFns,
@@ -19,13 +15,15 @@ import {
   acquireLockConflict,
 } from "./mocks/server";
 import { initSubmission } from "./data";
-import { SubmissionMetadataUpdate } from "./api";
+import { nmdcServerClient, SubmissionMetadataUpdate } from "./api";
+import { NmdcQueryClient } from "./QueryClientProvider";
 
 interface TestWrapperProps {
   children: ReactNode;
 }
 const createWrapper = () => {
-  const queryClient = new QueryClient({
+  nmdcServerClient.setTokens("access-token", "refresh-token");
+  const queryClient = new NmdcQueryClient({
     defaultOptions: {
       queries: {
         gcTime: Infinity,
@@ -39,28 +37,31 @@ const createWrapper = () => {
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
   };
-  return TestWrapper;
+  return {
+    wrapper: TestWrapper,
+    queryClient,
+  };
 };
 
 const TEST_ID_1 = "00000000-0000-0000-0000-000000000001";
 const TEST_ID_2 = "00000000-0000-0000-0000-000000000002";
 
 test("useSubmissionList should return data from the query", async () => {
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
   const { result } = renderHook(() => useSubmissionList(), { wrapper });
   await waitFor(() => expect(result.current.isSuccess).toBe(true));
   expect(result.current.data?.pages[0].results.length).toBeGreaterThan(0);
 });
 
 test("useSubmission should return data from the query", async () => {
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
   const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
   await waitFor(() => expect(result.current.query.isSuccess).toBe(true));
   expect(result.current.query.data?.id).toBe(TEST_ID_1);
 });
 
 test("useSubmission should return initial data from the list query", async () => {
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
 
   // First fetch data from the submission list query
   const { result: listResult } = renderHook(() => useSubmissionList(), {
@@ -83,7 +84,7 @@ test("useSubmission should return initial data from the list query", async () =>
 });
 
 test("useSubmission should mutate data", async () => {
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
 
   // First fetch data from the submission list query
   const { result: listResult, rerender: listRerender } = renderHook(
@@ -149,7 +150,7 @@ test("useSubmission should replace paused mutations when offline", async () => {
   });
 
   // First fetch data from the individual submission query and wait for it to successfully complete
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
   const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
   await waitFor(() => expect(result.current.query.isSuccess).toBe(true));
 
@@ -193,7 +194,7 @@ test("useSubmission should replace paused mutations when offline", async () => {
 test("useSubmission should rollback optimistic updates if a mutation fails", async () => {
   server.use(patchMetadataSubmissionError);
 
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
 
   // First fetch data from the submission list query
   const { result: listResult } = renderHook(() => useSubmissionList(), {
@@ -203,7 +204,10 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
 
   // Second fetch data from the individual submission query. Wait for the background fetch to
   // complete before proceeding.
-  const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
+  const { result } = renderHook(
+    () => useSubmission(TEST_ID_1, { retryUpdates: false }),
+    { wrapper },
+  );
   await waitFor(() => expect(result.current.query.isFetching).toBe(false));
 
   // Update the submission data. There doesn't seem to be a good way to ensure that the onMutate()
@@ -239,7 +243,7 @@ test("useSubmission should rollback optimistic updates if a mutation fails", asy
 });
 
 test("useSubmission should delete submission", async () => {
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
 
   // First fetch data from the submission list query
   const { result: listResult, rerender: listRerender } = renderHook(
@@ -274,7 +278,7 @@ test("useSubmission should delete submission", async () => {
 });
 
 test("useSubmission should update lock status on successful lock acquisition", async () => {
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
 
   const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
   await waitFor(() => expect(result.current.query.isFetching).toBe(false));
@@ -294,7 +298,7 @@ test("useSubmission should update lock status on successful lock acquisition", a
 test("useSubmission should update lock status on lock conflict", async () => {
   server.use(acquireLockConflict);
 
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
 
   const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
   await waitFor(() => expect(result.current.query.isFetching).toBe(false));
@@ -312,7 +316,7 @@ test("useSubmission should update lock status on lock conflict", async () => {
 });
 
 test("useSubmission should release a lock", async () => {
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
 
   const { result } = renderHook(() => useSubmission(TEST_ID_2), { wrapper });
   await waitFor(() => expect(result.current.query.isFetching).toBe(false));
@@ -349,7 +353,7 @@ test("useSubmissionCreate should create submission", async () => {
     }
   });
 
-  const wrapper = createWrapper();
+  const { wrapper } = createWrapper();
 
   // First fetch data from the submission list query
   const { result: listResult, rerender: listRerender } = renderHook(
@@ -381,4 +385,44 @@ test("useSubmissionCreate should create submission", async () => {
     ),
   ).toBeDefined();
   expect(piOwnerUpdated).toBe(true);
+});
+
+test("NmdcQueryClient should not resume paused mutations when logged out", async () => {
+  // First fetch data from the individual submission query and wait for it to successfully complete
+  const { wrapper, queryClient } = createWrapper();
+  const { result } = renderHook(() => useSubmission(TEST_ID_1), { wrapper });
+  await waitFor(() => expect(result.current.query.isSuccess).toBe(true));
+
+  const submissionData = result.current.query.data!;
+
+  // Go offline and make a mutation
+  onlineManager.setOnline(false);
+  const update = produce(submissionData, (draft) => {
+    draft.metadata_submission.studyForm.studyName = "UPDATE";
+  });
+  await act(() => {
+    result.current.updateMutation.mutate(update);
+    return delay(10);
+  });
+
+  // Simulate a logout (e.g. due to a refresh token expiration)
+  nmdcServerClient.setTokens(null, null);
+
+  // Go back online, ensure that the mutation stays in paused state
+  await act(() => {
+    onlineManager.setOnline(true);
+    return delay(10);
+  });
+  expect(result.current.updateMutation.isPaused).toBe(true);
+
+  // Simulate logging back in and resuming paused mutations
+  nmdcServerClient.setTokens("access-token", "refresh-token");
+  await queryClient.resumePausedMutations();
+  await waitFor(() =>
+    expect(result.current.updateMutation.isPaused).toBe(false),
+  );
+  expect(result.current.updateMutation.isSuccess).toBe(true);
+  expect(
+    result.current.query.data?.metadata_submission.studyForm.studyName,
+  ).toBe("UPDATE");
 });

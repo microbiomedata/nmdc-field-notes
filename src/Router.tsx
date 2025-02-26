@@ -18,12 +18,15 @@ import AppUrlListener from "./components/AppUrlListener/AppUrlListener";
 import RootPage from "./pages/RootPage/RootPage";
 import paths, { IN } from "./paths";
 import AnalyticsScreenViewListener from "./AnalyticsScreenViewListener";
+import TokenRefreshErrorBoundary from "./components/TokenRefreshErrorBoundary/TokenRefreshErrorBoundary";
+import RefreshTokenExpirationMonitor from "./components/RefreshTokenExpirationMonitor/RefreshTokenExpirationMonitor";
 
 const Router: React.FC = () => {
   return (
     <IonReactRouter>
       <AppUrlListener />
       <AnalyticsScreenViewListener />
+      <RefreshTokenExpirationMonitor />
       <IonRouterOutlet>
         <Route exact path={paths.token}>
           <TokenPage />
@@ -44,7 +47,9 @@ const Router: React.FC = () => {
         <Route path={IN}>
           <TabNavigator>
             <Route exact path={paths.home}>
-              <HomePage />
+              <TokenRefreshErrorBoundary>
+                <HomePage />
+              </TokenRefreshErrorBoundary>
             </Route>
 
             <Route exact path={paths.guide}>

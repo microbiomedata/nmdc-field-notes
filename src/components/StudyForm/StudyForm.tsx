@@ -315,15 +315,17 @@ const StudyForm: React.FC<StudyFormProps> = ({
         />
       </div>
 
-      <IonButton
-        data-tour={`${TourId.StudyForm}-3`}
-        expand="block"
-        className="ion-padding-horizontal"
-        type="submit"
-        disabled={disabled || (formState.isSubmitted && !formState.isValid)}
-      >
-        {formState.isSubmitting ? "Saving" : "Save"}
-      </IonButton>
+      <div className={styles.saveContainer}>
+        <IonButton
+          data-tour={`${TourId.StudyForm}-3`}
+          expand="block"
+          className="ion-padding-horizontal"
+          type="submit"
+          disabled={disabled || (formState.isSubmitted && !formState.isValid)}
+        >
+          {formState.isSubmitting ? "Saving" : "Save"}
+        </IonButton>
+      </div>
     </form>
   );
 };

@@ -41,7 +41,7 @@ const AppUrlListener: React.FC<Props> = () => {
       // If the path with query string is non-empty, perform client-side navigation to it.
       if (pathWithQueryStr.length > 0) {
         console.debug(`🌎 Navigating to: ${pathWithQueryStr}`);
-        history.push(pathWithQueryStr);
+        history.replace(pathWithQueryStr);
       }
     },
     [history],

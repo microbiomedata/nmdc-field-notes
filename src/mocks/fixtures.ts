@@ -50,7 +50,7 @@ export function generateSubmission(
   };
 }
 
-export const submissions: SubmissionMetadata[] = [
+export const submissions: () => SubmissionMetadata[] = () => [
   {
     metadata_submission: {
       packageName: "soil",

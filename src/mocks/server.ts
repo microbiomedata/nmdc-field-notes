@@ -13,9 +13,9 @@ import { initSubmission } from "../data";
 
 const { NMDC_SERVER_API_URL } = config;
 
-let submissions = submissionsFixture;
+let submissions = submissionsFixture();
 export function resetFixtureData() {
-  submissions = submissionsFixture;
+  submissions = submissionsFixture();
 }
 
 const handlers = [
@@ -41,10 +41,9 @@ const handlers = [
     async ({ params, request }) => {
       const { id } = params;
       const body = await request.json();
-      return HttpResponse.json({
-        ...submissions.find((s) => s.id === id),
-        ...body,
-      });
+      const submission = submissions.find((s) => s.id === id);
+      Object.assign(submission || {}, body);
+      return HttpResponse.json(submission);
     },
   ),
   http.post<Record<never, never>, SubmissionMetadataCreate, SubmissionMetadata>(
