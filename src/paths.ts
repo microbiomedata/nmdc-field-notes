@@ -5,7 +5,6 @@ const SETTINGS = `/settings`;
 const paths = {
   root: "/",
   home: `${IN}${STUDY}`,
-  checklist: "/checklist",
   welcome: "/welcome",
   login: "/login",
   token: "/token",
