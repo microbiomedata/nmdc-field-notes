@@ -1,0 +1,28 @@
+.markdown {
+  font-size: var(--nmdc-font-size-sm);
+  line-height: 1.5;
+
+  a {
+    text-decoration: none;
+  }
+
+  ul {
+    padding-inline-start: 1.25em;
+  }
+
+  li {
+    margin: 10px 0;
+  }
+
+  li::marker {
+    color: var(--ion-color-primary);
+    font-size: 1.25em;
+  }
+
+  blockquote {
+    margin: 0;
+    border-left: 4px solid var(--ion-color-primary);
+    padding-left: 1em;
+    opacity: 0.8;
+  }
+}

@@ -4,6 +4,7 @@ import styles from "./SectionHeader.module.css";
 export enum Variant {
   Default, // receives default styling
   WithinListHeader, // receives custom styling that compensates for `<IonListHeader>` styling
+  NoMargin, // receives no margin
 }
 
 interface Props extends HTMLAttributes<PropsWithChildren> {
@@ -17,12 +18,19 @@ const SectionHeader: React.FC<Props> = ({
   variant = Variant.Default,
 }) => {
   // Customize the `className` value based upon the specified variant.
-  let classNameVal = `${styles.header} ion-margin ${className}`;
-  if (variant === Variant.WithinListHeader) {
-    classNameVal = `${styles.header} ${styles.withinListHeader} ${className}`;
+  const classNameSet = new Set([styles.header]);
+  if (className) {
+    classNameSet.add(className);
+  }
+  if (variant === Variant.Default) {
+    classNameSet.add("ion-margin");
+  } else if (variant === Variant.WithinListHeader) {
+    classNameSet.add(styles.withinListHeader);
+  } else if (variant === Variant.NoMargin) {
+    classNameSet.add("ion-no-margin");
   }
 
-  return <div className={classNameVal}>{children}</div>;
+  return <div className={[...classNameSet].join(" ")}>{children}</div>;
 };
 
 export default SectionHeader;
