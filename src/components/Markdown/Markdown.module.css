@@ -17,6 +17,7 @@
   li::marker {
     color: var(--ion-color-primary);
     font-size: 1.25em;
+    line-height: 0;
   }
 
   blockquote {
