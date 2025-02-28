@@ -159,17 +159,17 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/status-bar"
 
 SPEC CHECKSUMS:
-  Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
-  CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
-  CapacitorBrowser: 7e1e2cdbb3e372f09f0bad0c4c21a6d187b679ad
+  Capacitor: c527d208447590a004f0a4a2c42a5f361848fa8a
+  CapacitorApp: 30145f2ea2311e4f3744472119ec87d2ddf4c0a7
+  CapacitorBrowser: 2c55e9f586ba5a825f09fe7abb51110adf1cd448
   CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
-  CapacitorFirebaseAnalytics: 8205f8274204183618e5be246b3d9cafe7429c88
-  CapacitorGeolocation: 1f12bbe372b65116e851bd8e3a94cf0ef9bacebb
-  CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
-  CapacitorKeyboard: deacbd09d8d1029c3681197fb05d206b721d5f73
-  CapacitorNetwork: 5c94acfdddc22043f2ffaff224ce9b4aa5a179f0
-  CapacitorSplashScreen: 5431ab8d19c1c6e95777d53bfaa7a36a6c3d94c7
-  CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
+  CapacitorFirebaseAnalytics: ea41b789c09aa13dad7be76d8391dfcddc04988c
+  CapacitorGeolocation: 86f82a32b238ff79d5be6fc0943f2866965d3f1b
+  CapacitorHaptics: 0cea833e6a8bf489dd6acaaebf6d953b90086c59
+  CapacitorKeyboard: dc97fe50dcfdcbe12af56c49bbed150077d08043
+  CapacitorNetwork: 7ff188197e880d8485f280492b54d3202e9f3a61
+  CapacitorSplashScreen: 5a016b2f50a3b7aa15e12946c720017e46882d5f
+  CapacitorStatusBar: 129c68650d3f950e080e8e7e03d69c3b361dbe52
   FirebaseAnalytics: 7114c698cac995602e3b1b96663473e50d54d6e7
   FirebaseCore: 48b0dd707581cf9c1a1220da68223fb0a562afaa
   FirebaseCoreInternal: d98ab91e2d80a56d7b246856a8885443b302c0c2
