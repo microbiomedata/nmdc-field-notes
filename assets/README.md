@@ -14,7 +14,3 @@ To regenerate the icon and splash assets for native projects:
 ```bash
 npm run build.assets
 ```
-
-See also:
-- https://github.com/ionic-team/capacitor-assets
-- https://capacitorjs.com/docs/guides/splash-screens-and-icons
