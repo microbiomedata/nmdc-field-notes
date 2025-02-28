@@ -29,7 +29,7 @@ The NMDC Field Notes mobile app is designed to work with or without internet acc
 
 # Basic recommendations for fieldwork
 
-- Bring sunscreen, hat, sunglasses, bug spray.
+- Bring a hat, sunglasses, sunscreen, and bug spray.
 - Tell at least one person where you are going, when you are going, other information about your sampling trip (designate a rendezvous point or time).
 - It is always better to sample with a group or another individual. Try to never go alone.
 - Know local wildlife and the dangers they may pose, and consider bringing wildlife deterrents (e.g., bear spray).
