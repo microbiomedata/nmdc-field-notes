@@ -1,9 +1,9 @@
 {
   "name": "nmdc-field-notes",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "config": {
-    "buildNumber": 12
+    "buildNumber": 13
   },
   "type": "module",
   "scripts": {
