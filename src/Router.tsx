@@ -4,7 +4,6 @@ import { IonRouterOutlet } from "@ionic/react";
 import { Redirect, Route } from "react-router-dom";
 import TokenPage from "./pages/TokenPage/TokenPage";
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
-import ChecklistPage from "./pages/ChecklistPage/ChecklistPage";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import HomePage from "./pages/HomePage/HomePage";
 import StudyViewPage from "./pages/StudyViewPage/StudyViewPage";
@@ -33,9 +32,6 @@ const Router: React.FC = () => {
         </Route>
         <Route exact path={paths.welcome}>
           <WelcomePage />
-        </Route>
-        <Route exact path={paths.checklist}>
-          <ChecklistPage />
         </Route>
 
         {/*
