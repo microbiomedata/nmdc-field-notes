@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "config": {
-    "buildNumber": 10
+    "buildNumber": 11
   },
   "type": "module",
   "scripts": {
