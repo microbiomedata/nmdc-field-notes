@@ -13,6 +13,17 @@ const SettingsAboutList: React.FC = () => {
           </p>
         </IonLabel>
       </IonItem>
+      <IonItem
+        detail={false}
+        href={`mailto:${config.SUPPORT_EMAIL}`}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <IonLabel>
+          <h3>Contact us</h3>
+          <p>Send an email with your comments or questions</p>
+        </IonLabel>
+      </IonItem>
     </IonList>
   );
 };

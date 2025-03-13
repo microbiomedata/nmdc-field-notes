@@ -21,7 +21,7 @@ const TourVisibilityManager: React.FC = () => {
 
   return (
     <>
-      <IonLabel onClick={handleResetClick} color={"primary"}>
+      <IonLabel onClick={handleResetClick}>
         <h3>Reset tours</h3>
         <p>Make the on-screen tours show up again</p>
       </IonLabel>

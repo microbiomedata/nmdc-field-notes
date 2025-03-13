@@ -72,7 +72,8 @@ const config: Config = {
   /**
    * Support email address.
    */
-  SUPPORT_EMAIL: env.VITE_SUPPORT_EMAIL || "support@microbiomedata.org",
+  SUPPORT_EMAIL:
+    env.VITE_SUPPORT_EMAIL || "support+fieldnotes@microbiomedata.org",
 };
 
 export default config;
