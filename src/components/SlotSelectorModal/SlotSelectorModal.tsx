@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import {
   IonButton,
   IonButtons,
@@ -98,6 +98,7 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
   templateName,
 }) => {
   const [selectedSlots, setSelectedSlots] = React.useState<SlotName[]>([]);
+  const contentRef = useRef<HTMLIonContentElement | null>(null);
   const schema = useSubmissionSchema();
 
   const schemaClassName = templateName && TEMPLATES[templateName].schemaClass;
@@ -142,6 +143,11 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
     }
   }, [isOpen, defaultSelectedSlots, slotGroups]);
 
+  // If the list of slots changes, scroll back to the top
+  useEffect(() => {
+    contentRef.current?.scrollToTop(0);
+  }, [slotGroups]);
+
   // When the user taps the Save button, translate the selected slots back into a list of hidden
   // slots and save them to the store. Then close the modal.
   const handleSave = () => {
@@ -171,7 +177,7 @@ const SlotSelectorModal: React.FC<SlotSelectorModalProps> = ({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent ref={contentRef}>
         <div className="ion-padding nmdc-text-sm">
           Select the fields you would like to see when viewing and editing
           sample metadata for the <b>{templateDisplayName} template</b>.

@@ -50,47 +50,48 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
   const [toursAllowed, setToursAllowed] = React.useState(false);
 
   const templateVisibleSlots = useMemo(() => {
-    const fieldVisibilityInfo: TemplateVisibleSlots[] = [];
-    if (submission.data) {
-      if (!("field_notes_metadata" in submission.data)) {
-        return undefined;
-      }
-      const templates = getSubmissionTemplates(submission.data);
-      templates.forEach((templateName) => {
-        const template = TEMPLATES[templateName];
-        fieldVisibilityInfo.push({
-          template: templateName,
-          templateDisplay: template.displayName,
-          visibleSlots:
-            submission.data.field_notes_metadata?.fieldVisibility?.[
-              templateName
-            ],
-        });
-      });
+    if (!submission.data) {
+      return undefined;
     }
+    const fieldVisibilityInfo: TemplateVisibleSlots[] = [];
+    const templates = getSubmissionTemplates(submission.data);
+    templates.forEach((templateName) => {
+      const template = TEMPLATES[templateName];
+      fieldVisibilityInfo.push({
+        template: templateName,
+        templateDisplay: template.displayName,
+        visibleSlots:
+          submission.data.field_notes_metadata?.fieldVisibility?.[templateName],
+      });
+    });
     return fieldVisibilityInfo;
   }, [submission.data]);
 
   useEffect(() => {
-    // If the slot selector is not already open, iterate through the study's templates. If one of
-    // them has no slot visibility information (this could be because it is a brand-new study or
-    // because it was created via the submission portal and this is the first time opening it in the
-    // app), open the slot selector for that template.
-    if (
-      modalTemplateVisibleSlots !== undefined ||
-      templateVisibleSlots === undefined
-    ) {
+    // If the submission data has not loaded yet, bail out early
+    if (templateVisibleSlots === undefined) {
       return;
     }
-    for (const item of templateVisibleSlots) {
-      if (item.visibleSlots === undefined) {
-        setModalTemplateVisibleSlots(item);
-        setToursAllowed(false);
-        return;
-      }
+
+    // Identify the templates with no slot visibility information (this could be because it is a
+    // brand-new study or because it was created via the submission portal and this is the first
+    // time opening it in the app). If there is at least one such template, open the slot selector
+    // for the first one and prevent tours from starting. When the user saves the slot visibility
+    // information for that template, `templateVisibleSlots` will be updated and this effect will
+    // run again and check if there are any templates left without visibility information. Once all
+    // templates have visibility information, the modal will be closed (by setting the state to
+    // `undefined`) and tours will be allowed to start.
+    const templatesWithNoVisibilityInfo = templateVisibleSlots.filter(
+      (item) => item.visibleSlots === undefined,
+    );
+    if (templatesWithNoVisibilityInfo.length > 0) {
+      setToursAllowed(false);
+      setModalTemplateVisibleSlots(templatesWithNoVisibilityInfo[0]);
+    } else {
+      setToursAllowed(true);
+      setModalTemplateVisibleSlots(undefined);
     }
-    setToursAllowed(true);
-  }, [modalTemplateVisibleSlots, templateVisibleSlots]);
+  }, [templateVisibleSlots]);
 
   const handleSampleCreate = async (template: TemplateName) => {
     if (!submission.data) {
@@ -149,11 +150,7 @@ const StudyView: React.FC<StudyViewProps> = ({ submissionId }) => {
         modalTemplateVisibleSlots!.template
       ] = selectedSlots;
     });
-    updateMutation.mutate(updatedSubmission, {
-      onSuccess: () => {
-        setModalTemplateVisibleSlots(undefined);
-      },
-    });
+    updateMutation.mutate(updatedSubmission);
   };
 
   return (
