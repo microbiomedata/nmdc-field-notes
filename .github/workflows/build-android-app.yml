@@ -54,21 +54,22 @@ jobs:
         working-directory: android
         run: chmod +x ./gradlew
       # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
+      # Reference: https://developer.android.com/build/building-cmdline#build_apk
       - name: Generate APK
         working-directory: android
         # Note: Instead of renaming the APK file now, we'll rename it after we download it as an artifact.
         run: ./gradlew --no-daemon build
+      - name: Show built files
+        working-directory: android
+        run: ls -al app/build/outputs/apk/release
+      - name: Upload APK as a GHA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: android/app/build/outputs/apk/release/app-prod-release-unsigned.apk
       - name: Generate AAB
         working-directory: android
         run: ./gradlew --no-daemon bundle
-      - name: Show built files
-        working-directory: android
-        run: ls -alR
-      # - name: Upload APK as a GHA artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: apk
-      #     path: android/build/app-prod-release.apk
       # - name: Upload AAB as a GHA artifact
       #   uses: actions/upload-artifact@v4
       #   with:
