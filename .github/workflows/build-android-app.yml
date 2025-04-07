@@ -59,9 +59,8 @@ jobs:
         working-directory: android
         # Note: Instead of renaming the APK file now, we'll rename it after we download it as an artifact.
         run: ./gradlew --no-daemon build
-      - name: Show built files
-        working-directory: android
-        run: ls -al app/build/outputs/apk/prod/release
+      - name: Show generated file(s)
+        run: ls -al android/app/build/outputs/apk/prod/release
       - name: Upload APK as a GHA artifact
         uses: actions/upload-artifact@v4
         with:
@@ -70,8 +69,10 @@ jobs:
       - name: Generate AAB
         working-directory: android
         run: ./gradlew --no-daemon bundle
-      # - name: Upload AAB as a GHA artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: aab
-      #     path: android/build/app-prod-release.aab
+      - name: Show generated file(s)
+        run: ls -al android/app/build/outputs/bundle/release
+      - name: Upload AAB as a GHA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aab
+          path: android/app/build/outputs/bundle/release/app-prod-release-unsigned.aab
