@@ -1,0 +1,56 @@
+name: Build Android app
+
+# Configure GitHub Actions to run the jobs whenever any of these things happens:
+# 1. Someone clicks the "Run workflow" button on the "Actions" page on GitHub.
+# 2. Someone pushes commits onto the `main` branch.
+# 3. Someone opens a Pull Request based upon the `main` branch.
+#
+# References:
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
+on:
+    workflow_dispatch: {}
+    push:
+      branches: [main]
+    pull_request:
+      branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building commit ${{ github.sha }}"
+      - name: Check out the commit
+        uses: actions/checkout@v4
+      # TODO: Set up keystore.
+      - run: echo TODO
+      - name: Set up Java
+        uses: actions/setup-java@v4  # docs: https://github.com/actions/setup-java
+        with:
+          distribution: corretto  # "corretto" refers to the "Amazon Corretto Build of OpenJDK"
+          java-version: 17
+          cache: gradle
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3  # docs: https://github.com/marketplace/actions/setup-android-sdk-tools
+        with:
+          # Specify Android SDK 34 using its "command-line identifier" from https://developer.android.com/studio#command-line-tools-only
+          # Note: Android SDK 34 is the "targetSdkVersion" listed in `android/variables.gradle`.
+          cmdline-tools-version: 13114758  # `13114758` is Android SDK 34
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          # See Node.js support timeline at: https://nodejs.org/en/about/previous-releases#release-schedule
+          node-version: 20
+          cache: npm
+      - name: Install npm packages
+        run: npm ci
+      - name: Build and copy web assets 
+        run: ionic capacitor sync android
+      # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
+      - name: Build Android app
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew --no-daemon build
+          ls -al
