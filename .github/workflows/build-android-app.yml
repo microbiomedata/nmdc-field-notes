@@ -47,12 +47,33 @@ jobs:
         run: npm ci
       - name: Install Ionic CLI
         run: npm install -g @ionic/cli
-      - name: Build and copy web assets 
+      - name: Build and copy web assets
         run: ionic capacitor sync android
+      # TODO: I don't know whether this step is necessary.
+      - name: Make gradle wrapper executable
+        working-directory: android
+        run: chmod +x ./gradlew
       # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
-      - name: Build Android app
+      - name: Generate APK
+        working-directory: android
+        # Note: Instead of renaming the APK file now, we'll rename it after we download it as an artifact.
         run: |
-          cd android
-          chmod +x ./gradlew
           ./gradlew --no-daemon build
-          ls -al
+          ls -al ./app/prod/release
+          stat ./app/prod/release/app-prod-release.apk
+      - name: Generate AAB
+        working-directory: android
+        run: |
+          ./gradlew --no-daemon bundle
+          ls -al ./app/prod/release
+          stat ./app/prod/release/app-prod-release.aab
+      - name: Upload APK as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: android/app/prod/release/app-prod-release.apk
+      - name: Upload AAB as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aab
+          path: android/app/prod/release/app-prod-release.aab
