@@ -10,11 +10,11 @@ name: Build Android app
 # - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
 # - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
 on:
-    workflow_dispatch: {}
-    push:
-      branches: [main]
-    pull_request:
-      branches: [main]
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
@@ -26,17 +26,17 @@ jobs:
       # TODO: Set up keystore.
       - run: echo TODO
       - name: Set up Java
-        uses: actions/setup-java@v4  # docs: https://github.com/actions/setup-java
+        uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
         with:
-          distribution: corretto  # "corretto" refers to the "Amazon Corretto Build of OpenJDK"
+          distribution: corretto # "corretto" refers to the "Amazon Corretto Build of OpenJDK"
           java-version: 17
           cache: gradle
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3  # docs: https://github.com/marketplace/actions/setup-android-sdk-tools
+        uses: android-actions/setup-android@v3 # docs: https://github.com/marketplace/actions/setup-android-sdk-tools
         with:
           # Specify Android SDK 34 using its "command-line identifier" from https://developer.android.com/studio#command-line-tools-only
           # Note: Android SDK 34 is the "targetSdkVersion" listed in `android/variables.gradle`.
-          cmdline-tools-version: 13114758  # `13114758` is Android SDK 34
+          cmdline-tools-version: 13114758 # `13114758` is Android SDK 34
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -57,16 +57,12 @@ jobs:
       - name: Generate APK
         working-directory: android
         # Note: Instead of renaming the APK file now, we'll rename it after we download it as an artifact.
-        run: |
-          ./gradlew --no-daemon build
-          ls -al ./app/prod/release
-          stat ./app/prod/release/app-prod-release.apk
+        run: ./gradlew --no-daemon build
       - name: Generate AAB
         working-directory: android
-        run: |
-          ./gradlew --no-daemon bundle
-          ls -al ./app/prod/release
-          stat ./app/prod/release/app-prod-release.aab
+        run: ./gradlew --no-daemon bundle
+      - name: Show built files
+        run: ls -alR ./build
       - name: Upload APK as an artifact
         uses: actions/upload-artifact@v4
         with:
