@@ -45,6 +45,8 @@ jobs:
           cache: npm
       - name: Install npm packages
         run: npm ci
+      - name: Install Ionic CLI
+        run: npm install -g @ionic/cli
       - name: Build and copy web assets 
         run: ionic capacitor sync android
       # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
