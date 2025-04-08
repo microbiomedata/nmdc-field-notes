@@ -49,10 +49,6 @@ jobs:
         run: npm install -g @ionic/cli
       - name: Build and copy web assets
         run: ionic capacitor sync android
-      # TODO: I don't know whether this step is necessary.
-      - name: Make gradle wrapper executable
-        working-directory: android
-        run: chmod +x ./gradlew
       # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
       # Reference: https://developer.android.com/build/building-cmdline#build_apk
       - name: Generate APK
