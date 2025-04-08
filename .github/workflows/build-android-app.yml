@@ -23,9 +23,13 @@ jobs:
       - run: echo "Building commit ${{ github.sha }}"
       - name: Check out the commit
         uses: actions/checkout@v4
-      # TODO: Set up keystore.
-      - run: echo TODO
-      - name: Set up Java
+      # TODO: To prepare, encode the keystore file contents as a base64 string, and
+      #       store it—and the password(s) necessary to access it—in GitHub secrets.
+      #       Then, here in the GHA workflow, decode the base64 string back into a
+      #       keystore file.
+      - name: Set up keystore (TODO)
+        run: echo TODO
+      - name: Set up Java (OpenJDK)
         uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
         with:
           distribution: corretto # "corretto" refers to the "Amazon Corretto Build of OpenJDK"
@@ -43,10 +47,10 @@ jobs:
           # See Node.js support timeline at: https://nodejs.org/en/about/previous-releases#release-schedule
           node-version: 20
           cache: npm
-      - name: Install npm packages
-        run: npm ci
-      - name: Install Ionic CLI
-        run: npm install -g @ionic/cli
+      - name: Install NPM packages
+        run: |
+          npm ci
+          npm install -g @ionic/cli
       - name: Build and copy web assets
         run: ionic capacitor sync android
       # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
