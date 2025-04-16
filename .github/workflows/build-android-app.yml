@@ -23,12 +23,20 @@ jobs:
       - run: echo "Building commit ${{ github.sha }}"
       - name: Check out the commit
         uses: actions/checkout@v4
-      # TODO: To prepare, encode the keystore file contents as a base64 string, and
-      #       store it—and the password(s) necessary to access it—in GitHub secrets.
-      #       Then, here in the GHA workflow, decode the base64 string back into a
-      #       keystore file.
-      - name: Set up keystore (TODO)
-        run: echo TODO
+      # TODO: Incorporate the keystore file into the APK/AAB build processes.
+      #
+      # Note: We store the keystore as a GitHub Secret. The stored version is both AES-encrypted
+      #       (to protect against accidental exposure) and Base64-encoded (to store it as a string).
+      #       In order to use it within this workflow, we first decode it, then decrypt it.
+      - name: Decode and decrypt keystore file
+        working-directory: android
+        run: |
+          echo "Decoding the keystore file."
+          echo "${{ secrets.ANDROID_KEYSTORE_ENCRYPTED_ENCODED }}" | base64 --decode > ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc
+          stat ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc
+          echo "Decrypting the keystore file."
+          echo "${{ secrets.ANDROID_KEYSTORE_DECRYPTION_KEY }}" | openssl enc -d -aes256 -pbkdf2 -in ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc | tar xz
+          stat ./org.microbiomedata.fieldnotes.keystore
       - name: Set up Java (OpenJDK)
         uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
         with:
