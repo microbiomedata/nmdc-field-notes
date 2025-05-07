@@ -64,7 +64,7 @@ jobs:
         run: |
           line_number=$(awk '/android *{/{print NR; exit}' app/build.gradle)
           echo "Inserting text within the 'android' block on line ${line_number}"
-          sed -i "${line_number}a \n    signingConfigs {\n        release {\n            keyAlias keystoreProperties['keyAlias']\n            keyPassword keystoreProperties['keyPassword']\n            storeFile file(keystoreProperties['storeFile'])\n            storePassword keystoreProperties['storePassword']\n        }\n    }\n" ./app/build.gradle
+          sed -i "${line_number}a \    signingConfigs {\n        release {\n            keyAlias keystoreProperties['keyAlias']\n            keyPassword keystoreProperties['keyPassword']\n            storeFile file(keystoreProperties['storeFile'])\n            storePassword keystoreProperties['storePassword']\n        }\n    }\n" ./app/build.gradle
           cat app/build.gradle
       # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
       - name: Add `signingConfigs.release` reference to `app/build.gradle` file
@@ -74,7 +74,7 @@ jobs:
           build_types_line_number=$(awk "NR > $android_line_number && /buildTypes *{/{print NR; exit}" app/build.gradle)
           line_number=$(awk "NR > $build_types_line_number && /release *{/{print NR; exit}" app/build.gradle)
           echo "Inserting text within the 'android.buildTypes.release' block on line ${line_number}"
-          sed -i "${line_number}a \n            signingConfig signingConfigs.release" ./app/build.gradle
+          sed -i "${line_number}a \            signingConfig signingConfigs.release" ./app/build.gradle
           cat app/build.gradle
       - name: Set up Java (OpenJDK)
         uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
