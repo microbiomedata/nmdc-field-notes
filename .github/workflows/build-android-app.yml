@@ -43,25 +43,38 @@ jobs:
           echo 'keyPassword=${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}' >> ./keystore.properties
           echo 'keyAlias=${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}'       >> ./keystore.properties
           echo 'storeFile=./org.microbiomedata.fieldnotes.keystore'       >> ./keystore.properties
+          wc -l ./keystore.properties
       # Add lines that reference the `keystore.properties` file, to the top of the `build.gradle` file.
       # Note: To effectively "prepend" the lines, we first write everything to a temporary file in the
       #       order we want, then we overwrite the target file with the contents of that temporary file.
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
-      - name: Update `app/build.gradle` to reference `keystore.properties` file
+      - name: Update `app/build.gradle` file to reference `keystore.properties` file
         working-directory: android
         run: |
           echo 'def keystorePropertiesFile = rootProject.file("keystore.properties")' >  ./app/build.gradle.tmp
           echo 'def keystoreProperties = new Properties()'                            >> ./app/build.gradle.tmp
           echo 'keystoreProperties.load(new FileInputStream(keystorePropertiesFile))' >> ./app/build.gradle.tmp
+          echo ''                                                                     >> ./app/build.gradle.tmp
           cat  ./app/build.gradle                                                     >> ./app/build.gradle.tmp
           mv   ./app/build.gradle.tmp ./app/build.gradle
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
       - name: Add `signingConfigs` section to `app/build.gradle` file
         working-directory: android
         run: |
-          line_number=$(grep -n 'android {' app/build.gradle | cut -d: -f1)
-          echo "Inserting text after the android configuration block on line ${line_number}"
-          sed -i "${line_number}a signingConfigs {\n config {\n keyAlias keystoreProperties['keyAlias']\n keyPassword keystoreProperties['keyPassword']\n storeFile file(keystoreProperties['storeFile'])\n storePassword keystoreProperties['storePassword']\n }\n }\n" ./app/build.gradle
+          line_number=$(awk '/android *{/{print NR; exit}' app/build.gradle)
+          echo "Inserting text within the 'android' block on line ${line_number}"
+          sed -i "${line_number}a \n    signingConfigs {\n        release {\n            keyAlias keystoreProperties['keyAlias']\n            keyPassword keystoreProperties['keyPassword']\n            storeFile file(keystoreProperties['storeFile'])\n            storePassword keystoreProperties['storePassword']\n        }\n    }\n" ./app/build.gradle
+          cat app/build.gradle
+      # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
+      - name: Add `signingConfigs.release` reference to `app/build.gradle` file
+        working-directory: android
+        run: |
+          android_line_number=$(awk '/android *{/{print NR; exit}' app/build.gradle)
+          build_types_line_number=$(awk "NR > $android_line_number && /buildTypes *{/{print NR; exit}" app/build.gradle)
+          line_number=$(awk "NR > $build_types_line_number && /release *{/{print NR; exit}" app/build.gradle)
+          echo "Inserting text within the 'android.buildTypes.release' block on line ${line_number}"
+          sed -i "${line_number}a \n            signingConfig signingConfigs.release" ./app/build.gradle
           cat app/build.gradle
       - name: Set up Java (OpenJDK)
         uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
@@ -89,20 +102,21 @@ jobs:
         run: ionic capacitor sync android
       # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
       # Reference: https://developer.android.com/build/building-cmdline#build_apk
+      # Reference: https://stackoverflow.com/questions/40219917/what-is-the-difference-between-gradlew-build-and-gradlew-assemblerelease
       - name: Generate APK
         working-directory: android
         # Note: Instead of renaming the APK file now, we'll rename it after we download it as an artifact.
-        run: ./gradlew --no-daemon build
+        run: ./gradlew --no-daemon assembleRelease
       - name: Show generated file(s)
         run: find . -name "*.apk" -type f
       - name: Upload APK as a GHA artifact
         uses: actions/upload-artifact@v4
         with:
           name: apk
-          path: android/app/build/outputs/apk/prod/release/app-prod-release-unsigned.apk
+          path: android/app/build/outputs/apk/prod/release/app-prod-release-signed.apk
       - name: Generate AAB
         working-directory: android
-        run: ./gradlew --no-daemon bundle
+        run: ./gradlew --no-daemon bundleRelease
       - name: Show generated file(s)
         run: find . -name "*.aab" -type f
       - name: Upload AAB as a GHA artifact
