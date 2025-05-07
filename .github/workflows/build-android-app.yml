@@ -23,8 +23,6 @@ jobs:
       - run: echo "Building commit ${{ github.sha }}"
       - name: Check out the commit
         uses: actions/checkout@v4
-      # TODO: Incorporate the keystore file into the APK/AAB build processes.
-      #
       # Note: We store the keystore as a GitHub Secret. The stored version is both AES-encrypted
       #       (to protect against accidental exposure) and Base64-encoded (to store it as a string).
       #       In order to use it within this workflow, we first decode it, then decrypt it.
@@ -37,6 +35,34 @@ jobs:
           echo "Decrypting the keystore file."
           echo "${{ secrets.ANDROID_KEYSTORE_DECRYPTION_KEY }}" | openssl enc -d -aes256 -pbkdf2 -in ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc | tar xz
           stat ./org.microbiomedata.fieldnotes.keystore
+      # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      - name: Create `keystore.properties` file
+        working-directory: android
+        run: |
+          echo 'storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}'   >  ./keystore.properties
+          echo 'keyPassword=${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}' >> ./keystore.properties
+          echo 'keyAlias=${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}'       >> ./keystore.properties
+          echo 'storeFile=./org.microbiomedata.fieldnotes.keystore'       >> ./keystore.properties
+      # Add lines that reference the `keystore.properties` file, to the top of the `build.gradle` file.
+      # Note: To effectively "prepend" the lines, we first write everything to a temporary file in the
+      #       order we want, then we overwrite the target file with the contents of that temporary file.
+      # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      - name: Update `app/build.gradle` to reference `keystore.properties` file
+        working-directory: android
+        run: |
+          echo 'def keystorePropertiesFile = rootProject.file("keystore.properties")' >  ./app/build.gradle.tmp
+          echo 'def keystoreProperties = new Properties()'                            >> ./app/build.gradle.tmp
+          echo 'keystoreProperties.load(new FileInputStream(keystorePropertiesFile))' >> ./app/build.gradle.tmp
+          cat  ./app/build.gradle                                                     >> ./app/build.gradle.tmp
+          mv   ./app/build.gradle.tmp ./app/build.gradle
+      # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      - name: Add `signingConfigs` section to `app/build.gradle` file
+        working-directory: android
+        run: |
+          line_number=$(grep -n 'android {' app/build.gradle | cut -d: -f1)
+          echo "Inserting text after the android configuration block on line ${line_number}"
+          sed -i "${line_number}a signingConfigs {\n config {\n keyAlias keystoreProperties['keyAlias']\n keyPassword keystoreProperties['keyPassword']\n storeFile file(keystoreProperties['storeFile'])\n storePassword keystoreProperties['storePassword']\n }\n }\n" ./app/build.gradle
+          cat app/build.gradle
       - name: Set up Java (OpenJDK)
         uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
         with:
