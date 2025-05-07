@@ -42,7 +42,7 @@ jobs:
           echo 'storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}'   >  ./keystore.properties
           echo 'keyPassword=${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}' >> ./keystore.properties
           echo 'keyAlias=${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}'       >> ./keystore.properties
-          echo 'storeFile=./org.microbiomedata.fieldnotes.keystore'       >> ./keystore.properties
+          echo 'storeFile=../org.microbiomedata.fieldnotes.keystore'      >> ./keystore.properties
           wc -l ./keystore.properties
       # Add lines that reference the `keystore.properties` file, to the top of the `build.gradle` file.
       # Note: To effectively "prepend" the lines, we first write everything to a temporary file in the
