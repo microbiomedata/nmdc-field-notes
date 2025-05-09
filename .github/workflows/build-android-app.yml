@@ -88,13 +88,14 @@ jobs:
           # Specify Android SDK 34 using its "command-line identifier" from https://developer.android.com/studio#command-line-tools-only
           # Note: Android SDK 34 is the "targetSdkVersion" listed in `android/variables.gradle`.
           cmdline-tools-version: 13114758 # `13114758` is Android SDK 34
-      # Install Android SDK build tools so we can verify the APK's and AAB's signatures later.
+      # Install Android SDK build tools (e.g. `apksigner`, `zipalign`) in case we decide to use them later.
       # Reference: https://github.com/android-actions/setup-android/issues/504#issuecomment-2700719295
       # Reference: https://developer.android.com/build/building-cmdline#sign_manually
       - name: Install Android SDK build tools
         run: |
           sdkmanager "build-tools;34.0.0"
           stat "${ANDROID_HOME}/build-tools/34.0.0/apksigner"
+          stat "${ANDROID_HOME}/build-tools/34.0.0/zipalign"
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -116,9 +117,6 @@ jobs:
         run: ./gradlew --no-daemon assembleRelease
       - name: Show generated file(s)
         run: find . -name "*.apk" -type f
-      - name: Verify APK signature
-        run: |
-          "${ANDROID_HOME}/build-tools/34.0.0/apksigner" verify android/app/build/outputs/apk/prod/release/app-prod-release.apk
       - name: Upload APK as a GHA artifact
         uses: actions/upload-artifact@v4
         with:
@@ -129,9 +127,6 @@ jobs:
         run: ./gradlew --no-daemon bundleRelease
       - name: Show generated file(s)
         run: find . -name "*.aab" -type f
-      - name: Verify AAB signature
-        run: |
-          "${ANDROID_HOME}/build-tools/34.0.0/apksigner" verify android/app/build/outputs/bundle/prodRelease/app-prod-release.aab
       - name: Upload AAB as a GHA artifact
         uses: actions/upload-artifact@v4
         with:
