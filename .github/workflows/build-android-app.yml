@@ -1,0 +1,134 @@
+name: Build Android app
+
+# Configure GitHub Actions to run the jobs whenever any of these things happens:
+# 1. Someone clicks the "Run workflow" button on the "Actions" page on GitHub.
+# 2. Someone pushes commits onto the `main` branch.
+# 3. Someone opens a Pull Request based upon the `main` branch.
+#
+# References:
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building commit ${{ github.sha }}"
+      - name: Check out the commit
+        uses: actions/checkout@v4
+      # Note: We store the keystore as a GitHub Secret. The stored version is both AES-encrypted
+      #       (to protect against accidental exposure) and Base64-encoded (to store it as a string).
+      #       In order to use it within this workflow, we first decode it, then decrypt it.
+      - name: Decode and decrypt keystore file
+        working-directory: android
+        run: |
+          echo "Decoding the keystore file."
+          echo "${{ secrets.ANDROID_KEYSTORE_ENCRYPTED_ENCODED }}" | base64 --decode > ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc
+          stat ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc
+          echo "Decrypting the keystore file."
+          echo "${{ secrets.ANDROID_KEYSTORE_DECRYPTION_KEY }}" | openssl enc -d -aes256 -pbkdf2 -in ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc | tar xz
+          stat ./org.microbiomedata.fieldnotes.keystore
+      # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      - name: Create `keystore.properties` file
+        working-directory: android
+        run: |
+          echo 'storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}'   >  ./keystore.properties
+          echo 'keyPassword=${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}' >> ./keystore.properties
+          echo 'keyAlias=${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}'       >> ./keystore.properties
+          echo 'storeFile=../org.microbiomedata.fieldnotes.keystore'      >> ./keystore.properties
+          wc -l ./keystore.properties
+      # Add lines that reference the `keystore.properties` file, to the top of the `build.gradle` file.
+      # Note: To effectively "prepend" the lines, we first write everything to a temporary file in the
+      #       order we want, then we overwrite the target file with the contents of that temporary file.
+      # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      - name: Update `app/build.gradle` file to reference `keystore.properties` file
+        working-directory: android
+        run: |
+          echo 'def keystorePropertiesFile = rootProject.file("keystore.properties")' >  ./app/build.gradle.tmp
+          echo 'def keystoreProperties = new Properties()'                            >> ./app/build.gradle.tmp
+          echo 'keystoreProperties.load(new FileInputStream(keystorePropertiesFile))' >> ./app/build.gradle.tmp
+          echo ''                                                                     >> ./app/build.gradle.tmp
+          cat  ./app/build.gradle                                                     >> ./app/build.gradle.tmp
+          mv   ./app/build.gradle.tmp ./app/build.gradle
+      # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
+      - name: Add `signingConfigs` section to `app/build.gradle` file
+        working-directory: android
+        run: |
+          line_number=$(awk '/android *{/{print NR; exit}' app/build.gradle)
+          echo "Inserting text within the 'android' block on line ${line_number}"
+          sed -i "${line_number}a \    signingConfigs {\n        release {\n            keyAlias keystoreProperties['keyAlias']\n            keyPassword keystoreProperties['keyPassword']\n            storeFile file(keystoreProperties['storeFile'])\n            storePassword keystoreProperties['storePassword']\n        }\n    }\n" ./app/build.gradle
+          wc -l ./app/build.gradle
+      # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
+      - name: Add `signingConfigs.release` reference to `app/build.gradle` file
+        working-directory: android
+        run: |
+          android_line_number=$(awk '/android *{/{print NR; exit}' app/build.gradle)
+          build_types_line_number=$(awk "NR > $android_line_number && /buildTypes *{/{print NR; exit}" app/build.gradle)
+          line_number=$(awk "NR > $build_types_line_number && /release *{/{print NR; exit}" app/build.gradle)
+          echo "Inserting text within the 'android.buildTypes.release' block on line ${line_number}"
+          sed -i "${line_number}a \            signingConfig signingConfigs.release" ./app/build.gradle
+          cat app/build.gradle
+      - name: Set up Java (OpenJDK)
+        uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
+        with:
+          distribution: corretto # "corretto" refers to the "Amazon Corretto Build of OpenJDK"
+          java-version: 17
+          cache: gradle
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3 # docs: https://github.com/marketplace/actions/setup-android-sdk-tools
+        with:
+          # Specify Android SDK 34 using its "command-line identifier" from https://developer.android.com/studio#command-line-tools-only
+          # Note: Android SDK 34 is the "targetSdkVersion" listed in `android/variables.gradle`.
+          cmdline-tools-version: 13114758 # `13114758` is Android SDK 34
+      # Install Android SDK build tools (e.g. `apksigner`, `zipalign`) in case we decide to use them later.
+      # Reference: https://github.com/android-actions/setup-android/issues/504#issuecomment-2700719295
+      # Reference: https://developer.android.com/build/building-cmdline#sign_manually
+      - name: Install Android SDK build tools
+        run: |
+          sdkmanager "build-tools;34.0.0"
+          stat "${ANDROID_HOME}/build-tools/34.0.0/apksigner"
+          stat "${ANDROID_HOME}/build-tools/34.0.0/zipalign"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          # See Node.js support timeline at: https://nodejs.org/en/about/previous-releases#release-schedule
+          node-version: 20
+          cache: npm
+      - name: Install NPM packages
+        run: |
+          npm ci
+          npm install -g @ionic/cli
+      - name: Build and copy web assets
+        run: ionic capacitor sync android
+      # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
+      # Reference: https://developer.android.com/build/building-cmdline#build_apk
+      # Reference: https://stackoverflow.com/questions/40219917/what-is-the-difference-between-gradlew-build-and-gradlew-assemblerelease
+      - name: Generate APK
+        working-directory: android
+        # Note: Instead of renaming the APK file now, we'll rename it after we download it as an artifact.
+        run: ./gradlew --no-daemon assembleRelease
+      - name: Show generated file(s)
+        run: find . -name "*.apk" -type f
+      - name: Upload APK as a GHA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: android/app/build/outputs/apk/prod/release/app-prod-release.apk
+      - name: Generate AAB
+        working-directory: android
+        run: ./gradlew --no-daemon bundleRelease
+      - name: Show generated file(s)
+        run: find . -name "*.aab" -type f
+      - name: Upload AAB as a GHA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aab
+          path: android/app/build/outputs/bundle/prodRelease/app-prod-release.aab
