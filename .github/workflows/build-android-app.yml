@@ -94,9 +94,8 @@ jobs:
       - name: Install Android SDK build tools
         run: |
           sdkmanager "build-tools;34.0.0"
-          echo "$ANDROID_HOME/build-tools/34.0.0" >> "$GITHUB_PATH"
-          apksigner --help
-          zipalign  --help
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" --version
+          "$ANDROID_HOME/build-tools/34.0.0/zipalign" --version
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
