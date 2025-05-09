@@ -88,6 +88,16 @@ jobs:
           # Specify Android SDK 34 using its "command-line identifier" from https://developer.android.com/studio#command-line-tools-only
           # Note: Android SDK 34 is the "targetSdkVersion" listed in `android/variables.gradle`.
           cmdline-tools-version: 13114758 # `13114758` is Android SDK 34
+      # Check whether tools related to manually signing the builds are present.
+      # Reference: https://developer.android.com/build/building-cmdline#sign_manually
+      - name: Verify presence of tools
+        run: |
+          which zipalign
+          which apksigner
+          zipalign  --version
+          apksigner --version
+          zipalign  --help
+          apksigner --help
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
