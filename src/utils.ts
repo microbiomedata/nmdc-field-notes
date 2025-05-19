@@ -5,10 +5,6 @@ import { SlotDefinition } from "./linkml-metamodel";
 /**
  * Get the templates associated with a submission.
  *
- * This function is mainly useful to ease the transition between the old format where the
- * `packageName` field was a string and the new format where it is an array of strings.
- * This function always returns an array of strings.
- *
  * @param submission
  */
 export function getSubmissionTemplates(
@@ -18,13 +14,6 @@ export function getSubmissionTemplates(
     return [];
   }
   const { packageName } = submission.metadata_submission;
-  if (typeof packageName === "string") {
-    if (packageName === "") {
-      return [];
-    } else {
-      return [packageName];
-    }
-  }
   return packageName;
 }
 
