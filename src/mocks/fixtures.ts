@@ -1,5 +1,5 @@
 import { FetchClient, SubmissionMetadata } from "../api";
-import { initAddressForm, initContextForm, initMultiOmicsForm } from "../data";
+import { initAddressForm, initMultiOmicsForm, initStudyForm } from "../data";
 import config from "../config";
 
 export function generateSubmission(
@@ -17,22 +17,11 @@ export function generateSubmission(
     created: "2021-01-01T00:00:00Z",
     author_orcid: "0000-0000-0000-0000",
     metadata_submission: {
-      packageName: "soil",
+      packageName: ["soil"],
       multiOmicsForm: initMultiOmicsForm(),
-      contextForm: initContextForm(),
       addressForm: initAddressForm(),
       templates: ["soil"],
-      studyForm: {
-        studyName: "",
-        piName: "",
-        piEmail: "",
-        piOrcid: "",
-        linkOutWebpage: [],
-        studyDate: undefined,
-        description: "",
-        contributors: [],
-        notes: "",
-      },
+      studyForm: initStudyForm(),
       sampleData: {
         soil_data: Array.from({ length: numberOfSamples }, (_, i) => ({
           samp_name:
@@ -53,7 +42,7 @@ export function generateSubmission(
 export const submissions: () => SubmissionMetadata[] = () => [
   {
     metadata_submission: {
-      packageName: "soil",
+      packageName: ["host-associated", "soil"],
       contextForm: {
         datasetDoi: "",
         dataGenerated: false,
@@ -86,7 +75,7 @@ export const submissions: () => SubmissionMetadata[] = () => [
         irbOrHipaa: null,
         comments: "",
       },
-      templates: ["host-associated"],
+      templates: ["host-associated", "soil"],
       studyForm: {
         studyName: "TEST 1",
         piName: "",
@@ -97,15 +86,12 @@ export const submissions: () => SubmissionMetadata[] = () => [
         description: "",
         notes: "",
         contributors: [],
-      },
-      multiOmicsForm: {
         alternativeNames: [],
-        studyNumber: "",
+        fundingSources: [],
         GOLDStudyId: "",
-        JGIStudyId: "",
         NCBIBioProjectId: "",
-        omicsProcessingTypes: [],
       },
+      multiOmicsForm: initMultiOmicsForm(),
       sampleData: {
         soil_data: [],
         host_associated_data: [],
@@ -127,7 +113,7 @@ export const submissions: () => SubmissionMetadata[] = () => [
   },
   {
     metadata_submission: {
-      packageName: "host-associated",
+      packageName: ["host-associated", "soil"],
       contextForm: {
         datasetDoi: "",
         dataGenerated: false,
@@ -160,7 +146,7 @@ export const submissions: () => SubmissionMetadata[] = () => [
         irbOrHipaa: null,
         comments: "",
       },
-      templates: ["host-associated"],
+      templates: ["host-associated", "soil"],
       studyForm: {
         studyName: "TEST 2",
         piName: "",
@@ -171,15 +157,12 @@ export const submissions: () => SubmissionMetadata[] = () => [
         description: "",
         notes: "",
         contributors: [],
-      },
-      multiOmicsForm: {
         alternativeNames: [],
-        studyNumber: "",
+        fundingSources: [],
         GOLDStudyId: "",
-        JGIStudyId: "",
         NCBIBioProjectId: "",
-        omicsProcessingTypes: [],
       },
+      multiOmicsForm: initMultiOmicsForm(),
       sampleData: {
         soil_data: [],
         host_associated_data: [],

@@ -54,20 +54,33 @@ export const initStudyForm = (): StudyForm => ({
   studyDate: undefined,
   studyName: "",
   notes: "",
+  fundingSources: [],
+  alternativeNames: [],
+  GOLDStudyId: "",
+  NCBIBioProjectId: "",
 });
 
 export const initMultiOmicsForm = (): MultiOmicsForm => ({
-  GOLDStudyId: "",
+  award: undefined,
+  awardDois: undefined,
+  dataGenerated: undefined,
+  doe: undefined,
+  facilities: [],
+  facilityGenerated: undefined,
   JGIStudyId: "",
-  NCBIBioProjectId: "",
-  alternativeNames: [],
+  mgCompatible: undefined,
+  mgInterleaved: undefined,
+  mtCompatible: undefined,
+  mtInterleaved: undefined,
   omicsProcessingTypes: [],
+  otherAward: undefined,
+  ship: undefined,
   studyNumber: "",
+  unknownDoi: undefined,
 });
 
 export const initMetadataSubmission = (): MetadataSubmission => ({
   addressForm: initAddressForm(),
-  contextForm: initContextForm(),
   multiOmicsForm: initMultiOmicsForm(),
   packageName: [],
   sampleData: {},
