@@ -205,6 +205,20 @@ npm run dev.android
 
 Once the simulator is running and the app opens, you may see a message saying "The webpage at http://127.0.0.1:8100 could not be loaded because net::ERR_CONNECTION_REFUSED". In that case run the following while the simulator is running and then relaunch the app within the simulator:
 
+<details>
+<summary>Show/hide <code>adb</code> command setup instructions</summary>
+
+**On macOS**: If Android Studio is installed on your computer, but the `adb` command is not available in your shell (i.e. you get a `command not found: adb` error message when you run `$ adb`), you can run the following sequence of commands to make it available in your shell:
+
+```shell
+export ANDROID_HOME="/Users/$USER/Library/Android/sdk"
+export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools"
+```
+
+Now, the `adb` command will be available in your shell.
+
+</details>
+
 ```shell
 adb reverse tcp:8100 tcp:8100
 ```

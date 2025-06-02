@@ -54,20 +54,34 @@ export interface StudyForm {
   piName: string;
   piEmail: string;
   piOrcid: string;
+  fundingSources: Nullable<string[]>;
   linkOutWebpage: string[];
   studyDate: Nullable<string>;
   description: string;
   notes: string;
   contributors: Contributor[];
+  alternativeNames: string[];
+  GOLDStudyId: string;
+  NCBIBioProjectId: string;
 }
 
 export interface MultiOmicsForm {
-  alternativeNames: string[];
-  studyNumber: string;
-  GOLDStudyId: string;
+  award: Nullable<string>;
+  awardDois: Nullable<string[]>;
+  dataGenerated: Nullable<boolean>;
+  doe: Nullable<boolean>;
+  facilities: string[];
+  facilityGenerated: Nullable<boolean>;
   JGIStudyId: string;
-  NCBIBioProjectId: string;
+  mgCompatible: Nullable<boolean>;
+  mgInterleaved: Nullable<boolean>;
+  mtCompatible: Nullable<boolean>;
+  mtInterleaved: Nullable<boolean>;
   omicsProcessingTypes: string[];
+  otherAward: Nullable<string>;
+  ship: Nullable<boolean>;
+  studyNumber: string;
+  unknownDoi: Nullable<boolean>;
 }
 
 export type SampleDataValue =
@@ -157,8 +171,7 @@ export type TemplateName = keyof typeof TEMPLATES;
 export type SlotName = string;
 
 export interface MetadataSubmission {
-  packageName: TemplateName | TemplateName[] | "";
-  contextForm: ContextForm;
+  packageName: TemplateName[];
   addressForm: AddressForm;
   templates: string[];
   studyForm: StudyForm;

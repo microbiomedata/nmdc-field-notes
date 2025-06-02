@@ -37,6 +37,7 @@ The NMDC Field Notes mobile app is designed to work with or without internet acc
 - Know risks for injuries in the sampling environment and be aware of the symptoms of common stress (e.g., heat exhaustion, frostbite, motion sickness) to mitigate injuries.
 - Bring plenty of food and water. Always bring more than you need.
 - Bring communication device(s) and know limitations of them (e.g., no cell phone service, finite battery life).
+- Bring a stylus in case you want to use a touchscreen while wearing gloves.
 - Bring a battery pack or energy bank if possible.
 - Wear or pack proper shoes and clothes for the environment and weather.
 - Only sample where you have permission to. Ensure you have all proper permits.
