@@ -85,12 +85,12 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3 # docs: https://github.com/marketplace/actions/setup-android-sdk-tools
         with:
-          # Here, we specify an Android SDK version using a special number.
+          # Here, we specify an Android SDK version via a special integer.
           #
-          # That special number is the numeric portion of an "SDK tools package" string listed on
+          # That special integer is the numeric portion of an "SDK tools package" string listed on
           # https://developer.android.com/studio#command-line-tools-only. As of June 1, 2025, that
-          # numeric portion is `13114758`. I do not know the specific Android SDK version to which
-          # that numeric portion maps.
+          # integer is `13114758`. I do not know the specific Android SDK version to which
+          # that integer maps.
           #
           # Note: Android SDK 35 is the "targetSdkVersion" listed in `android/variables.gradle`.
           #
