@@ -106,8 +106,11 @@ jobs:
         run: |
           npm ci
           npm install -g @ionic/cli
+      # Note: Here, we run `$ ionic capacitor sync android` via an NPM script (i.e. `$ npm run <script>`)
+      #       instead of directly, so that certain environment variables (e.g. `FIELD_NOTES_VERSION_NUMBER`)
+      #       are populated with values from `package.json`.
       - name: Build and copy web assets
-        run: ionic capacitor sync android
+        run: npm run build.android
       # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
       # Reference: https://developer.android.com/build/building-cmdline#build_apk
       # Reference: https://stackoverflow.com/questions/40219917/what-is-the-difference-between-gradlew-build-and-gradlew-assemblerelease
