@@ -80,22 +80,29 @@ jobs:
         uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
         with:
           distribution: corretto # "corretto" refers to the "Amazon Corretto Build of OpenJDK"
-          java-version: 17
+          java-version: 21
           cache: gradle
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3 # docs: https://github.com/marketplace/actions/setup-android-sdk-tools
         with:
-          # Specify Android SDK 34 using its "command-line identifier" from https://developer.android.com/studio#command-line-tools-only
-          # Note: Android SDK 34 is the "targetSdkVersion" listed in `android/variables.gradle`.
-          cmdline-tools-version: 13114758 # `13114758` is Android SDK 34
+          # Here, we specify an Android SDK version using a special number.
+          #
+          # That special number is the numeric portion of an "SDK tools package" string listed on
+          # https://developer.android.com/studio#command-line-tools-only. As of June 1, 2025, that
+          # numeric portion is `13114758`. I do not know the specific Android SDK version to which
+          # that numeric portion maps.
+          #
+          # Note: Android SDK 35 is the "targetSdkVersion" listed in `android/variables.gradle`.
+          #
+          cmdline-tools-version: 13114758
       # Install Android SDK build tools (e.g. `apksigner`, `zipalign`) in case we decide to use them later.
       # Reference: https://github.com/android-actions/setup-android/issues/504#issuecomment-2700719295
       # Reference: https://developer.android.com/build/building-cmdline#sign_manually
       - name: Install Android SDK build tools
         run: |
-          sdkmanager "build-tools;34.0.0"
-          stat "${ANDROID_HOME}/build-tools/34.0.0/apksigner"
-          stat "${ANDROID_HOME}/build-tools/34.0.0/zipalign"
+          sdkmanager "build-tools;35.0.0"
+          stat "${ANDROID_HOME}/build-tools/35.0.0/apksigner"
+          stat "${ANDROID_HOME}/build-tools/35.0.0/zipalign"
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
