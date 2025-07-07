@@ -55,8 +55,8 @@ jobs:
         working-directory: android
         run: |
           echo '
-              def keystorePropertiesFile = rootProject.file("keystore.properties")'
-              def keystoreProperties = new Properties()'
+              def keystorePropertiesFile = rootProject.file("keystore.properties")
+              def keystoreProperties = new Properties()
               keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
           ' > ./app/build.gradle.tmp
           cat ./app/build.gradle  >> ./app/build.gradle.tmp
