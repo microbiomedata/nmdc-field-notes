@@ -51,7 +51,7 @@ jobs:
       # Note: To effectively "prepend" the lines, we first write everything to a temporary file in the
       #       order we want, then we overwrite the target file with the contents of that temporary file.
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
-      - name: Update `app/build.gradle` file to reference `keystore.properties` file
+      - name: Update `app/build.gradle` file so it references `keystore.properties` file
         working-directory: android
         run: |
           echo '
@@ -60,7 +60,7 @@ jobs:
               keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
           ' > ./app/build.gradle.tmp
           cat ./app/build.gradle  >> ./app/build.gradle.tmp
-          mv  ./app/build.gradle.tmp ./app/build.gradle
+          mv ./app/build.gradle.tmp ./app/build.gradle
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
       # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
       - name: Add `signingConfigs` section to `app/build.gradle` file
@@ -82,12 +82,13 @@ jobs:
       - name: Add `signingConfigs.release` reference to `app/build.gradle` file
         working-directory: android
         run: |
+          echo "Determining where we will insert text."
           android_line_number=$(awk '/android *{/{print NR; exit}' app/build.gradle)
           build_types_line_number=$(awk "NR > $android_line_number && /buildTypes *{/{print NR; exit}" app/build.gradle)
           line_number=$(awk "NR > $build_types_line_number && /release *{/{print NR; exit}" app/build.gradle)
           echo "Inserting text within the 'android.buildTypes.release' block on line ${line_number}"
           sed -i "${line_number}a signingConfig signingConfigs.release\n" ./app/build.gradle
-          cat app/build.gradle
+          cat ./app/build.gradle
       - name: Set up Java (OpenJDK)
         uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
         with:
