@@ -108,14 +108,6 @@ jobs:
           # Note: Android SDK 35 is the "targetSdkVersion" listed in `android/variables.gradle`.
           #
           cmdline-tools-version: 13114758
-      # Install Android SDK build tools (e.g. `apksigner`, `zipalign`) in case we decide to use them later.
-      # Reference: https://github.com/android-actions/setup-android/issues/504#issuecomment-2700719295
-      # Reference: https://developer.android.com/build/building-cmdline#sign_manually
-      - name: Install Android SDK build tools
-        run: |
-          sdkmanager "build-tools;35.0.0"
-          stat "${ANDROID_HOME}/build-tools/35.0.0/apksigner"
-          stat "${ANDROID_HOME}/build-tools/35.0.0/zipalign"
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
