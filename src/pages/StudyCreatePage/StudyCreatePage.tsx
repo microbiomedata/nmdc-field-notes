@@ -19,6 +19,7 @@ import { useNetworkStatus } from "../../NetworkStatus";
 import FixedCenteredMessage from "../../components/FixedCenteredMessage/FixedCenteredMessage";
 import useNavigateWithState from "../../useNavigateWithState";
 import { logStudyCreatedEvent } from "../../analytics";
+import MutationErrorBanner from "../../components/MutationErrorBanner/MutationErrorBanner";
 
 const StudyCreatePage: React.FC = () => {
   const navigate = useNavigateWithState();
@@ -55,6 +56,9 @@ const StudyCreatePage: React.FC = () => {
         </ThemedToolbar>
       </IonHeader>
       <IonContent>
+        <MutationErrorBanner mutation={submissionCreate}>
+          Error saving study
+        </MutationErrorBanner>
         {isOnline ? (
           <StudyForm submission={submission} onSave={handleSave} />
         ) : (
