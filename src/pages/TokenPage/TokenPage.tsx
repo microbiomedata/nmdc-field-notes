@@ -56,9 +56,9 @@ const TokenPage: React.FC = () => {
         </FixedCenteredMessage>
       ) : (
         <FixedCenteredMessage>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
+          <div className="ion-text-center">
             <IonSpinner />
-            <div>Logging in...</div>
+            <div className="ion-margin-top">Logging in...</div>
           </div>
         </FixedCenteredMessage>
       )}
