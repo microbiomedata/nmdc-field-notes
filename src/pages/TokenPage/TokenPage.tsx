@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useStore } from "../../Store";
 import paths from "../../paths";
-import { IonPage, useIonViewWillEnter } from "@ionic/react";
+import { IonPage, IonSpinner, useIonViewWillEnter } from "@ionic/react";
 import { nmdcServerClient } from "../../api";
 import { closeBrowser } from "../../auth";
 import { useQueryClient } from "@tanstack/react-query";
+import FixedCenteredMessage from "../../components/FixedCenteredMessage/FixedCenteredMessage";
 
 const TokenPage: React.FC = () => {
   const { login } = useStore();
@@ -49,7 +50,18 @@ const TokenPage: React.FC = () => {
 
   return (
     <IonPage>
-      {loginError ? "There was an error logging you in" : "Logging in..."}
+      {loginError ? (
+        <FixedCenteredMessage>
+          There was an error logging you in
+        </FixedCenteredMessage>
+      ) : (
+        <FixedCenteredMessage>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
+            <IonSpinner />
+            <div>Logging in...</div>
+          </div>
+        </FixedCenteredMessage>
+      )}
     </IonPage>
   );
 };
