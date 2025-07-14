@@ -2,7 +2,15 @@ import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useStore } from "../../Store";
 import paths from "../../paths";
-import { IonPage, IonSpinner, useIonViewWillEnter } from "@ionic/react";
+import {
+  IonCol,
+  IonGrid,
+  IonPage,
+  IonRow,
+  IonSpinner,
+  IonText,
+  useIonViewWillEnter,
+} from "@ionic/react";
 import { nmdcServerClient } from "../../api";
 import { closeBrowser } from "../../auth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -50,18 +58,24 @@ const TokenPage: React.FC = () => {
 
   return (
     <IonPage>
-      {loginError ? (
-        <FixedCenteredMessage>
-          There was an error logging you in
-        </FixedCenteredMessage>
-      ) : (
-        <FixedCenteredMessage>
-          <div className="ion-text-center">
-            <IonSpinner />
-            <div className="ion-margin-top">Logging in...</div>
-          </div>
-        </FixedCenteredMessage>
-      )}
+      <FixedCenteredMessage>
+        {loginError ? (
+          <IonText>There was an error logging you in</IonText>
+        ) : (
+          <IonGrid>
+            <IonRow>
+              <IonCol>
+                <IonSpinner />
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonText>Logging in...</IonText>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+        )}
+      </FixedCenteredMessage>
     </IonPage>
   );
 };
