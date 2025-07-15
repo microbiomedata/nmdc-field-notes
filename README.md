@@ -397,14 +397,14 @@ If this is your first time creating an Android build, follow these **one-time** 
       ```shell
       ionic capacitor open android
       ```
-   2. In the toolbar, click `Build` > `Generate Signed App Bundle / APK...`
+   2. In the toolbar, click `Build` > `Generate Signed App Bundle or APK...`
    3. Select "APK" and click "Next"
    4. Enter the following information and click "Next"
       - Key store path: `<project root>/android/org.microbiomedata.fieldnotes.keystore`
       - Key store password: `<keystore password>`
       - Key alias: `nmdc field notes`
       - Key password: `<keystore password>`
-   5. Select the "release" build variant and click "Create"
+   5. Select the "prodRelease" build variant and click "Create"
    6. Wait for the gradle build to complete. Look for notification saying "Build completed successfully for module 'android.app.main' with 1 build variant."
 2. Distribute the APK file via the GitHub Release.
    1. Make a copy of the APK file with the version and build numbers in the filename.
@@ -426,14 +426,14 @@ If this is your first time creating an Android build, follow these **one-time** 
       ```shell
       ionic capacitor open android
       ```
-   2. In the toolbar, click `Build` > `Generate Signed App Bundle / APK...`
+   2. In the toolbar, click `Build` > `Generate Signed App Bundle or APK...`
    3. Select "**Android App Bundle**" and click "Next".
    4. Enter the following information and click "Next".
       - Key store path: `<project root>/android/org.microbiomedata.fieldnotes.keystore`
       - Key store password: `<keystore password>`
       - Key alias: `nmdc field notes`
       - Key password: `<keystore password>`
-   5. Select the "release" build variant and click "Create".
+   5. Select the "prodRelease" build variant and click "Create".
    6. Wait for the gradle build to complete. Look for notification saying "App bundle(s) generated successfully for module 'android.app.main' with 0 build variants."
 2. Distribute the AAB file via Google Play.
    1. In your web browser, go to the [Google Play Console](https://play.google.com/console).
