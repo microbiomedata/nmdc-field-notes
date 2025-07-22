@@ -34,18 +34,19 @@ jobs:
             "${{ secrets.ANDROID_KEYSTORE_DECRYPTION_KEY }}" \
             "${{ runner.temp }}" \
             "./android/org.microbiomedata.fieldnotes.keystore"
-      # Here, we echo a multi-line string into a new file, named `keystore.properties`.
+      # Here, create a `keystore.properties` file.
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
-      - name: Create `keystore.properties` file
-        working-directory: android
+      # Note: The keystore file path, here, is specified relative to the `android` directory, since
+      #       the `keystore.properties` file will reside in that directory.
+      - name: Create `android/keystore.properties` file
         run: |
-          echo '
-              storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-              keyPassword=${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}
-              keyAlias=${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}
-              storeFile=../org.microbiomedata.fieldnotes.keystore
-          '   > ./keystore.properties
-          wc -l ./keystore.properties
+          source ./.github/workflows/scripts/define_helper_functions.sh
+          create_keystore_properties_file \
+              "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+              "${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}" \
+              "${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}" \
+              "../org.microbiomedata.fieldnotes.keystore" \
+              "android/keystore.properties"
       # Add lines that reference the `keystore.properties` file, to the top of the `build.gradle` file.
       # Note: To effectively "prepend" the lines, we first write everything to a temporary file in the
       #       order we want, then we overwrite the target file with the contents of that temporary file.
