@@ -58,20 +58,11 @@ jobs:
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
       # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
       - name: Add `signingConfigs` section to `app/build.gradle` file
-        working-directory: android
         run: |
-          line_number=$(awk '/android *{/{print NR; exit}' app/build.gradle)
-          echo "Inserting text within the 'android' block on line ${line_number}"
-          sed -i "${line_number}a \
-              signingConfigs {\n\
-                  release {\n\
-                      keyAlias keystoreProperties['keyAlias']\n\
-                      keyPassword keystoreProperties['keyPassword']\n\
-                      storeFile file(keystoreProperties['storeFile'])\n\
-                      storePassword keystoreProperties['storePassword']\n\
-                  }\n\
-              }\n" ./app/build.gradle
-          wc -l ./app/build.gradle
+          source ./.github/workflows/scripts/define_helper_functions.sh
+          inject_signing_configs_section_into_build_gradle_file \
+              "./android/app/build.gradle" \
+              "${{ runner.temp }}"
       # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
       - name: Add `signingConfigs.release` reference to `app/build.gradle` file
         working-directory: android
