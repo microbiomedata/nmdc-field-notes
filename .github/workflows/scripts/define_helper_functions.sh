@@ -111,6 +111,10 @@ inject_signing_configs_section_into_build_gradle_file() {
     line_number_plus_one=$((line_number + 1))
     content_before_and_on_line=$(head -n "${line_number}" "${build_gradle_file_path}")
     content_after_line=$(tail -n "${line_number_plus_one}" "${build_gradle_file_path}")
+    echo "Content before and on line ${line_number}:"
+    echo "${content_before_and_on_line}"
+    echo "Content after line ${line_number}:"
+    echo "${content_after_line}"
     
     # Build a temporary file with the injected contents in place.
     temp_file_path="${temp_dir_path}/build.gradle"
