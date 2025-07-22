@@ -23,14 +23,7 @@ decode_and_decrypt_file() {
     stat "${temp_dir_path}/file.tar.gz.enc"
 
     echo "Decrypting file content."
-    echo "${decryption_key}" | openssl enc -d -aes256 -pbkdf2 -in "${temp_dir_path}/file.tar.gz.enc" | tar xz -C "${temp_dir_path}"
-    echo "temp dir files"
-    ls -l "${temp_dir_path}"
-    echo "cwd files"
-    ls -l
-    stat "${temp_dir_path}/file"
-
-    mv "${temp_dir_path}/file" "${output_file_path}"
+    echo "${decryption_key}" | openssl enc -d -aes256 -pbkdf2 -in "${temp_dir_path}/file.tar.gz.enc" | tar xz -O > "${output_file_path}"
     stat "${output_file_path}"
 }
 
