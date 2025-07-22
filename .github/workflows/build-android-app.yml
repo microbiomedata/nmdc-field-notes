@@ -70,7 +70,9 @@ jobs:
           inject_signing_configs_release_reference_into_build_gradle_file \
               "./android/app/build.gradle" \
               "${{ runner.temp }}"
-          cat ./android/app/build.gradle
+      # Note: Now that we're done manipulating the file, we dump its contents proactively to facilitate debugging.
+      - name: Dump the updated `app/build.gradle` file
+        run: cat ./android/app/build.gradle
       - name: Set up Java (OpenJDK)
         uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
         with:

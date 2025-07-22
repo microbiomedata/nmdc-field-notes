@@ -111,10 +111,6 @@ inject_signing_configs_section_into_build_gradle_file() {
     line_number_plus_one=$((line_number + 1))
     content_before_and_on_line=$(head -n "${line_number}" "${build_gradle_file_path}")
     content_after_line=$(tail -n +"${line_number_plus_one}" "${build_gradle_file_path}")
-    echo "Content before and on line ${line_number}:"
-    echo "${content_before_and_on_line}"
-    echo "Content after line ${line_number}:"
-    echo "${content_after_line}"
     
     # Build a temporary file with the injected contents in place.
     temp_file_path="${temp_dir_path}/build.gradle"
@@ -156,8 +152,22 @@ inject_signing_configs_release_reference_into_build_gradle_file() {
     build_types_line_number=$(awk "NR > $android_line_number && /buildTypes *{/{print NR; exit}" "${build_gradle_file_path}")
     line_number=$(awk "NR > $build_types_line_number && /release *{/{print NR; exit}" "${build_gradle_file_path}")
 
-    # Insert the `signingConfig signingConfigs.release` line within the `release` block.
-    echo "Inserting text within the 'android.buildTypes.release' block on line ${line_number}"
-    sed -i "${line_number}a signingConfig signingConfigs.release\n" "${build_gradle_file_path}"
+    # Extract the content before and on that line, and the content
+    # after that line.
+    line_number_plus_one=$((line_number + 1))
+    content_before_and_on_line=$(head -n "${line_number}" "${build_gradle_file_path}")
+    content_after_line=$(tail -n +"${line_number_plus_one}" "${build_gradle_file_path}")
+
+    # Build a temporary file with the injected contents in place.
+    temp_file_path="${temp_dir_path}/build.gradle"
+    echo "${content_before_and_on_line}" > "${temp_file_path}"
+    echo '
+        signingConfig signingConfigs.release
+    ' >> "${temp_file_path}"
+    echo "${content_after_line}" >> "${temp_file_path}"
+
+    # Move the temporary file back to the original `build.gradle` file location.
+    echo "Length of original build.gradle file: $(wc -l < "${build_gradle_file_path}")"
+    mv "${temp_file_path}" "${build_gradle_file_path}"
     echo "Length of updated build.gradle file: $(wc -l < "${build_gradle_file_path}")"
 }
