@@ -104,13 +104,13 @@ inject_signing_configs_section_into_build_gradle_file() {
     echo "Injecting signingConfigs section into build.gradle file."
     
     # Determine the line number at which the `android` block starts.
-    line_number=$(awk '/android *{/{print NR; exit}' app/build.gradle)
+    line_number=$(awk '/android *{/{print NR; exit}' "${build_gradle_file_path}")
 
     # Extract the content before and on that line, and the content
     # after that line.
     line_number_plus_one=$((line_number + 1))
-    content_before_and_on_line=$(head -n "${line_number}" app/build.gradle)
-    content_after_line=$(tail -n "${line_number_plus_one}" app/build.gradle)
+    content_before_and_on_line=$(head -n "${line_number}" "${build_gradle_file_path}")
+    content_after_line=$(tail -n "${line_number_plus_one}" "${build_gradle_file_path}")
     
     # Build a temporary file with the injected contents in place.
     temp_file_path="${temp_dir_path}/build.gradle"
@@ -130,5 +130,30 @@ inject_signing_configs_section_into_build_gradle_file() {
     # Move the temporary file back to the original `build.gradle` file location.
     echo "Length of original build.gradle file: $(wc -l < "${build_gradle_file_path}")"
     mv "${temp_file_path}" "${build_gradle_file_path}"
+    echo "Length of updated build.gradle file: $(wc -l < "${build_gradle_file_path}")"
+}
+
+###############################################################################
+# Injects a reference to `signingConfigs.release` into the `release` block of
+# the `build.gradle` file.
+# Usage: inject_signing_configs_release_reference_into_build_gradle_file <build_gradle_file_path> <temp_dir_path>
+###############################################################################
+inject_signing_configs_release_reference_into_build_gradle_file() {
+    # Extract parameters into local variables and print their values.
+    local build_gradle_file_path="${1}"
+    local temp_dir_path="${2}"
+    echo "build.gradle file path  : ${build_gradle_file_path}"
+    echo "Temporary directory path: ${temp_dir_path}"
+
+    echo "Length of original build.gradle file: $(wc -l < "${build_gradle_file_path}")"
+
+    # Determine where we will insert the `signingConfigs.release` reference.
+    android_line_number=$(awk '/android *{/{print NR; exit}' "${build_gradle_file_path}")
+    build_types_line_number=$(awk "NR > $android_line_number && /buildTypes *{/{print NR; exit}" "${build_gradle_file_path}")
+    line_number=$(awk "NR > $build_types_line_number && /release *{/{print NR; exit}" "${build_gradle_file_path}")
+
+    # Insert the `signingConfig signingConfigs.release` line within the `release` block.
+    echo "Inserting text within the 'android.buildTypes.release' block on line ${line_number}"
+    sed -i "${line_number}a signingConfig signingConfigs.release\n" "${build_gradle_file_path}"
     echo "Length of updated build.gradle file: $(wc -l < "${build_gradle_file_path}")"
 }
