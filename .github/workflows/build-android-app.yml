@@ -24,18 +24,18 @@ jobs:
       - name: Check out the commit
         uses: actions/checkout@v4
       - name: Define helper functions in current shell
-        run: source ./.github/workflows/scripts/define_helper_functions.sh
+        run: 
       # Note: We store the keystore as a GitHub Secret. The stored version is both AES-encrypted
       #       (to protect against accidental exposure) and Base64-encoded (to store it as a string).
       #       In order to use it within this workflow, we first decode it, then decrypt it.
       - name: Decode and decrypt keystore file
-        working-directory: android
         run: |
+          source ./.github/workflows/scripts/define_helper_functions.sh
           decode_and_decrypt_file \
             "${{ secrets.ANDROID_KEYSTORE_ENCRYPTED_ENCODED }}" \
             "${{ secrets.ANDROID_KEYSTORE_DECRYPTION_KEY }}" \
             "${{ runner.temp }}" \
-            "./org.microbiomedata.fieldnotes.keystore"
+            "./android/org.microbiomedata.fieldnotes.keystore"
       # Here, we echo a multi-line string into a new file, named `keystore.properties`.
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
       - name: Create `keystore.properties` file
