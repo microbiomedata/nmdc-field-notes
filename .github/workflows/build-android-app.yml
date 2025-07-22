@@ -36,8 +36,8 @@ jobs:
             "./android/org.microbiomedata.fieldnotes.keystore"
       # Here, create a `keystore.properties` file.
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
-      # Note: The keystore file path, here, is specified relative to the `android` directory, since
-      #       the `keystore.properties` file will reside in that directory.
+      # Note: The keystore file path, here, is specified relative to the `android/app/` directory,
+      #       since the `android/app/build.gradle` file resides in that directory.
       - name: Create `android/keystore.properties` file
         run: |
           source ./.github/workflows/scripts/define_helper_functions.sh
@@ -45,7 +45,7 @@ jobs:
               "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
               "${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}" \
               "${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}" \
-              "./org.microbiomedata.fieldnotes.keystore" \
+              "../org.microbiomedata.fieldnotes.keystore" \
               "./android/keystore.properties"
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
       - name: Update `app/build.gradle` file so it references `keystore.properties` file

@@ -106,8 +106,9 @@ inject_signing_configs_section_into_build_gradle_file() {
     # Determine the line number at which the `android` block starts.
     line_number=$(awk '/android *{/{print NR; exit}' "${build_gradle_file_path}")
 
-    # Extract the content before and on that line, and the content
-    # after that line.
+    # Extract the content before and on that line, and the content after that line.
+    # Note: The `+` operator in the `tail` command means "from line N onward" (as
+    #       opposed to "the final N lines", which is what `tail` normally does).
     line_number_plus_one=$((line_number + 1))
     content_before_and_on_line=$(head -n "${line_number}" "${build_gradle_file_path}")
     content_after_line=$(tail -n +"${line_number_plus_one}" "${build_gradle_file_path}")
@@ -149,11 +150,12 @@ inject_signing_configs_release_reference_into_build_gradle_file() {
 
     # Determine where we will insert the `signingConfigs.release` reference.
     android_line_number=$(awk '/android *{/{print NR; exit}' "${build_gradle_file_path}")
-    build_types_line_number=$(awk "NR > $android_line_number && /buildTypes *{/{print NR; exit}" "${build_gradle_file_path}")
-    line_number=$(awk "NR > $build_types_line_number && /release *{/{print NR; exit}" "${build_gradle_file_path}")
+    build_types_line_number=$(awk "NR > ${android_line_number} && /buildTypes *{/{print NR; exit}" "${build_gradle_file_path}")
+    line_number=$(awk "NR > ${build_types_line_number} && /release *{/{print NR; exit}" "${build_gradle_file_path}")
 
-    # Extract the content before and on that line, and the content
-    # after that line.
+    # Extract the content before and on that line, and the content after that line.
+    # Note: The `+` operator in the `tail` command means "from line N onward" (as
+    #       opposed to "the final N lines", which is what `tail` normally does).
     line_number_plus_one=$((line_number + 1))
     content_before_and_on_line=$(head -n "${line_number}" "${build_gradle_file_path}")
     content_after_line=$(tail -n +"${line_number_plus_one}" "${build_gradle_file_path}")
