@@ -23,8 +23,6 @@ jobs:
       - run: echo "Building commit ${{ github.sha }}"
       - name: Check out the commit
         uses: actions/checkout@v4
-      - name: Define helper functions in current shell
-        run: 
       # Note: We store the keystore as a GitHub Secret. The stored version is both AES-encrypted
       #       (to protect against accidental exposure) and Base64-encoded (to store it as a string).
       #       In order to use it within this workflow, we first decode it, then decrypt it.
