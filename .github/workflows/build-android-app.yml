@@ -27,13 +27,14 @@ jobs:
       #       (to protect against accidental exposure) and Base64-encoded (to store it as a string).
       #       In order to use it within this workflow, we first decode it, then decrypt it.
       - name: Decode and decrypt keystore file
+        working-directory: android
         run: |
-          source ./.github/workflows/scripts/define_helper_functions.sh
-          decode_and_decrypt_file \
-            "${{ secrets.ANDROID_KEYSTORE_ENCRYPTED_ENCODED }}" \
-            "${{ secrets.ANDROID_KEYSTORE_DECRYPTION_KEY }}" \
-            "${{ runner.temp }}" \
-            "./android/org.microbiomedata.fieldnotes.keystore"
+          echo "Decoding the keystore file."
+          echo "${{ secrets.ANDROID_KEYSTORE_ENCRYPTED_ENCODED }}" | base64 --decode > ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc
+          stat ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc
+          echo "Decrypting the keystore file."
+          echo "${{ secrets.ANDROID_KEYSTORE_DECRYPTION_KEY }}" | openssl enc -d -aes256 -pbkdf2 -in ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc | tar xz
+          stat ./org.microbiomedata.fieldnotes.keystore
       # Here, create a `keystore.properties` file.
       # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
       # Note: The keystore file path, here, is specified relative to the `android/app/` directory,
