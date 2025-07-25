@@ -12,6 +12,7 @@
     "dev.ios": "ionic capacitor run ios --livereload --host 127.0.0.1 --port=8100",
     "build": "tsc && vite build",
     "build.native": "tsc && ionic capacitor sync",
+    "build.android": "tsc && ionic capacitor sync android",
     "build.assets": "capacitor-assets generate --iconBackgroundColor '#ffffff' --iconBackgroundColorDark '#000000' --splashBackgroundColor '#ffffff' --splashBackgroundColorDark '#000000'",
     "format": "prettier . --write",
     "check.format": "prettier . --check",

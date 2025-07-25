@@ -1,0 +1,134 @@
+name: Build Android app
+
+# Configure GitHub Actions to run the jobs whenever any of these things happens:
+# 1. Someone clicks the "Run workflow" button on the "Actions" page on GitHub.
+# 2. Someone pushes commits onto the `main` branch.
+# 3. Someone opens a Pull Request based upon the `main` branch.
+#
+# References:
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push
+# - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building commit ${{ github.sha }}"
+      - name: Check out the commit
+        uses: actions/checkout@v4
+      # Note: We store the keystore as a GitHub Secret. The stored version is both AES-encrypted
+      #       (to protect against accidental exposure) and Base64-encoded (to store it as a string).
+      #       In order to use it within this workflow, we first decode it, then decrypt it.
+      - name: Decode and decrypt keystore file
+        working-directory: android
+        run: |
+          echo "Decoding the keystore file."
+          echo "${{ secrets.ANDROID_KEYSTORE_ENCRYPTED_ENCODED }}" | base64 --decode > ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc
+          stat ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc
+          echo "Decrypting the keystore file."
+          echo "${{ secrets.ANDROID_KEYSTORE_DECRYPTION_KEY }}" | openssl enc -d -aes256 -pbkdf2 -in ./org.microbiomedata.fieldnotes.keystore.tar.gz.enc | tar xz
+          stat ./org.microbiomedata.fieldnotes.keystore
+      # Here, create a `keystore.properties` file.
+      # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      # Note: The keystore file path, here, is specified relative to the `android/app/` directory,
+      #       since the `android/app/build.gradle` file resides in that directory.
+      - name: Create `android/keystore.properties` file
+        run: |
+          source ./.github/workflows/scripts/define_helper_functions.sh
+          create_keystore_properties_file \
+              "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+              "${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}" \
+              "${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}" \
+              "../org.microbiomedata.fieldnotes.keystore" \
+              "./android/keystore.properties"
+      # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      - name: Update `app/build.gradle` file so it references `keystore.properties` file
+        run: |
+          source ./.github/workflows/scripts/define_helper_functions.sh
+          inject_keystore_properties_reference_into_build_gradle_file \
+              "./android/keystore.properties" \
+              "./android/app/build.gradle" \
+              "${{ runner.temp }}"
+      # Reference: https://developer.android.com/studio/publish/app-signing.html#secure-shared-keystore
+      # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
+      - name: Add `signingConfigs` section to `app/build.gradle` file
+        run: |
+          source ./.github/workflows/scripts/define_helper_functions.sh
+          inject_signing_configs_section_into_build_gradle_file \
+              "./android/app/build.gradle" \
+              "${{ runner.temp }}"
+      # Reference: https://developer.android.com/build/building-cmdline#gradle_signing
+      - name: Add `signingConfigs.release` reference to `app/build.gradle` file
+        run: |
+          source ./.github/workflows/scripts/define_helper_functions.sh
+          inject_signing_configs_release_reference_into_build_gradle_file \
+              "./android/app/build.gradle" \
+              "${{ runner.temp }}"
+      # Note: Now that we're done manipulating the file, we dump its contents proactively to facilitate debugging.
+      - name: Dump the updated `app/build.gradle` file
+        run: cat ./android/app/build.gradle
+      - name: Set up Java (OpenJDK)
+        uses: actions/setup-java@v4 # docs: https://github.com/actions/setup-java
+        with:
+          distribution: corretto # "corretto" refers to the "Amazon Corretto Build of OpenJDK"
+          java-version: 21
+          cache: gradle
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3 # docs: https://github.com/marketplace/actions/setup-android-sdk-tools
+        with:
+          # Here, we specify an Android SDK version via a special integer.
+          #
+          # That special integer is the numeric portion of an "SDK tools package" string listed on
+          # https://developer.android.com/studio#command-line-tools-only. As of June 1, 2025, that
+          # integer is `13114758`. I do not know the specific Android SDK version to which
+          # that integer maps.
+          #
+          # Note: Android SDK 35 is the "targetSdkVersion" listed in `android/variables.gradle`.
+          #
+          cmdline-tools-version: 13114758
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          # See Node.js support timeline at: https://nodejs.org/en/about/previous-releases#release-schedule
+          node-version: 20
+          cache: npm
+      - name: Install NPM packages
+        run: |
+          npm ci
+          npm install -g @ionic/cli
+      # Note: Here, we run `$ ionic capacitor sync android` via an NPM script (i.e. `$ npm run <script>`)
+      #       instead of directly, so that certain environment variables (e.g. `FIELD_NOTES_VERSION_NUMBER`)
+      #       are populated with values from `package.json`.
+      - name: Build and copy web assets
+        run: npm run build.android
+      # Reference: https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:disabling_the_daemon
+      # Reference: https://developer.android.com/build/building-cmdline#build_apk
+      # Reference: https://stackoverflow.com/questions/40219917/what-is-the-difference-between-gradlew-build-and-gradlew-assemblerelease
+      - name: Generate APK
+        working-directory: android
+        # Note: Instead of renaming the APK file now, we'll rename it after we download it as an artifact.
+        run: ./gradlew --no-daemon assembleRelease
+      - name: Show generated file(s)
+        run: find . -name "*.apk" -type f
+      - name: Upload APK as a GHA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: android/app/build/outputs/apk/prod/release/app-prod-release.apk
+      - name: Generate AAB
+        working-directory: android
+        run: ./gradlew --no-daemon bundleRelease
+      - name: Show generated file(s)
+        run: find . -name "*.aab" -type f
+      - name: Upload AAB as a GHA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aab
+          path: android/app/build/outputs/bundle/prodRelease/app-prod-release.aab
