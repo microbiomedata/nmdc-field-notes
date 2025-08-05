@@ -175,6 +175,7 @@ const StudyEditPage: React.FC = () => {
         {submission.data && (
           <StudyForm
             disabled={!loggedInUserCanEdit}
+            isTestSubmissionCheckboxDisabled={true}
             submission={submission.data}
             onSave={handleSave}
           />

@@ -23,6 +23,8 @@ import { useAppTour } from "../AppTourProvider/hooks";
 import { TourId } from "../AppTourProvider/AppTourProvider";
 import SectionHeader, { Variant } from "../SectionHeader/SectionHeader";
 
+import styles from "./StudyList.module.css";
+
 // Make steps for the tour.
 // Reference: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 const steps: Array<StepType> = [
@@ -102,6 +104,9 @@ const StudyList: React.FC = () => {
                         </NoneOr>
                       </h3>
                       <p>
+                        {submission.is_test_submission && (
+                          <span className={styles.testLabel}>TEST</span>
+                        )}
                         <NoneOr placeholder="No template selected">
                           {getSubmissionTemplates(submission).join(", ")}
                         </NoneOr>
