@@ -13,15 +13,6 @@ export interface Contributor {
   roles: string[];
 }
 
-export interface ContextForm {
-  datasetDoi: string;
-  dataGenerated: Nullable<boolean>;
-  facilityGenerated: Nullable<boolean>;
-  facilities: string[];
-  award: Nullable<string>;
-  otherAward: string;
-}
-
 export interface Address {
   name: string;
   email: string;
@@ -194,6 +185,7 @@ interface SubmissionMetadataBase {
 export interface SubmissionMetadataCreate extends SubmissionMetadataBase {
   status?: string;
   source_client: "submission_portal" | "field_notes" | null;
+  is_test_submission: boolean;
 }
 
 export interface SubmissionMetadataUpdate extends SubmissionMetadataBase {

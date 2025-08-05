@@ -1,0 +1,13 @@
+.testLabel {
+  font-weight: bold;
+  color: var(--ion-color-primary);
+  border-color: var(--ion-color-primary);
+  border-width: 1px;
+  border-style: solid;
+  display: inline-block;
+  font-size: 80%;
+  line-height: 1;
+  padding: 4px 4px;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+}

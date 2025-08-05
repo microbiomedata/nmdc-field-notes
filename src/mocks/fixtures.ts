@@ -36,6 +36,7 @@ export function generateSubmission(
         soil: ["samp_name"],
       },
     },
+    is_test_submission: false,
   };
 }
 
@@ -43,14 +44,6 @@ export const submissions: () => SubmissionMetadata[] = () => [
   {
     metadata_submission: {
       packageName: ["host-associated", "soil"],
-      contextForm: {
-        datasetDoi: "",
-        dataGenerated: false,
-        facilityGenerated: null,
-        facilities: [],
-        award: null,
-        otherAward: "",
-      },
       addressForm: {
         shipper: {
           name: "",
@@ -110,18 +103,11 @@ export const submissions: () => SubmissionMetadata[] = () => [
     lock_updated: "2024-01-01T00:00:00.000000",
     locked_by: null,
     source_client: "submission_portal",
+    is_test_submission: false,
   },
   {
     metadata_submission: {
       packageName: ["host-associated", "soil"],
-      contextForm: {
-        datasetDoi: "",
-        dataGenerated: false,
-        facilityGenerated: null,
-        facilities: [],
-        award: null,
-        otherAward: "",
-      },
       addressForm: {
         shipper: {
           name: "",
@@ -186,6 +172,7 @@ export const submissions: () => SubmissionMetadata[] = () => [
       is_admin: true,
     },
     source_client: "field_notes",
+    is_test_submission: false,
   },
 ];
 

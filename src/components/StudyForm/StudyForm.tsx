@@ -1,6 +1,7 @@
 import React from "react";
 import {
   IonButton,
+  IonCheckbox,
   IonInput,
   IonItem,
   IonLabel,
@@ -52,6 +53,7 @@ const steps: Array<StepType> = [
 
 interface StudyFormProps {
   disabled?: boolean;
+  isTestSubmissionCheckboxDisabled?: boolean;
   submission: SubmissionMetadataCreate;
   onSave: (submission: SubmissionMetadataCreate) => Promise<unknown>;
 }
@@ -72,6 +74,7 @@ const EMAIL_REGEX =
 
 const StudyForm: React.FC<StudyFormProps> = ({
   disabled,
+  isTestSubmissionCheckboxDisabled,
   submission,
   onSave,
 }) => {
@@ -97,6 +100,15 @@ const StudyForm: React.FC<StudyFormProps> = ({
     }
     setValue("metadata_submission.studyForm.piOrcid", loggedInUser.orcid);
   };
+
+  let testSubmissionHelperText =
+    "This option cannot be changed after the study is created.";
+  if (!isTestSubmissionCheckboxDisabled) {
+    testSubmissionHelperText =
+      "Test submissions should be used when at a workshop or doing a test, example, or training. " +
+      "These cannot be submitted. " +
+      testSubmissionHelperText;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -158,6 +170,24 @@ const StudyForm: React.FC<StudyFormProps> = ({
               onIonInput={field.onChange}
               {...field}
             />
+          )}
+        />
+
+        <Controller
+          name="is_test_submission"
+          control={control}
+          render={({ field }) => (
+            <IonCheckbox
+              className={"ion-margin-top"}
+              checked={field.value}
+              disabled={isTestSubmissionCheckboxDisabled}
+              helperText={testSubmissionHelperText}
+              justify="space-between"
+              onIonBlur={field.onBlur}
+              onIonChange={field.onChange}
+            >
+              Test submission
+            </IonCheckbox>
           )}
         />
       </div>
