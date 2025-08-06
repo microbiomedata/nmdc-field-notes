@@ -6,7 +6,7 @@ import { vi } from "vitest";
 import KeepAwakeSwitch from "./KeepAwakeSwitch";
 import StoreProvider from "../../Store";
 
-beforeEach(async () => {
+beforeEach(() => {
   // KeepAwake needs to be mocked because otherwise isSupported will be false in the test
   // environment. We also want to spy on the keepAwake and allowSleep methods.
   vi.mock("@capacitor-community/keep-awake", () => ({
