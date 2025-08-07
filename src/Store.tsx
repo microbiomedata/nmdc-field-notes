@@ -14,6 +14,7 @@ import {
   isValidColorPaletteMode,
 } from "./theme/colorPalette";
 import { Network } from "@capacitor/network";
+import { KeepAwake } from "@capacitor-community/keep-awake";
 import { TourId } from "./components/AppTourProvider/AppTourProvider";
 import { setAnalyticsUserId } from "./analytics";
 import { jwtDecode } from "jwt-decode";
@@ -23,6 +24,7 @@ enum StorageKey {
   LOGGED_IN_USER = "loggedInUser",
   COLOR_PALETTE_MODE = "colorPaletteMode",
   PRESENTED_TOUR_IDS = "presentedTourIds",
+  IS_KEEP_AWAKE_ON = "isKeepAwakeOn",
 }
 
 interface StoreContextValue {
@@ -40,6 +42,9 @@ interface StoreContextValue {
   checkWhetherTourHasBeenPresented: (tourId: TourId) => boolean;
   rememberTourHasBeenPresented: (tourId: TourId | null) => void;
   forgetTourHasBeenPresented: (tourId: TourId | null) => void;
+
+  isKeepAwakeOn: boolean;
+  setIsKeepAwakeOn: (isKeepAwakeOn: boolean) => void;
 }
 
 const StoreContext = createContext<StoreContextValue>({
@@ -71,6 +76,11 @@ const StoreContext = createContext<StoreContextValue>({
   forgetTourHasBeenPresented: () => {
     throw new Error("forgetTourHasBeenPresented called outside of provider");
   },
+
+  isKeepAwakeOn: false,
+  setIsKeepAwakeOn: () => {
+    throw new Error("setIsKeepAwakeOn called outside of provider");
+  },
 });
 
 const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -84,6 +94,7 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [presentedTourIds, setPresentedTourIds] = useState<Set<TourId>>(
     new Set(),
   );
+  const [isKeepAwakeOn, _setIsKeepAwakeOn] = useState<boolean>(false);
 
   /**
    * Extract the expiration date from a refresh token and set it in the context. If the provided
@@ -183,6 +194,15 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
       );
       if (presentedTourIdsFromStorage instanceof Set) {
         setPresentedTourIds(presentedTourIdsFromStorage);
+      }
+
+      // If persistent storage contains the "keep awake" setting, apply the setting to the app, and
+      // update the Context to reflect the setting.
+      const isKeepAwakeOnFromStorage = await storage.get(
+        StorageKey.IS_KEEP_AWAKE_ON,
+      );
+      if (typeof isKeepAwakeOnFromStorage === "boolean") {
+        await applyKeepAwakeSetting(isKeepAwakeOnFromStorage);
       }
 
       // This should be done last so that we can block rendering until in-memory state is fully
@@ -330,6 +350,33 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
     setPresentedTourIds(nextPresentedTourIds);
   }
 
+  /**
+   * Applies the "keep awake" setting to the app and updates the Context to reflect the setting.
+   */
+  async function applyKeepAwakeSetting(isKeepAwakeOn: boolean) {
+    _setIsKeepAwakeOn(isKeepAwakeOn);
+    if (isKeepAwakeOn) {
+      return KeepAwake.keepAwake();
+    } else {
+      return KeepAwake.allowSleep();
+    }
+  }
+
+  /**
+   * Updates the Context and the store to reflect whether the "keep awake" setting is enabled.
+   *
+   * @param isKeepAwakeOn Whether the "keep awake" setting is enabled.
+   */
+  async function setIsKeepAwakeOn(isKeepAwakeOn: boolean) {
+    await applyKeepAwakeSetting(isKeepAwakeOn);
+    if (store === null) {
+      console.warn("setIsKeepAwakeOn called before storage initialization");
+      return;
+    } else {
+      return store.set(StorageKey.IS_KEEP_AWAKE_ON, isKeepAwakeOn);
+    }
+  }
+
   return (
     <StoreContext.Provider
       value={{
@@ -347,6 +394,9 @@ const StoreProvider: React.FC<PropsWithChildren> = ({ children }) => {
         checkWhetherTourHasBeenPresented,
         rememberTourHasBeenPresented,
         forgetTourHasBeenPresented,
+
+        isKeepAwakeOn,
+        setIsKeepAwakeOn,
       }}
     >
       {children}
