@@ -5,13 +5,13 @@ import { useStore } from "../../Store";
 
 const KeepAwakeSwitch: React.FC = () => {
   const { isKeepAwakeOn, setIsKeepAwakeOn } = useStore();
-  const [keepAwakeSupported, setKeepAwakeSupported] =
+  const [isKeepAwakeSupported, setIsKeepAwakeSupported] =
     React.useState<boolean>(false);
 
   useEffect(() => {
     async function init() {
       const result = await KeepAwake.isSupported();
-      setKeepAwakeSupported(result.isSupported);
+      setIsKeepAwakeSupported(result.isSupported);
     }
     void init();
   }, []);
@@ -19,7 +19,7 @@ const KeepAwakeSwitch: React.FC = () => {
   return (
     <IonToggle
       checked={isKeepAwakeOn}
-      disabled={!keepAwakeSupported}
+      disabled={!isKeepAwakeSupported}
       onIonChange={(e) => {
         setIsKeepAwakeOn(e.detail.checked);
       }}
@@ -27,7 +27,7 @@ const KeepAwakeSwitch: React.FC = () => {
       <IonLabel>
         <h3>Keep Screen On</h3>
         <p>
-          {keepAwakeSupported ? (
+          {isKeepAwakeSupported ? (
             <>May significantly increase battery usage</>
           ) : (
             <>Setting not supported on this device</>
