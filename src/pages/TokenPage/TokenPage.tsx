@@ -4,6 +4,7 @@ import { useStore } from "../../Store";
 import paths from "../../paths";
 import {
   IonCol,
+  IonContent,
   IonGrid,
   IonPage,
   IonRow,
@@ -58,24 +59,26 @@ const TokenPage: React.FC = () => {
 
   return (
     <IonPage>
-      <FixedCenteredMessage>
-        {loginError ? (
-          <IonText>There was an error logging you in</IonText>
-        ) : (
-          <IonGrid>
-            <IonRow>
-              <IonCol>
-                <IonSpinner />
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonText>Logging in...</IonText>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        )}
-      </FixedCenteredMessage>
+      <IonContent fullscreen>
+        <FixedCenteredMessage>
+          {loginError ? (
+            <IonText>There was an error logging you in</IonText>
+          ) : (
+            <IonGrid>
+              <IonRow>
+                <IonCol>
+                  <IonSpinner />
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol>
+                  <IonText>Logging in...</IonText>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          )}
+        </FixedCenteredMessage>
+      </IonContent>
     </IonPage>
   );
 };
