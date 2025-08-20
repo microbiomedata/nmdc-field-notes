@@ -8,7 +8,11 @@ import { EdgeToEdge } from "@capawesome/capacitor-android-edge-to-edge-support";
 
 async function initializeStatusBar() {
   if (Capacitor.getPlatform() === "android") {
-    await EdgeToEdge.setBackgroundColor({ color: "#000000" });
+const STATUS_BAR_BACKGROUND_COLOR = "#000000";
+
+async function initializeStatusBar() {
+  if (Capacitor.getPlatform() === "android") {
+    await EdgeToEdge.setBackgroundColor({ color: STATUS_BAR_BACKGROUND_COLOR });
     await StatusBar.setStyle({ style: Style.Dark });
   }
 }
