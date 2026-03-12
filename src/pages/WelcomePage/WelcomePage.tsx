@@ -7,10 +7,6 @@ import {
   IonPage,
   IonRow,
   IonIcon,
-  IonCardContent,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
   IonAlert,
   useIonRouter,
   IonHeader,
@@ -21,6 +17,7 @@ import paths from "../../paths";
 import classes from "./WelcomePage.module.css";
 import { initiateLogin } from "../../auth";
 import DevelopmentSiteWarning from "../../components/DevelopmentSiteWarning/DevelopmentSiteWarning";
+import SunsetNotice from "../../components/SunsetNotice/SunsetNotice";
 
 const WelcomePage: React.FC = () => {
   const router = useIonRouter();
@@ -61,26 +58,7 @@ const WelcomePage: React.FC = () => {
                   size-lg={"6"}
                   size-xl={"4"}
                 >
-                  <IonCard>
-                    <img
-                      alt="Photo of researcher using the NMDC Field Notes iOS app on an Apple iPad"
-                      src="/person-using-ipad-1200x1200.jpg"
-                    />
-                    <IonCardHeader>
-                      <IonCardTitle>Welcome</IonCardTitle>
-                    </IonCardHeader>
-                    <IonCardContent className={classes.paddingBottomZero}>
-                      Welcome to NMDC&nbsp;Field&nbsp;Notes, an app designed to
-                      help you collect environmental metadata
-                      on&nbsp;the&nbsp;go.
-                    </IonCardContent>
-                    <IonButton
-                      fill={"clear"}
-                      href={"https://microbiomedata.org/field-notes/"}
-                    >
-                      Learn more
-                    </IonButton>
-                  </IonCard>
+                  <SunsetNotice />
                 </IonCol>
               </IonRow>
             </IonCol>

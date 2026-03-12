@@ -5,6 +5,7 @@ import ThemedToolbar from "../../components/ThemedToolbar/ThemedToolbar";
 import { useStore } from "../../Store";
 import { initiateLogin } from "../../auth";
 import FixedCenteredMessage from "../../components/FixedCenteredMessage/FixedCenteredMessage";
+import SunsetNotice from "../../components/SunsetNotice/SunsetNotice";
 
 const HEADER_TEXT = "NMDC Field Notes";
 
@@ -18,6 +19,7 @@ const HomePage: React.FC = () => {
         </ThemedToolbar>
       </IonHeader>
       <IonContent>
+        <SunsetNotice />
         {isLoggedIn ? (
           <StudyList />
         ) : (
