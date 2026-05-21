@@ -1,8 +1,9 @@
 # NMDC Field Notes
 
-NMDC Field Notes is a mobile app researchers can use to collect metadata in the field.
+> [!IMPORTANT]
+> Due to a shift in program budget and priorities for 2026, the NMDC is not actively developing or maintaining the Field Notes Mobile App. Please visit the [NMDC website](https://microbiomedata.org) for more information about our other products to submit, access and share microbiome data.
 
-The app is currently in development.
+NMDC Field Notes is a mobile app researchers can use to collect metadata in the field.
 
 ## Development
 
